@@ -1,6 +1,6 @@
 #include "App.hpp"
 using namespace std;
-//hello test commit a deux
+
 static App& get_app(GLFWwindow* window)
 {
     return *reinterpret_cast<App*>(glfwGetWindowUserPointer(window));
