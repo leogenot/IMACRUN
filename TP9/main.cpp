@@ -11,7 +11,7 @@ int main()
     if (!glfwInit()) {
         return -1;
     }
-
+//test commentaire commit
     /* Create a windowed mode window and its OpenGL context */
 #ifdef __APPLE__
     /* We need to explicitly ask for a 3.3 context on Mac */
