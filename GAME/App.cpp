@@ -1,4 +1,4 @@
-#include "App.hpp"
+#include "GAME_H/App.hpp"
 #include "GLFW/glfw3.h"
 
 App::App(int window_width, int window_height)
