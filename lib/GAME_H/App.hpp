@@ -1,7 +1,7 @@
 #pragma once
 #define GLFW_INCLUDE_NONE
-#include <camera.h>
-#include <shader_m.h>
+#include "camera.h"
+#include "shader_m.h"
 #include <stb_image.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
