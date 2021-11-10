@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 # Set project name
-project(SimpleGlimac C CXX)
+project(IMACRUN C CXX)
 # Set C++ version
 set(CXX_STANDARD 11)
 
@@ -27,11 +27,11 @@ add_subdirectory(${GLFW_DIR} binary_dir EXCLUDE_FROM_ALL)
 add_library(GLAD STATIC lib/glad/src/glad.c)
 
 # Build the different TPs
-function(setup_tp TP_NUMBER)
-    set(TARGET_NAME ${TP_NUMBER}_exe)
+function(setup_game GAME)
+    set(TARGET_NAME ${GAME}_exe)
     # Grab all the source files
     file(GLOB_RECURSE MY_SOURCES
-        ${TP_NUMBER}/*
+        ${GAME}/*
         lib/glimac/*
     )
     # Create target executable
@@ -42,7 +42,7 @@ function(setup_tp TP_NUMBER)
 
     # Set include directories
     include_directories(
-        ${TP_NUMBER}
+        ${GAME}
         lib
         lib/glimac
     )
@@ -77,15 +77,7 @@ function(setup_tp TP_NUMBER)
     )
     endfunction()
     copy_folder_to_the_output_folder("assets")
-    copy_folder_to_the_output_folder(${TP_NUMBER}/"shaders")
-endfunction(setup_tp)
+    copy_folder_to_the_output_folder(${GAME}/"shaders")
+endfunction(setup_game)
 
-setup_tp(TP1)
-setup_tp(TP2)
-setup_tp(TP3)
-setup_tp(TP4)
-setup_tp(TP5)
-setup_tp(TP6)
-setup_tp(TP7)
-setup_tp(TP8)
-setup_tp(TP9)
+setup_game(GAME)
