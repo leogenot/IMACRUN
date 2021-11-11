@@ -1,5 +1,6 @@
 #pragma once
 #define GLFW_INCLUDE_NONE
+#include "trackballCamera.hpp"
 #include "camera.h"
 #include "shader_m.h"
 #include <stb_image.h>

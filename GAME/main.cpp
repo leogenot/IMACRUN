@@ -16,9 +16,11 @@ const unsigned int window_width  = 1280;
 const unsigned int window_height = 720;
 
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-float  lastX      = (float)window_width / 2.0;
-float  lastY      = (float)window_height / 2.0;
-bool   firstMouse = true;
+TrackballCamera Trackcamera;
+float  lastX       = (float)window_width / 2.0;
+float  lastY       = (float)window_height / 2.0;
+bool   firstMouse  = true;
+bool   fixedCamera = true;
 
 // timing
 float deltaTime = 0.0f;
@@ -66,8 +68,8 @@ int main()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_ALWAYS);
 
-    Shader skyboxShader("TP2/shaders/skybox.vs", "TP2/shaders/skybox.fs");
-    Shader floorShader("TP2/shaders/floor.vs", "TP2/shaders/floor.fs");
+    Shader skyboxShader("GAME/shaders/skybox.vs", "GAME/shaders/skybox.fs");
+    Shader floorShader("GAME/shaders/floor.vs", "GAME/shaders/floor.fs");
 
     float cubeVertices[] = {
         // positions          // texture Coords
@@ -246,7 +248,8 @@ int main()
         floorShader.use();
 
         glm::mat4 model      = glm::mat4(1.0f);
-        glm::mat4 view       = camera.GetViewMatrix();
+        //glm::mat4 view       = camera.GetViewMatrix();
+        glm::mat4 view       = Trackcamera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(camera.Zoom, (float)window_width / (float)window_height, 0.1f, 100.0f);
 
         // cubes
@@ -268,7 +271,8 @@ int main()
         // draw skybox as last
         glDepthFunc(GL_LEQUAL); // change depth function so depth test passes when values are equal to depth buffer's content
         skyboxShader.use();
-        view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
+        //view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
+        view = glm::mat4(glm::mat3(Trackcamera.GetViewMatrix())); // remove translation from the view matrix
         skyboxShader.setMat4("view", view);
         skyboxShader.setMat4("projection", projection);
         // skybox cube
@@ -297,17 +301,27 @@ void processInput(GLFWwindow* window)
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, deltaTime);
+        Trackcamera.rotateUp(deltaTime);
+        //camera.ProcessKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         camera.ProcessKeyboard(BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, deltaTime);
+        Trackcamera.rotateLeft(deltaTime);
+        //camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
 
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
-        camera.Position.y = 0.0f;  
-        
+    {
+        //camera.Position.y = 0.0f;
+        if(fixedCamera)
+        {
+            fixedCamera = false;
+            firstMouse = true;
+        }
+        else
+            fixedCamera = true;
+    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -323,26 +337,34 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    if (firstMouse) {
-        lastX      = xpos;
-        lastY      = ypos;
-        firstMouse = false;
+    if(!fixedCamera)
+    {
+        if (firstMouse) {
+            lastX      = xpos;
+            lastY      = ypos;
+            firstMouse = false;
+        }
+
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+        lastX = xpos;
+        lastY = ypos;
+
+        //camera.ProcessMouseMovement(xoffset, yoffset);
+        Trackcamera.ProcessMouseMovement(xoffset, yoffset);
     }
-
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-    lastX = xpos;
-    lastY = ypos;
-
-    camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    camera.ProcessMouseScroll(yoffset);
+    if(!fixedCamera)
+    {
+        //camera.ProcessMouseScroll(yoffset);
+        Trackcamera.moveFront(yoffset);
+    }
 }
 
 // utility function for loading a 2D texture from file
