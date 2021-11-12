@@ -4,7 +4,7 @@
 #include <glm/gtx/transform.hpp>
 
 // Default camera values
-const float TRACKSENSITIVITY =  0.5f;
+const float TRACKSENSITIVITY =  0.8f;
 const float TRACKZOOM        =  5;
 
 class TrackballCamera

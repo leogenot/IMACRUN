@@ -313,7 +313,6 @@ void processInput(GLFWwindow* window)
 
     if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
     {
-        //camera.Position.y = 0.0f;
         if(fixedCamera)
         {
             fixedCamera = false;
