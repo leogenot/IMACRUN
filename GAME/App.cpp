@@ -14,8 +14,16 @@ void App::render(Camera camera)
 
 }
 
-void App::key_callback(int key, int scancode, int action, int mods)
+
+    void App::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+    if (key == GLFW_KEY_L && action == GLFW_PRESS) {
+        fixedCamera = !fixedCamera;
+        std::cout << fixedCamera << std::endl;
+    }
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+
 }
 
 void App::mouse_button_callback(int button, int action, int mods)

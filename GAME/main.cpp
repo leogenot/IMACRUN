@@ -15,12 +15,11 @@ const unsigned int window_width  = 1280;
 const unsigned int window_height = 720;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera          camera(glm::vec3(0.0f, 0.0f, 3.0f));
 TrackballCamera Trackcamera;
-float  lastX       = (float)window_width / 2.0;
-float  lastY       = (float)window_height / 2.0;
-bool   firstMouse  = true;
-bool   fixedCamera = true;
+float           lastX      = (float)window_width / 2.0;
+float           lastY      = (float)window_height / 2.0;
+bool            firstMouse = true;
 
 // map
 Map map;
@@ -208,7 +207,6 @@ int main()
         "assets/textures/skybox/back.jpg"};
     unsigned int cubemapTexture = loadCubemap(faces);
 
-
     boxShader.use();
     boxShader.setInt("texture1", 0);
 
@@ -220,7 +218,11 @@ int main()
     glfwGetWindowSize(window, &w, &h);
 
     App app{w, h};
-
+/* Hook user inputs to the App */
+    glfwSetWindowUserPointer(window, reinterpret_cast<void*>(&app));
+    glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+        get_app(window).key_callback(window, key, scancode, action, mods);
+    });
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
         // per-frame time logic
@@ -240,9 +242,9 @@ int main()
 
         app.render(camera);
 
-        glm::mat4 model      = glm::mat4(1.0f);
-        //glm::mat4 view       = camera.GetViewMatrix();
-        glm::mat4 view       = Trackcamera.GetViewMatrix();
+        glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 view       = camera.GetViewMatrix();
+        //glm::mat4 view       = Trackcamera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(camera.Zoom, (float)window_width / (float)window_height, 0.1f, 100.0f);
 
         // cubes
@@ -262,8 +264,8 @@ int main()
         // draw skybox as last
         glDepthFunc(GL_LEQUAL); // change depth function so depth test passes when values are equal to depth buffer's content
         skyboxShader.use();
-        //view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
-        view = glm::mat4(glm::mat3(Trackcamera.GetViewMatrix())); // remove translation from the view matrix
+        view = glm::mat4(glm::mat3(camera.GetViewMatrix())); // remove translation from the view matrix
+        //view = glm::mat4(glm::mat3(Trackcamera.GetViewMatrix())); // remove translation from the view matrix
         skyboxShader.setMat4("view", view);
         skyboxShader.setMat4("projection", projection);
         // skybox cube
@@ -292,17 +294,17 @@ void processInput(GLFWwindow* window)
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        Trackcamera.rotateUp(deltaTime);
-        //camera.ProcessKeyboard(FORWARD, deltaTime);
+        //Trackcamera.rotateUp(deltaTime);
+    camera.ProcessKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         camera.ProcessKeyboard(BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        Trackcamera.rotateLeft(deltaTime);
-        //camera.ProcessKeyboard(LEFT, deltaTime);
+        //Trackcamera.rotateLeft(deltaTime);
+    camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
 
-    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+    /* if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
     {
         if(fixedCamera)
         {
@@ -311,7 +313,7 @@ void processInput(GLFWwindow* window)
         }
         else
             fixedCamera = true;
-    }
+    } */
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -327,7 +329,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    if(!fixedCamera)
+    /* if(!fixedCamera)
     {
         if (firstMouse) {
             lastX      = xpos;
@@ -343,18 +345,32 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
         //camera.ProcessMouseMovement(xoffset, yoffset);
         Trackcamera.ProcessMouseMovement(xoffset, yoffset);
+    } */
+
+    if (firstMouse) {
+        lastX      = xpos;
+        lastY      = ypos;
+        firstMouse = false;
     }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+    lastX = xpos;
+    lastY = ypos;
+    camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    if(!fixedCamera)
-    {
+    /* if (!fixedCamera) {
         //camera.ProcessMouseScroll(yoffset);
         Trackcamera.moveFront(yoffset);
-    }
+    } */
+
+    camera.ProcessMouseScroll(yoffset);
 }
 
 // loads a cubemap texture from 6 individual texture faces
