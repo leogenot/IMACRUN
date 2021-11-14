@@ -2,6 +2,7 @@
 #define GLFW_INCLUDE_NONE
 #include "trackballCamera.hpp"
 #include "camera.h"
+#include "map.hpp"
 #include "shader_m.h"
 #include <stb_image.h>
 #include <glm/glm.hpp>

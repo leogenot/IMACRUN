@@ -3,7 +3,6 @@ void         framebuffer_size_callback(GLFWwindow* window, int width, int height
 void         mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void         scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void         processInput(GLFWwindow* window);
-unsigned int loadTexture(const char* path);
 unsigned int loadCubemap(vector<std::string> faces);
 
 static App& get_app(GLFWwindow* window)
@@ -15,12 +14,16 @@ static App& get_app(GLFWwindow* window)
 const unsigned int window_width  = 1280;
 const unsigned int window_height = 720;
 
+// camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 TrackballCamera Trackcamera;
 float  lastX       = (float)window_width / 2.0;
 float  lastY       = (float)window_height / 2.0;
 bool   firstMouse  = true;
 bool   fixedCamera = true;
+
+// map
+Map map;
 
 // timing
 float deltaTime = 0.0f;
@@ -69,7 +72,10 @@ int main()
     glDepthFunc(GL_ALWAYS);
 
     Shader skyboxShader("GAME/shaders/skybox.vs", "GAME/shaders/skybox.fs");
-    Shader floorShader("GAME/shaders/floor.vs", "GAME/shaders/floor.fs");
+    Shader boxShader("GAME/shaders/floor.vs", "GAME/shaders/floor.fs");
+
+    // generate map whith file
+    map.loadMap("assets/map.pgm");
 
     float cubeVertices[] = {
         // positions          // texture Coords
@@ -180,18 +186,6 @@ int main()
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glBindVertexArray(0);
-    // plane VAO
-    unsigned int planeVAO, planeVBO;
-    glGenVertexArrays(1, &planeVAO);
-    glGenBuffers(1, &planeVBO);
-    glBindVertexArray(planeVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), &planeVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glBindVertexArray(0);
 
     // skybox VAO
     unsigned int skyboxVAO, skyboxVBO;
@@ -203,8 +197,7 @@ int main()
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-    unsigned int floorTexture = loadTexture("assets/textures/floor/brickwall.jpg");
-    unsigned int cubeTexture  = loadTexture("assets/textures/cube/cube.jpg");
+    //unsigned int cubeTexture  = loadTexture("assets/textures/cube/cube.jpg");
 
     vector<string> faces{
         "assets/textures/skybox/right.jpg",
@@ -215,8 +208,10 @@ int main()
         "assets/textures/skybox/back.jpg"};
     unsigned int cubemapTexture = loadCubemap(faces);
 
-    floorShader.use();
-    floorShader.setInt("texture1", 0);
+
+    boxShader.use();
+    boxShader.setInt("texture1", 0);
+
     skyboxShader.use();
     skyboxShader.setInt("skybox", 0);
 
@@ -245,28 +240,24 @@ int main()
 
         app.render(camera);
 
-        floorShader.use();
-
         glm::mat4 model      = glm::mat4(1.0f);
         //glm::mat4 view       = camera.GetViewMatrix();
         glm::mat4 view       = Trackcamera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(camera.Zoom, (float)window_width / (float)window_height, 0.1f, 100.0f);
 
         // cubes
+        boxShader.use();
+        boxShader.setMat4("view", view);
+        boxShader.setMat4("projection", projection);
+        boxShader.setMat4("model", model);
         glBindVertexArray(cubeVAO);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, cubeTexture);
-        //view = glm::mat4(glm::mat3(camera.GetViewMatrix()));
-        floorShader.setMat4("view", view);
-        floorShader.setMat4("projection", projection);
-        floorShader.setMat4("model", model);
+        //glBindTexture(GL_TEXTURE_2D, cubeTexture);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-        // floor
-        glBindVertexArray(planeVAO);
-        glBindTexture(GL_TEXTURE_2D, floorTexture);
-        floorShader.setMat4("model", glm::mat4(1.0f));
-        glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
+
+        // floor
+        map.drawMap(view, projection, model);
 
         // draw skybox as last
         glDepthFunc(GL_LEQUAL); // change depth function so depth test passes when values are equal to depth buffer's content
@@ -364,43 +355,6 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
         //camera.ProcessMouseScroll(yoffset);
         Trackcamera.moveFront(yoffset);
     }
-}
-
-// utility function for loading a 2D texture from file
-// ---------------------------------------------------
-unsigned int loadTexture(char const* path)
-{
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
-
-    int            width, height, nrComponents;
-    unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
-    if (data) {
-        GLenum format;
-        if (nrComponents == 1)
-            format = GL_RED;
-        else if (nrComponents == 3)
-            format = GL_RGB;
-        else if (nrComponents == 4)
-            format = GL_RGBA;
-
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        stbi_image_free(data);
-    }
-    else {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
-        stbi_image_free(data);
-    }
-
-    return textureID;
 }
 
 // loads a cubemap texture from 6 individual texture faces
