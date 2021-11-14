@@ -20,7 +20,7 @@ constexpr float YAW         = -90.0f;
 constexpr float PITCH       =  0.0f;
 constexpr float SPEED       =  2.5f;
 constexpr float SENSITIVITY =  0.1f;
-constexpr float ZOOM        =  80.0f;
+constexpr float ZOOM        =  70.0f;
 
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
@@ -108,10 +108,10 @@ public:
     void ProcessMouseScroll(float yoffset)
     {
         Zoom -= (float)yoffset;
-        if (Zoom < 1.0f)
-            Zoom = 1.0f;
-        if (Zoom > 45.0f)
-            Zoom = 45.0f; 
+        if (Zoom < 20.0f)
+            Zoom = 20.0f;
+        if (Zoom > 70.0f)
+            Zoom = 70.0f; 
     }
 
 private:
