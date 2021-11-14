@@ -13,6 +13,7 @@
 #include "glimac/FilePath.hpp"
 #include "glimac/Program.hpp"
 #include "map.hpp"
+#include "skybox.hpp"
 #include "shader_m.h"
 #include "trackballCamera.hpp"
 using namespace std;
