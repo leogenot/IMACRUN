@@ -9,7 +9,9 @@
 #include "glad/glad.h"
 #include "glimac/Program.hpp"
 
-unsigned int loadTexture(char const* path)
+
+template <typename T>
+T loadTexture(char const* path)
 {
     unsigned int textureID;
     glGenTextures(1, &textureID);

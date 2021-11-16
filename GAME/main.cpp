@@ -23,6 +23,7 @@ bool            firstMouse = true;
 // map
 Map map;
 Skybox skybox;
+Cube cube;
 
 // timing
 float deltaTime = 0.0f;
@@ -75,6 +76,7 @@ int main()
     // generate map whith file
     map.loadMap("assets/map.pgm");
     skybox.initSkybox();
+    cube.initCube();
     
 
 
@@ -118,7 +120,7 @@ int main()
 
         // floor
         map.drawMap(view, projection, model);
-
+        cube.draw(view, projection, model,1.0f,1.0f, 0.5f);
         
         skybox.draw(view,projection, model, camera);
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

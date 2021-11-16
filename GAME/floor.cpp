@@ -34,7 +34,7 @@ Floor::Floor()
     
     glBindVertexArray(0);
 
-    m_texture = loadTexture("assets/textures/floor/brickwall.jpg");
+    m_texture = loadTexture<const char>("assets/textures/floor/brickwall.jpg");
     m_shader.use();
     m_shader.setInt("texture1", 0);
 }

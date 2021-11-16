@@ -16,6 +16,8 @@
 #include "skybox.hpp"
 #include "shader_m.h"
 #include "trackballCamera.hpp"
+
+#include "cube.hpp"
 using namespace std;
 class App {
 public:

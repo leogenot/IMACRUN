@@ -11,14 +11,13 @@ enum Camera_Movement {
     FORWARD,
     BACKWARD,
     LEFT,
-    RIGHT,
-    TOGGLE_WALK
+    RIGHT
 };
 
 // Default camera values
 constexpr float YAW         = -90.0f;
 constexpr float PITCH       =  0.0f;
-constexpr float SPEED       =  2.5f;
+constexpr float SPEED       =  1.5f;
 constexpr float SENSITIVITY =  0.1f;
 constexpr float ZOOM        =  70.0f;
 
@@ -78,6 +77,7 @@ public:
             Position -= Right * velocity;
         if (direction == RIGHT)
             Position += Right * velocity;
+        Position.y = 0.0f;
         
     }
 
