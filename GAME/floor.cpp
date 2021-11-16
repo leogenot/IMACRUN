@@ -3,6 +3,7 @@
 
 Floor::Floor()
 {
+    possibleAdd = true;
     Shader shader("GAME/shaders/floor.vs", "GAME/shaders/floor.fs");
     m_shader = shader;
 

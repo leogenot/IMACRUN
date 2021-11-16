@@ -34,6 +34,8 @@ void Map::loadMap(const std::string &path)
         {
             case 255:   m_grid.push_back(new Floor);
                         break;
+            case 100:   m_grid.push_back(new Wall);
+                        break;
             case 0:     m_grid.push_back(new Space);
                         break;
             default :   std::cout << "default" << std::endl;
@@ -45,8 +47,35 @@ void Map::loadMap(const std::string &path)
 	myfile.close();
 }
 
+void Map::initObstacles(const int nbObstacles)
+{
+    float posX;
+    float posY;
+    for (int i = 0; i < nbObstacles; i++)
+    {
+        do {
+            posX = rand() % m_sizeX;
+            posY = rand() % m_sizeY;
+        } while(!isEmpty(posX, posY));//can't put obstacle (we want a floor with no obstacle)
+        
+        m_obstacles.push_back(new Obstacle(posX, posY, rand()%2));    
+    }
+}
+
+bool Map::isEmpty(float posX, float posY)
+{
+    // if there is already an obstacle
+    for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++)
+    {
+        if((*it)->getPosX() == posX && (*it)->getPosY() == posY)
+            return false;
+    }
+    return m_grid[posX*m_sizeX+posY]->possibleAdd;
+}
+
 void Map::drawMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model)
 {
+    //draw path
     for (int i = 0; i < m_sizeX; i++)
     {
         for (int j = 0; j < m_sizeY; j++)
@@ -55,4 +84,8 @@ void Map::drawMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model)
             m_grid[i*m_sizeX+j]->draw(view, projection, model, i, j);
         }
     }
+
+    //draw obstacles
+    for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++)
+        (*it)->draw(view, projection, model);
 }

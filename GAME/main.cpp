@@ -80,6 +80,8 @@ int main()
 
     // generate map whith file
     map.loadMap("assets/map.pgm");
+    int nbObstacles = 5;
+    map.initObstacles(nbObstacles);
     skybox.initSkybox();
     cube.initCube();
 
