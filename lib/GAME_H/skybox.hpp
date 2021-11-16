@@ -28,7 +28,7 @@ private:
     unsigned int cubemapTexture;
 public:
     void initSkybox();
-    void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model,Camera camera) const;
+    void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::mat4 cameraViewMatrix) const;
     unsigned int loadCubemap(std::vector<std::string> faces);
 };
 
