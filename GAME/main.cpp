@@ -17,7 +17,7 @@ const unsigned int window_height = 720;
 //Camera          camera(glm::vec3(0.0f, 0.0f, 3.0f));
 //TrackballCamera Trackcamera;
 TrackballCamera trackball_camera;
-eyeCamera       eye_camera(glm::vec3(0.0f, 0.0f, 3.0f));
+eyeCamera       eye_camera(glm::vec3(5.0f, 0.0f, 3.0f));
 Camera*         camera = &eye_camera;
 
 float lastX       = (float)window_width / 2.0;
