@@ -112,7 +112,7 @@ int main()
 
         glm::mat4 model      = glm::mat4(1.0f);
         glm::mat4 view       = camera->GetViewMatrix();
-        glm::mat4 projection = glm::perspective(70.0f, (float)window_width / (float)window_height, 0.1f, 100.0f);
+        glm::mat4 projection = glm::perspective(eye_camera.Zoom, (float)window_width / (float)window_height, 0.1f, 100.0f);
 
         // floor
         processInput(window);
@@ -172,6 +172,18 @@ void processInput(GLFWwindow* window)
         std::cout << camera->getCameraType() << std::endl;
     }
     oldState = newState;
+
+    static int oldStateFixedCam = GLFW_RELEASE;
+    int        newStateFixedCam = glfwGetKey(window, GLFW_KEY_L);
+    if (newStateFixedCam == GLFW_RELEASE && oldStateFixedCam == GLFW_PRESS) {
+        if (fixedCamera) {
+            fixedCamera = false;
+            firstMouse  = true;
+        }
+        else
+            fixedCamera = true;
+    }
+    oldStateFixedCam = newStateFixedCam;
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -187,24 +199,28 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    if (firstMouse) {
-        lastX      = xpos;
-        lastY      = ypos;
-        firstMouse = false;
+    if (!fixedCamera) {
+        if (firstMouse) {
+            lastX      = xpos;
+            lastY      = ypos;
+            firstMouse = false;
+        }
+
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+        lastX = xpos;
+        lastY = ypos;
+
+        camera->ProcessMouseMovement(xoffset, yoffset);
     }
-
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-    lastX = xpos;
-    lastY = ypos;
-
-    camera->ProcessMouseMovement(xoffset, yoffset);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    camera->ProcessMouseScroll(yoffset);
+    if (!fixedCamera) {
+        camera->ProcessMouseScroll(yoffset);
+    }
 }
