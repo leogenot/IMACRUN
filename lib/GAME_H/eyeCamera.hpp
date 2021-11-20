@@ -129,6 +129,10 @@ public:
                 Pitch = MAXLOOKANGLE;
             if (Pitch < -MAXLOOKANGLE)
                 Pitch = -MAXLOOKANGLE;
+            if (Yaw > MAXLOOKANGLE)
+                Yaw = MAXLOOKANGLE;
+            if (Yaw < -MAXLOOKANGLE)
+                Yaw = -MAXLOOKANGLE;
         }
 
         // update Front, Right and Up Vectors using the updated Euler angles
