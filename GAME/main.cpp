@@ -17,7 +17,7 @@ const unsigned int window_height = 720;
 //Camera          camera(glm::vec3(0.0f, 0.0f, 3.0f));
 //TrackballCamera Trackcamera;
 TrackballCamera trackball_camera;
-eyeCamera       eye_camera(glm::vec3(5.0f, 0.0f, 3.0f));
+eyeCamera       eye_camera;
 Camera*         camera = &eye_camera;
 
 float lastX       = (float)window_width / 2.0;
@@ -150,15 +150,21 @@ void processInput(GLFWwindow* window)
         camera->ProcessKeyboard(RIGHT, deltaTime);
     }
 
-    /* if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
-        if (camera->getCameraType() == 0) {
-            camera = &eye_camera;
-        }
-        else {
-            camera = &trackball_camera;
-        }
-        std::cout << camera->getCameraType() << std::endl;
-    } */
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+        eye_camera.Reset();
+    }
+    if (!eye_camera.onGround && !eye_camera.isFalling) { //then rising
+        eye_camera.Rise(deltaTime);
+    }
+    else if (!eye_camera.onGround) {
+        eye_camera.Fall(deltaTime);
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+        eye_camera.Jump();
+    }
+
+
 
     static int oldState = GLFW_RELEASE;
     int        newState = glfwGetKey(window, GLFW_KEY_T);
