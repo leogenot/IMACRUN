@@ -43,6 +43,16 @@ void Map::loadMap(const std::string &path)
         }
     }
 
+    for (int i = 0; i < m_sizeX; i++)
+    {
+        for (int j = 0; j < m_sizeY; j++)
+        {
+            // set position with i,j
+            m_grid[i*m_sizeX+j]->setPosX(i);
+            m_grid[i*m_sizeX+j]->setPosZ(j);
+        }
+    }
+
 	// close file
 	myfile.close();
 }
@@ -76,14 +86,8 @@ bool Map::isEmpty(float posX, float posY)
 void Map::drawMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model)
 {
     //draw path
-    for (int i = 0; i < m_sizeX; i++)
-    {
-        for (int j = 0; j < m_sizeY; j++)
-        {
-            // draw each element at position i,j
-            m_grid[i*m_sizeX+j]->draw(view, projection, model, i, j);
-        }
-    }
+    for (auto it = m_grid.begin(); it != m_grid.end(); it++)
+        (*it)->draw(view, projection, model);
 
     //draw obstacles
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++)

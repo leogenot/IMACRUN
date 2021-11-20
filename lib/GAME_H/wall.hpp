@@ -11,7 +11,7 @@ private:
     unsigned int m_VAO;
 public:
     Wall();
-    void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, int posX, int posY) const;
+    void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model) const;
     //fonction de collision  
 };
 

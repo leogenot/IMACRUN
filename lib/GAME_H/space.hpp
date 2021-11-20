@@ -6,7 +6,7 @@ class Space : public Element
 {
 public:
     Space() {possibleAdd = false;};
-    void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, int posX, int posY) const {};
+    void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model) const {};
     //virtual fonction de collision
 };
 
