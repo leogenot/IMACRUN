@@ -82,6 +82,26 @@ public:
         else {
             //falling
         }
+
+        // check collision
+        if (Position.x > 5.f || Position.z > 5.f ||
+            Position.x < -5.f || Position.z < -5.f) {
+            if (direction == FORWARD) {
+                Position -= Front * velocity;
+            }
+            if (direction == BACKWARD) {
+                Position += Front * velocity;
+            }
+            if (direction == LEFT) {
+                Position += Right * velocity;
+            }
+            if (direction == RIGHT) {
+                Position -= Right * velocity;
+            }
+            positionChanged = false;
+        }
+        std::cout <<"Position X:" << Position.x << std::endl;
+        std::cout <<"Position Z:" << Position.z << std::endl;
         updateCameraVectors();
     }
 
@@ -129,10 +149,10 @@ public:
                 Pitch = MAXLOOKANGLE;
             if (Pitch < -MAXLOOKANGLE)
                 Pitch = -MAXLOOKANGLE;
-            if (Yaw > MAXLOOKANGLE)
+            /*             if (Yaw > MAXLOOKANGLE)
                 Yaw = MAXLOOKANGLE;
             if (Yaw < -MAXLOOKANGLE)
-                Yaw = -MAXLOOKANGLE;
+                Yaw = -MAXLOOKANGLE; */
         }
 
         // update Front, Right and Up Vectors using the updated Euler angles
