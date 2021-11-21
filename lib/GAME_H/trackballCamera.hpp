@@ -25,7 +25,7 @@ public:
     float MovementSpeed;
 
 // camera Attributes
-    glm::vec3 Position;
+    //glm::vec3 Position;
     glm::vec3 Front;
     glm::vec3 Up;
     glm::vec3 Right;

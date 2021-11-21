@@ -19,7 +19,7 @@ constexpr float PITCH       = 0.0f;
 constexpr float SPEED       = 1.2f;
 constexpr float SENSITIVITY = 0.1f;
 constexpr float ZOOM        = 70.0f;
-constexpr float CAMSTART[3] = {5.0f, 0.0f, 3.0f};
+constexpr float CAMSTART[3] = {1.0f, 0.0f, 1.0f};
 constexpr float JUMPHEIGHT = CAMSTART[1] + 0.4f;
 constexpr float MAXLOOKANGLE = 35.0f;
 
@@ -28,6 +28,7 @@ class Camera {
 protected:
     // Attributs
     unsigned int m_cameraType; // 0 : Trackball / 1 : Eyes
+    glm::vec3 Position;
 
 public:
     //Methods
@@ -35,6 +36,8 @@ public:
     {
         return m_cameraType;
     }
+
+    glm::vec3 getPos() const {return Position;};
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
     virtual glm::mat4 GetViewMatrix()const = 0;
 

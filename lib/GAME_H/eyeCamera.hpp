@@ -10,7 +10,7 @@
 class eyeCamera : public Camera {
 public:
     // camera Attributes
-    glm::vec3 Position;
+    //glm::vec3 Position;
     glm::vec3 Front;
     glm::vec3 Up;
     glm::vec3 Right;
@@ -100,8 +100,8 @@ public:
             }
             positionChanged = false;
         }
-        std::cout <<"Position X:" << Position.x << std::endl;
-        std::cout <<"Position Z:" << Position.z << std::endl;
+        //std::cout <<"Position X:" << Position.x << std::endl;
+        //std::cout <<"Position Z:" << Position.z << std::endl;
         updateCameraVectors();
     }
 
