@@ -10,6 +10,7 @@
 #include "glimac/Program.hpp"
 #include "vector"
 #include "light.hpp"
+#include "sceneLight.hpp"
 
 class Element
 {
@@ -17,16 +18,16 @@ protected:
     glm::vec3 m_pos;
 public:
     Element() {};
-    virtual void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, glm::vec3 lightDir, std::vector<Light*> lights) const = 0;
+    virtual void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, std::vector<Light*> lights) const = 0;
 
     //getter & setter pos
     glm::vec3 getPos() const {return m_pos;};
     float getPosX() const {return m_pos.x;};
     float getPosY() const {return m_pos.y;};
     float getPosZ() const {return m_pos.z;};
-    void setPosX(float posX) {m_pos.x = posX;};
-    void setPosY(float posY) {m_pos.y = posY;};
-    void setPosZ(float posZ) {m_pos.z = posZ;};
+    void setPosX(const float posX) {m_pos.x = posX;};
+    void setPosY(const float posY) {m_pos.y = posY;};
+    void setPosZ(const float posZ) {m_pos.z = posZ;};
 
     //virtual fonction de collision
     bool possibleAdd; //if we can add another element (obsacle, money)

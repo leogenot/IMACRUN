@@ -25,8 +25,13 @@ float lastY       = (float)window_height / 2.0;
 bool  firstMouse  = true;
 bool  fixedCamera = false;
 
+// light
+glm::vec3 lightDir(-0.5, -1.0, -0.6);
+glm::vec3 lightColor(0.7, 0.9, 1.0);
+SceneLight sceneLight(lightDir, lightColor);
+
 // map
-Map    map;
+Map    map(sceneLight);
 Skybox skybox;
 Cube   cube;
 
@@ -86,7 +91,6 @@ int main()
     map.initLights(nbLights);
     skybox.initSkybox();
     cube.initCube();
-    glm::vec3 lightDir(-0.5, -1.0, -0.6);
 
     /* Create the App */
     int w, h;
@@ -121,7 +125,7 @@ int main()
         processInput(window);
         cube.draw(view, projection, model, .0f, .0f, 0.5f);
 
-        map.drawMap(view, projection, model, camera->getPos(), lightDir);
+        map.drawMap(view, projection, model, camera->getPos());
         skybox.draw(view, projection, model, camera->GetViewMatrix());
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

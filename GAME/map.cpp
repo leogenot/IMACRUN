@@ -72,9 +72,9 @@ void Map::initObstacles(const int nbObstacles)
         do {
             posX = rand() % m_sizeX;
             posY = rand() % m_sizeY;
-        } while(!isEmpty(posX, posY));//can't put obstacle (we want a floor with no obstacle)
+        } while(!isEmpty(posX, posY)); // can't put obstacle (we want a floor with no obstacle)
         
-        m_obstacles.push_back(new Obstacle(posX - midX, posY - midY, rand()%2));    
+        m_obstacles.push_back(new Obstacle(glm::vec3(posX - midX, rand()%2 * 0.25 - 0.2, posY - midY)));  //TODO: mieux gérer la hauteur des obstacles   
     }
 }
 
@@ -92,7 +92,7 @@ void Map::initLights(const int nbLights)
     }
 }
 
-bool Map::isEmpty(int posX, int posY)
+bool Map::isEmpty(const int posX, const int posZ) const
 {
     float midX = m_sizeX*0.5;
     float midY = m_sizeY*0.5;
@@ -100,21 +100,21 @@ bool Map::isEmpty(int posX, int posY)
     // if there is already an obstacle
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++)
     {
-        if((*it)->getPosX() == posX - midX && (*it)->getPosY() == posY - midY)
+        if((*it)->getPosX() == posX - midX && (*it)->getPosZ() == posZ - midY)
             return false;
     }
-    return m_grid[posX*m_sizeX+posY]->possibleAdd;
+    return m_grid[posX*m_sizeX+posZ]->possibleAdd;
 }
 
-void Map::drawMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, glm::vec3 lightDir)
+void Map::drawMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos) const
 {
     //draw path
     for (auto it = m_grid.begin(); it != m_grid.end(); it++)
-        (*it)->draw(view, projection, model, camPos, lightDir, m_lights);
+        (*it)->draw(view, projection, model, camPos, m_sceneLight, m_lights);
 
     //draw obstacles
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++)
-        (*it)->draw(view, projection, model, camPos, lightDir, m_lights);
+        (*it)->draw(view, projection, model, camPos, m_sceneLight, m_lights);
 
     //draw lights
     for (auto it = m_lights.begin(); it != m_lights.end(); it++)

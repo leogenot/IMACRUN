@@ -12,7 +12,7 @@ private:
     unsigned int m_VAO;
 public:
     Floor();
-    void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, glm::vec3 lightDir, std::vector<Light*> lights) const;
+    void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, std::vector<Light*> lights) const;
     //fonction de collision  
 };
 

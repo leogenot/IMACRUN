@@ -79,7 +79,7 @@ Wall::Wall()
     glBindVertexArray(0);
 }
 
-void Wall::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, glm::vec3 lightDir, std::vector<Light*> lights) const
+void Wall::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, std::vector<Light*> lights) const
 {
     m_shader.use();
     int i = 0;
@@ -99,8 +99,8 @@ void Wall::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3
     }
 
     //light
-    m_shader.setVec3("dirLight",  lightDir);
-    m_shader.setVec3("lightColor",  glm::vec3(0.7,0.9,1.0)); //TODO passer la couleur en paramètre de fonction (créer une structure LightScene ?)
+    m_shader.setVec3("dirLight",  sceneLight.getDirection());
+    m_shader.setVec3("lightColor",  sceneLight.getColor());
     m_shader.setVec3("viewPos",  camPos);
 
     //material

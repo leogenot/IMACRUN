@@ -1,13 +1,10 @@
 #include "GAME_H/obstacle.hpp"
 #include "GAME_H/utilityFunction.hpp"
 
-Obstacle::Obstacle(float posX, float posY, int level)
+Obstacle::Obstacle(glm::vec3 pos) : m_pos(pos)
 {
     Shader shader("GAME/shaders/objet3D.vs", "GAME/shaders/multipleLights.fs");
     m_shader = shader;
-    m_level = level;
-    m_posX = posX;
-    m_posY = posY;
     m_texture = loadTexture<const char>("assets/textures/cube/cube.jpg");
 
     float vertices[] = {
@@ -80,7 +77,7 @@ Obstacle::Obstacle(float posX, float posY, int level)
     glBindVertexArray(0);
 }
 
-void Obstacle::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, glm::vec3 lightDir, std::vector<Light*> lights) const
+void Obstacle::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, std::vector<Light*> lights) const
 {
     m_shader.use();
     int i = 0;
@@ -100,8 +97,8 @@ void Obstacle::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::
     }
 
     //light
-    m_shader.setVec3("dirLight",  lightDir);
-    m_shader.setVec3("lightColor",  glm::vec3(0.7,0.9,1.0));
+    m_shader.setVec3("dirLight",  sceneLight.getDirection());
+    m_shader.setVec3("lightColor",  sceneLight.getColor());
     m_shader.setVec3("viewPos",  camPos);
 
     //material
@@ -113,7 +110,7 @@ void Obstacle::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::
     //matrix
     m_shader.setMat4("view", view);
     m_shader.setMat4("projection", projection);
-    model = glm::translate(model, glm::vec3(m_posX, m_level*0.25-0.2, m_posY)); //TODO: mieux gérer la hauteur des obstacles
+    model = glm::translate(model, m_pos);
     model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2)); //TODO: gérer si l'obsacle est bien perpendiculaire au chemin
     m_shader.setMat4("model", model);
 

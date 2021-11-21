@@ -2,6 +2,7 @@
 #define OBSTACLE_H
 #include "shader_m.h"
 #include "light.hpp"
+#include "sceneLight.hpp"
 #include <vector>
 
 class Obstacle
@@ -10,14 +11,13 @@ private:
     Shader m_shader;
     unsigned int m_texture;
     unsigned int m_VAO;
-    float m_posX;
-    float m_posY;
-    int m_level; //gérer si l'obsacle est en haut ou au sol
+    glm::vec3 m_pos;
+
 public:
-    Obstacle(float posX, float posY, int level);
-    void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, glm::vec3 lightDir, std::vector<Light*> lights) const;
-    float getPosX() {return m_posX;};
-    float getPosY() {return m_posY;};
+    Obstacle(glm::vec3 pos);
+    void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, std::vector<Light*> lights) const;
+    float getPosX() const {return m_pos.x;};
+    float getPosZ() const {return m_pos.z;};
     //fonction de collision  
 };
 

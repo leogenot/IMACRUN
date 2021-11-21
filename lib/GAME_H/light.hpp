@@ -11,7 +11,7 @@ private:
     glm::vec3 m_pos;
     glm::vec3 m_color;
 public:
-    Light(glm::vec3 pos, glm::vec3 color);
+    Light(const glm::vec3 pos, const glm::vec3 color);
     glm::vec3 getPos() const {return m_pos;};
     glm::vec3 getColor() const {return m_color;};
     //void initLight();

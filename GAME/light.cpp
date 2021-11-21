@@ -1,12 +1,10 @@
 #include "GAME_H/light.hpp"
 #include "GAME_H/utilityFunction.hpp"
 
-Light::Light(glm::vec3 pos, glm::vec3 color)
+Light::Light(const glm::vec3 pos, const glm::vec3 color) : m_pos(pos), m_color(color)
 {
     Shader shader("GAME/shaders/lightSource.vs", "GAME/shaders/lightSource.fs");
     m_shader = shader;
-    m_pos = pos;
-    m_color = color;
 
     float cubeVertices[] = {
         // positions       
