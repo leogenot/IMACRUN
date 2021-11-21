@@ -19,6 +19,7 @@
 #include "eyeCamera.hpp"
 
 #include "cube.hpp"
+#include "light.hpp"
 using namespace std;
 class App {
 public:

@@ -81,9 +81,12 @@ int main()
     // generate map whith file
     map.loadMap("assets/map.pgm");
     int nbObstacles = 5;
+    int nbLights = 5;
     map.initObstacles(nbObstacles);
+    map.initLights(nbLights);
     skybox.initSkybox();
     cube.initCube();
+    glm::vec3 lightDir(-0.5, -1.0, -0.6);
 
     /* Create the App */
     int w, h;
@@ -118,7 +121,7 @@ int main()
         processInput(window);
         cube.draw(view, projection, model, .0f, .0f, 0.5f);
 
-        map.drawMap(view, projection, model);
+        map.drawMap(view, projection, model, camera->getPos(), lightDir);
         skybox.draw(view, projection, model, camera->GetViewMatrix());
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

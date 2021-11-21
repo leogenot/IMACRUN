@@ -43,13 +43,16 @@ void Map::loadMap(const std::string &path)
         }
     }
 
+    float midX = m_sizeX*0.5;
+    float midY = m_sizeY*0.5;
+
     for (int i = 0; i < m_sizeX; i++)
     {
         for (int j = 0; j < m_sizeY; j++)
         {
             // set position with i,j
-            m_grid[i*m_sizeX+j]->setPosX(i);
-            m_grid[i*m_sizeX+j]->setPosZ(j);
+            m_grid[i*m_sizeX+j]->setPosX(i-midX);
+            m_grid[i*m_sizeX+j]->setPosZ(j-midY);
         }
     }
 
@@ -61,6 +64,9 @@ void Map::initObstacles(const int nbObstacles)
 {
     float posX;
     float posY;
+    float midX = m_sizeX*0.5;
+    float midY = m_sizeY*0.5;
+
     for (int i = 0; i < nbObstacles; i++)
     {
         do {
@@ -68,28 +74,49 @@ void Map::initObstacles(const int nbObstacles)
             posY = rand() % m_sizeY;
         } while(!isEmpty(posX, posY));//can't put obstacle (we want a floor with no obstacle)
         
-        m_obstacles.push_back(new Obstacle(posX, posY, rand()%2));    
+        m_obstacles.push_back(new Obstacle(posX - midX, posY - midY, rand()%2));    
     }
 }
 
-bool Map::isEmpty(float posX, float posY)
+void Map::initLights(const int nbLights)
 {
+    float midX = m_sizeX*0.5;
+    float midY = m_sizeY*0.5;
+
+    for (int i = 0; i < nbLights; i++)
+    {
+        glm::vec3 pos(rand() % m_sizeX - midX, 0.2, rand() % m_sizeY - midY);
+        glm::vec3 color(rand() % 100 * 0.01, rand() % 100 * 0.01, rand() % 100 * 0.01);
+
+        m_lights.push_back(new Light(pos, color));    
+    }
+}
+
+bool Map::isEmpty(int posX, int posY)
+{
+    float midX = m_sizeX*0.5;
+    float midY = m_sizeY*0.5;
+
     // if there is already an obstacle
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++)
     {
-        if((*it)->getPosX() == posX && (*it)->getPosY() == posY)
+        if((*it)->getPosX() == posX - midX && (*it)->getPosY() == posY - midY)
             return false;
     }
     return m_grid[posX*m_sizeX+posY]->possibleAdd;
 }
 
-void Map::drawMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model)
+void Map::drawMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, glm::vec3 lightDir)
 {
     //draw path
     for (auto it = m_grid.begin(); it != m_grid.end(); it++)
-        (*it)->draw(view, projection, model);
+        (*it)->draw(view, projection, model, camPos, lightDir, m_lights);
 
     //draw obstacles
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++)
-        (*it)->draw(view, projection, model);
+        (*it)->draw(view, projection, model, camPos, lightDir, m_lights);
+
+    //draw lights
+    for (auto it = m_lights.begin(); it != m_lights.end(); it++)
+        (*it)->draw(view, projection, model, 0.2);
 }
