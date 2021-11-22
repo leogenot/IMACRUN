@@ -31,6 +31,9 @@ protected:
     glm::vec3 Position;
 
 public:
+
+    bool  onGround;
+    bool  isFalling;
     //Methods
     unsigned int getCameraType()
     {

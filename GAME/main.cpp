@@ -26,8 +26,8 @@ bool  firstMouse  = true;
 bool  fixedCamera = false;
 
 // light
-glm::vec3 lightDir(-0.5, -1.0, -0.6);
-glm::vec3 lightColor(0.7, 0.9, 1.0);
+glm::vec3  lightDir(-0.5, -1.0, -0.6);
+glm::vec3  lightColor(0.7, 0.9, 1.0);
 SceneLight sceneLight(lightDir, lightColor);
 
 // map
@@ -86,7 +86,7 @@ int main()
     // generate map whith file
     map.loadMap("assets/map.pgm");
     int nbObstacles = 5;
-    int nbLights = 5;
+    int nbLights    = 5;
     map.initObstacles(nbObstacles);
     map.initLights(nbLights);
     skybox.initSkybox();
@@ -120,6 +120,8 @@ int main()
         glm::mat4 model      = glm::mat4(1.0f);
         glm::mat4 view       = camera->GetViewMatrix();
         glm::mat4 projection = glm::perspective(eye_camera.Zoom, (float)window_width / (float)window_height, 0.1f, 100.0f);
+
+        //glm::mat4 viewcam = glm::translate(view, glm::vec3(camera->getPos().x-1.f, camera->getPos().y, camera->getPos().z));
 
         // floor
         processInput(window);
@@ -170,8 +172,6 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
         eye_camera.Jump();
     }
-
-
 
     static int oldState = GLFW_RELEASE;
     int        newState = glfwGetKey(window, GLFW_KEY_T);

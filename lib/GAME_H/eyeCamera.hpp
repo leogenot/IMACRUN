@@ -22,8 +22,7 @@ public:
     float MovementSpeed;
     float MouseSensitivity;
     float Zoom;
-    bool  onGround;
-    bool  isFalling;
+
 
     // constructor with vectors
     eyeCamera(glm::vec3 position = glm::vec3(CAMSTART[0], CAMSTART[1], CAMSTART[2]), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH)

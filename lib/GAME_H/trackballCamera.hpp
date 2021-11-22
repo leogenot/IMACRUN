@@ -62,9 +62,14 @@ public:
         return ViewMatrix;
     }
 
+    // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
     void ProcessKeyboard(Camera_Movement direction, float deltaTime)
     {
-        float velocity = MovementSpeed * deltaTime;
+        bool  positionChanged = true;
+        int   PosX            = Position.x;
+        int   PosY            = Position.y;
+        int   PosZ            = Position.z;
+        float velocity        = MovementSpeed * deltaTime;
         if (direction == FORWARD)
             Position += Front * velocity;
         if (direction == BACKWARD)
@@ -73,8 +78,66 @@ public:
             Position -= Right * velocity;
         if (direction == RIGHT)
             Position += Right * velocity;
-        Position.y = 0.0f;
-        
+        if (onGround) {
+            // feet on the floor
+            Position.y = CAMSTART[1];
+        }
+        else if (/*!onGround && */ !isFalling) {
+            //rising
+        }
+        else {
+            //falling
+        }
+
+        // check collision
+        if (Position.x > 5.f || Position.z > 5.f ||
+            Position.x < -5.f || Position.z < -5.f) {
+            if (direction == FORWARD) {
+                Position -= Front * velocity;
+            }
+            if (direction == BACKWARD) {
+                Position += Front * velocity;
+            }
+            if (direction == LEFT) {
+                Position += Right * velocity;
+            }
+            if (direction == RIGHT) {
+                Position -= Right * velocity;
+            }
+            positionChanged = false;
+        }
+        //std::cout <<"Position X:" << Position.x << std::endl;
+        //std::cout <<"Position Z:" << Position.z << std::endl;
+        //updateCameraVectors();
+    }
+
+    void Jump()
+    {
+        if (onGround) {
+            isFalling = false;
+            onGround  = false;
+            //      //updateCameraVectors();
+        }
+    }
+    void Rise(float deltatime)
+    {
+        if (Position.y <= JUMPHEIGHT) {
+            Position.y += (1.5f * deltatime);
+        }
+        else {
+            isFalling = true;
+        }
+    }
+    void Fall(float deltatime)
+    {
+        if (Position.y <= CAMSTART[1] + 0.05f) {
+            Position.y = CAMSTART[1];
+            onGround   = true;
+        }
+        else {
+            Position.y -= (1.5f * deltatime);
+        }
+        //updateCameraVectors();
     }
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
