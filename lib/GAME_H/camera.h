@@ -52,5 +52,11 @@ public:
 
     virtual void ProcessMouseScroll(float yoffset)=0;
 
+    virtual void Jump()=0;
+
+    virtual void Rise(float deltatime)=0;
+
+    virtual void Fall(float deltatime)=0;
+
 };
 #endif
