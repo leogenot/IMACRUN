@@ -60,6 +60,7 @@ function(setup_game GAME)
         ${OPENGL_LIBRARIES}
         GLAD
         freetype
+        tinyobjloader
     )
 
     # GLFW
@@ -73,6 +74,12 @@ function(setup_game GAME)
     add_subdirectory(${LIB_DIR}/freetype)
     target_link_libraries(${TARGET_NAME}
         freetype
+    )
+
+    # ---Add tinyobjloader---
+    add_subdirectory(${LIB_DIR}/tinyobjloader)
+    target_link_libraries(${TARGET_NAME}
+    tinyobjloader
     )
 
 

@@ -20,7 +20,7 @@
 
 #include "cube.hpp"
 #include "light.hpp"
-
+#include "tiny_obj_loader.h"
 #include <map>
 #include "ft2build.h"
 #include FT_FREETYPE_H
