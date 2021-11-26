@@ -15,7 +15,7 @@
 #include "glad/glad.h"
 #include "glimac/FilePath.hpp"
 #include "glimac/Program.hpp"
-#include "map.hpp"
+#include "gamemap.hpp"
 #include "shader_m.h"
 #include "trackballCamera.hpp"
 

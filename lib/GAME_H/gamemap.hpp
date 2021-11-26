@@ -1,5 +1,5 @@
-#ifndef MAP_H
-#define MAP_H
+#ifndef GAMEMAP_H
+#define GAMEMAP_H
 #include "element.hpp"
 #include "space.hpp"
 #include "floor.hpp"
@@ -12,7 +12,7 @@
 #include <string>
 #include <fstream>
 
-class Map
+class GameMap
 {
 private: 
     int m_sizeX;
@@ -23,9 +23,9 @@ private:
     SceneLight m_sceneLight;
 
 public:
-    Map(SceneLight sceneLight) : m_sceneLight(sceneLight) {};
-    void loadMap(const std::string &path);
-    void drawMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos) const;
+    GameMap(SceneLight sceneLight) : m_sceneLight(sceneLight) {};
+    void loadGameMap(const std::string &path);
+    void drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos) const;
 
     void initObstacles(const int nbObstacles);
     void initLights(const int nbLights);

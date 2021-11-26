@@ -30,8 +30,8 @@ glm::vec3  lightDir(-0.5, -1.0, -0.6);
 glm::vec3  lightColor(0.7, 0.9, 1.0);
 SceneLight sceneLight(lightDir, lightColor);
 
-// map
-Map    map(sceneLight);
+// gamemap
+GameMap    gamemap(sceneLight);
 Skybox skybox;
 Cube   cube;
 
@@ -83,12 +83,12 @@ int main()
 
     Shader boxShader("GAME/shaders/floor.vs", "GAME/shaders/floor.fs");
 
-    // generate map whith file
-    map.loadMap("assets/map.pgm");
+    // generate gamemap whith file
+    gamemap.loadGameMap("assets/map.pgm");
     int nbObstacles = 5;
     int nbLights    = 5;
-    map.initObstacles(nbObstacles);
-    map.initLights(nbLights);
+    gamemap.initObstacles(nbObstacles);
+    gamemap.initLights(nbLights);
     skybox.initSkybox();
     cube.initCube();
 
@@ -127,7 +127,7 @@ int main()
         processInput(window);
         cube.draw(view, projection, model, .0f, .0f, 0.5f);
 
-        map.drawMap(view, projection, model, camera->getPos());
+        gamemap.drawGameMap(view, projection, model, camera->getPos());
         skybox.draw(view, projection, model, camera->GetViewMatrix());
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

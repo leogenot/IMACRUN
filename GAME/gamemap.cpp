@@ -1,6 +1,6 @@
-#include "GAME_H/map.hpp"
+#include "GAME_H/gamemap.hpp"
 
-void Map::loadMap(const std::string &path)
+void GameMap::loadGameMap(const std::string &path)
 {
     // open the file
     std::ifstream myfile;
@@ -60,7 +60,7 @@ void Map::loadMap(const std::string &path)
 	myfile.close();
 }
 
-void Map::initObstacles(const int nbObstacles)
+void GameMap::initObstacles(const int nbObstacles)
 {
     float posX;
     float posY;
@@ -78,7 +78,7 @@ void Map::initObstacles(const int nbObstacles)
     }
 }
 
-void Map::initLights(const int nbLights)
+void GameMap::initLights(const int nbLights)
 {
     float midX = m_sizeX*0.5;
     float midY = m_sizeY*0.5;
@@ -92,7 +92,7 @@ void Map::initLights(const int nbLights)
     }
 }
 
-bool Map::isEmpty(const int posX, const int posZ) const
+bool GameMap::isEmpty(const int posX, const int posZ) const
 {
     float midX = m_sizeX*0.5;
     float midY = m_sizeY*0.5;
@@ -106,7 +106,7 @@ bool Map::isEmpty(const int posX, const int posZ) const
     return m_grid[posX*m_sizeX+posZ]->possibleAdd;
 }
 
-void Map::drawMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos) const
+void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos) const
 {
     //draw path
     for (auto it = m_grid.begin(); it != m_grid.end(); it++)
