@@ -1,5 +1,8 @@
 #pragma once
 #define GLFW_INCLUDE_NONE
+#ifndef APP_H
+#define APP_H
+
 #include <stb_image.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -10,20 +13,17 @@
 #include "GLFW/glfw3.h"
 #include "camera.h"
 #include "glad/glad.h"
-#include "glimac/FilePath.hpp"
-#include "glimac/Program.hpp"
 #include "gamemap.hpp"
 #include "skybox.hpp"
 #include "shader_m.h"
 #include "trackballCamera.hpp"
 #include "eyeCamera.hpp"
-
+#include "textrendering.hpp"
 #include "cube.hpp"
 #include "light.hpp"
 #include "tiny_obj_loader.h"
 #include <map>
-#include "ft2build.h"
-#include FT_FREETYPE_H
+
 using namespace std;
 class App {
 public:
@@ -44,3 +44,5 @@ private:
     int    _height{};
     GLuint skyboxVAO, skyboxVBO, planeVAO, planeVBO, cubeVAO, cubeVBO;
 };
+
+#endif
