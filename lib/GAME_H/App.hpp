@@ -21,7 +21,7 @@
 #include "textrendering.hpp"
 #include "cube.hpp"
 #include "light.hpp"
-#include "tiny_obj_loader.h"
+#include "model.hpp"
 #include <map>
 
 using namespace std;

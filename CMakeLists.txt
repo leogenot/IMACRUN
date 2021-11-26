@@ -61,6 +61,7 @@ function(setup_game GAME)
         GLAD
         freetype
         tinyobjloader
+        assimp
     )
 
     # GLFW
@@ -81,6 +82,12 @@ function(setup_game GAME)
     target_link_libraries(${TARGET_NAME}
     tinyobjloader
     )
+
+        # ---Add assimp---
+        add_subdirectory(${LIB_DIR}/assimp)
+        target_link_libraries(${TARGET_NAME}
+        assimp
+        )
 
 
     ##

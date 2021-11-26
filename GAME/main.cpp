@@ -1,6 +1,5 @@
 #include "GAME_H/App.hpp"
 
-#define TINYOBJLOADER_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -91,6 +90,10 @@ int main()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     Shader boxShader("GAME/shaders/floor.vs", "GAME/shaders/floor.fs");
+    Shader ourShader("GAME/shaders/model_loading.vs", "GAME/shaders/model_loading.fs");
+
+
+    Model ourModel("assets/models/cube.obj");
 
     // generate gamemap whith file
     gamemap.loadGameMap("assets/map.pgm");
@@ -125,13 +128,20 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //app.render(camera);
-
+        ourShader.use();
         glm::mat4 model      = glm::mat4(1.0f);
         glm::mat4 view       = camera->GetViewMatrix();
         glm::mat4 projection = glm::perspective(eye_camera.Zoom, (float)window_width / (float)window_height, 0.1f, 100.0f);
 
         //glm::mat4 viewcam = glm::translate(view, glm::vec3(camera->getPos().x-1.f, camera->getPos().y, camera->getPos().z));
+        ourShader.setMat4("projection", projection);
+        ourShader.setMat4("view", view);
 
+        // render the loaded model
+        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", model);
+        ourModel.Draw(ourShader);
         // floor
         processInput(window);
         cube.draw(view, projection, model, .0f, .0f, 0.5f);
@@ -141,8 +151,8 @@ int main()
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
 
-        textrendering.RenderText("This is sample text", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-        textrendering.RenderText("(C) LearnOpenGL.com", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
+        textrendering.RenderText("Flash McQueen", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+        textrendering.RenderText("KATCHAAAAW", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
 
         glfwSwapBuffers(window);
         glfwPollEvents();
