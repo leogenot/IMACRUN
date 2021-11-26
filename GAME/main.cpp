@@ -138,9 +138,8 @@ int main()
         ourShader.setMat4("view", view);
 
         // render the loaded model
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
-        ourShader.setMat4("model", model);
+        glm::mat4 modelOBJ = glm::scale(model, glm::vec3(.4f, .4f, .4f));	// it's a bit too big for our scene, so scale it down
+        ourShader.setMat4("model", modelOBJ);
         ourModel.Draw(ourShader);
         // floor
         processInput(window);
