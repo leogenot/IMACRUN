@@ -8,7 +8,8 @@ set(CXX_STANDARD 11)
 ##
 # Boring setup
 ##
-
+# Set the path to the lib folder
+set(LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 # Set the folder where the executable is created
 set(EXECUTABLE_OUTPUT_PATH 
     ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}
@@ -26,6 +27,7 @@ add_subdirectory(${GLFW_DIR} binary_dir EXCLUDE_FROM_ALL)
 # Glad
 add_library(GLAD STATIC lib/glad/src/glad.c)
 
+
 # Build the different TPs
 function(setup_game GAME)
     set(TARGET_NAME ${GAME}_exe)
@@ -38,6 +40,7 @@ function(setup_game GAME)
     add_executable(${TARGET_NAME}
         ${MY_SOURCES}
     )
+
     set_property(TARGET ${TARGET_NAME} PROPERTY CXX_STANDARD ${CXX_STANDARD})
 
     # Set include directories
@@ -56,6 +59,7 @@ function(setup_game GAME)
     target_link_libraries(${TARGET_NAME}
         ${OPENGL_LIBRARIES}
         GLAD
+        freetype
     )
 
     # GLFW
@@ -64,6 +68,13 @@ function(setup_game GAME)
     target_link_libraries(${TARGET_NAME}
         glfw
     )
+
+        # ---Add FreeType---
+    add_subdirectory(${LIB_DIR}/freetype)
+    target_link_libraries(${TARGET_NAME}
+        freetype
+    )
+
 
     ##
     # Add a post build operation to copy shaders to the output folder (where the executable is created)
