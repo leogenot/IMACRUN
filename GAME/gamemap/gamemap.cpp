@@ -43,8 +43,8 @@ void GameMap::loadGameMap(const std::string &path)
         }
     }
 
-    float midX = m_sizeX*0.5;
-    float midY = m_sizeY*0.5;
+    int midX = (int)(m_sizeX*0.5);
+    int midY = (int)(m_sizeY*0.5);
 
     for (int i = 0; i < m_sizeX; i++)
     {
@@ -62,10 +62,10 @@ void GameMap::loadGameMap(const std::string &path)
 
 void GameMap::initObstacles(const int nbObstacles)
 {
-    float posX;
-    float posY;
-    float midX = m_sizeX*0.5;
-    float midY = m_sizeY*0.5;
+    int posX;
+    int posY;
+    int midX = (int)(m_sizeX*0.5);
+    int midY = (int)(m_sizeY*0.5);
 
     for (int i = 0; i < nbObstacles; i++)
     {
@@ -80,8 +80,8 @@ void GameMap::initObstacles(const int nbObstacles)
 
 void GameMap::initLights(const int nbLights)
 {
-    float midX = m_sizeX*0.5;
-    float midY = m_sizeY*0.5;
+    int midX =(int)(m_sizeX*0.5);
+    int midY =(int)(m_sizeY*0.5);
 
     for (int i = 0; i < nbLights; i++)
     {
@@ -94,8 +94,8 @@ void GameMap::initLights(const int nbLights)
 
 bool GameMap::isEmpty(const int posX, const int posZ) const
 {
-    float midX = m_sizeX*0.5;
-    float midY = m_sizeY*0.5;
+    int midX = (int)(m_sizeX*0.5);
+    int midY = (int)(m_sizeY*0.5);
 
     // if there is already an obstacle
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++)
