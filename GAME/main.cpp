@@ -22,6 +22,7 @@ const unsigned int window_height = 720;
 TrackballCamera trackball_camera;
 eyeCamera       eye_camera;
 Camera*         camera = &eye_camera;
+Player          player(camera);
 
 float lastX       = (float)window_width / 2.0;
 float lastY       = (float)window_height / 2.0;
@@ -102,7 +103,8 @@ int main()
     gamemap.initObstacles(nbObstacles);
     gamemap.initLights(nbLights);
     skybox.initSkybox();
-    cube.initCube();
+    //cube.initCube();
+    player.initCube();
     textrendering.initTextRendering(window_width, window_height);
 
     /* Create the App */
@@ -130,7 +132,7 @@ int main()
         //app.render(camera);
         ourShader.use();
         glm::mat4 model      = glm::mat4(1.0f);
-        glm::mat4 view       = camera->GetViewMatrix();
+        glm::mat4 view       = player.getCamera()->GetViewMatrix(player.getPos());
         glm::mat4 projection = glm::perspective(eye_camera.Zoom, (float)window_width / (float)window_height, 0.1f, 100.0f);
 
         //glm::mat4 viewcam = glm::translate(view, glm::vec3(camera->getPos().x-1.f, camera->getPos().y, camera->getPos().z));
@@ -143,10 +145,11 @@ int main()
         ourModel.Draw(ourShader);
         // floor
         processInput(window);
-        cube.draw(view, projection, model, .0f, .0f, 0.5f);
+        //cube.draw(view, projection, model, .0f, .0f, 0.5f);
+        player.draw(view, projection, model);
 
-        gamemap.drawGameMap(view, projection, model, camera->getPos());
-        skybox.draw(view, projection, model, camera->GetViewMatrix());
+        gamemap.drawGameMap(view, projection, model, player.getCamera()->getPos());
+        skybox.draw(view, projection, model, player.getCamera()->GetViewMatrix(player.getPos()));
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
 
@@ -168,13 +171,13 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    camera->ProcessKeyboard(FORWARD, deltaTime);
+    player.getCamera()->ProcessKeyboard(FORWARD, deltaTime);
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        camera->ProcessKeyboard(LEFT, deltaTime);
+        player.getCamera()->ProcessKeyboard(LEFT, deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        camera->ProcessKeyboard(RIGHT, deltaTime);
+        player.getCamera()->ProcessKeyboard(RIGHT, deltaTime);
     }
 
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
@@ -194,13 +197,13 @@ void processInput(GLFWwindow* window)
     static int oldState = GLFW_RELEASE;
     int        newState = glfwGetKey(window, GLFW_KEY_T);
     if (newState == GLFW_RELEASE && oldState == GLFW_PRESS) {
-        if (camera->getCameraType() == 0) {
-            camera = &eye_camera;
+        if (player.getCamera()->getCameraType() == 0) {
+            player.setCamera(&eye_camera);
         }
         else {
-            camera = &trackball_camera;
+            player.setCamera(&trackball_camera);
         }
-        std::cout << camera->getCameraType() << std::endl;
+        std::cout << player.getCamera()->getCameraType() << std::endl;
     }
     oldState = newState;
 
@@ -243,7 +246,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
         lastX = xpos;
         lastY = ypos;
 
-        camera->ProcessMouseMovement(xoffset, yoffset);
+        player.getCamera()->ProcessMouseMovement(xoffset, yoffset);
     }
 }
 
@@ -252,6 +255,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     if (!fixedCamera) {
-        camera->ProcessMouseScroll(yoffset);
+        player.getCamera()->ProcessMouseScroll(yoffset);
     }
 }

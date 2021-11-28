@@ -18,6 +18,7 @@
 #include "shader_m.h"
 #include "trackballCamera.hpp"
 #include "eyeCamera.hpp"
+#include "player.hpp"
 #include "textrendering.hpp"
 #include "cube.hpp"
 #include "light.hpp"

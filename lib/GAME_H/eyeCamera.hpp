@@ -10,7 +10,6 @@
 class eyeCamera : public Camera {
 public:
     // camera Attributes
-    //glm::vec3 Position;
     glm::vec3 Front;
     glm::vec3 Up;
     glm::vec3 Right;
@@ -50,7 +49,7 @@ public:
     }
 
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
-    glm::mat4 GetViewMatrix() const
+    glm::mat4 GetViewMatrix(glm::vec3 player_pos) const
     {
         return glm::lookAt(Position, Position+Front, Up);
     }
@@ -75,7 +74,7 @@ public:
             // feet on the floor
             Position.y = CAMSTART[1];
         }
-        else if (/*!onGround && */ !isFalling) {
+        else if (!onGround && !isFalling) {
             //rising
         }
         else {
@@ -99,8 +98,6 @@ public:
             }
             positionChanged = false;
         }
-        //std::cout <<"Position X:" << Position.x << std::endl;
-        //std::cout <<"Position Z:" << Position.z << std::endl;
         updateCameraVectors();
     }
 
@@ -148,10 +145,10 @@ public:
                 Pitch = MAXLOOKANGLE;
             if (Pitch < -MAXLOOKANGLE)
                 Pitch = -MAXLOOKANGLE;
-            /*             if (Yaw > MAXLOOKANGLE)
+                         if (Yaw > MAXLOOKANGLE)
                 Yaw = MAXLOOKANGLE;
             if (Yaw < -MAXLOOKANGLE)
-                Yaw = -MAXLOOKANGLE; */
+                Yaw = -MAXLOOKANGLE; 
         }
 
         // update Front, Right and Up Vectors using the updated Euler angles

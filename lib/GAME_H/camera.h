@@ -21,7 +21,7 @@ constexpr float SENSITIVITY = 0.1f;
 constexpr float ZOOM        = 70.0f;
 constexpr float CAMSTART[3] = {1.0f, 0.0f, 1.0f};
 constexpr float JUMPHEIGHT = CAMSTART[1] + 0.4f;
-constexpr float MAXLOOKANGLE = 35.0f;
+constexpr float MAXLOOKANGLE = 360.0f;
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
 class Camera {
@@ -42,7 +42,7 @@ public:
 
     glm::vec3 getPos() const {return Position;};
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
-    virtual glm::mat4 GetViewMatrix()const = 0;
+    virtual glm::mat4 GetViewMatrix(glm::vec3 player_pos)const = 0;
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
     virtual void ProcessKeyboard(Camera_Movement direction, float deltaTime) = 0;
@@ -51,12 +51,6 @@ public:
     virtual void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true) = 0;
 
     virtual void ProcessMouseScroll(float yoffset)=0;
-
-    virtual void Jump()=0;
-
-    virtual void Rise(float deltatime)=0;
-
-    virtual void Fall(float deltatime)=0;
 
 };
 #endif
