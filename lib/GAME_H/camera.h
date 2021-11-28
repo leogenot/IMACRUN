@@ -10,7 +10,8 @@ enum Camera_Movement {
     FORWARD,
     BACKWARD,
     LEFT,
-    RIGHT
+    RIGHT,
+    ROTATE
 };
 
 // Default camera values
@@ -21,7 +22,7 @@ constexpr float SENSITIVITY = 0.1f;
 constexpr float ZOOM        = 70.0f;
 constexpr float CAMSTART[3] = {1.0f, 0.0f, 1.0f};
 constexpr float JUMPHEIGHT = CAMSTART[1] + 0.4f;
-constexpr float MAXLOOKANGLE = 360.0f;
+constexpr float MAXLOOKANGLE = 180.0f;
 
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
 class Camera {
@@ -31,26 +32,22 @@ protected:
     glm::vec3 Position;
 
 public:
+    float MovementSpeed;
+    float Yaw;
 
-    bool  onGround;
-    bool  isFalling;
-    //Methods
-    unsigned int getCameraType()
-    {
-        return m_cameraType;
-    }
+    Camera() : Yaw(YAW), MovementSpeed(SPEED){};
 
+    unsigned int getCameraType() {return m_cameraType;}
     glm::vec3 getPos() const {return Position;};
+    
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
     virtual glm::mat4 GetViewMatrix(glm::vec3 player_pos)const = 0;
-
-    // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-    virtual void ProcessKeyboard(Camera_Movement direction, float deltaTime) = 0;
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
     virtual void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true) = 0;
 
     virtual void ProcessMouseScroll(float yoffset)=0;
 
+    void updateCameraVectors() {};
 };
 #endif

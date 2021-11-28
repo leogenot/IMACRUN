@@ -146,7 +146,8 @@ int main()
         // floor
         processInput(window);
         //cube.draw(view, projection, model, .0f, .0f, 0.5f);
-        player.draw(view, projection, model);
+        if (player.getCamera()->getCameraType() == 0) //no drawing with eye camera
+            player.draw(view, projection, model);
 
         gamemap.drawGameMap(view, projection, model, player.getCamera()->getPos());
         skybox.draw(view, projection, model, player.getCamera()->GetViewMatrix(player.getPos()));
@@ -170,29 +171,29 @@ void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        player.ProcessKeyboard(FORWARD, deltaTime);
 
-    player.getCamera()->ProcessKeyboard(FORWARD, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        player.ProcessKeyboard(LEFT, deltaTime);
 
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        player.getCamera()->ProcessKeyboard(LEFT, deltaTime);
-    }
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        player.getCamera()->ProcessKeyboard(RIGHT, deltaTime);
-    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        player.ProcessKeyboard(RIGHT, deltaTime);
 
-    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        player.ProcessKeyboard(ROTATE, deltaTime);
+
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
         eye_camera.Reset();
-    }
-    if (!eye_camera.onGround && !eye_camera.isFalling) { //then rising
-        eye_camera.Rise(deltaTime);
-    }
-    else if (!eye_camera.onGround) {
-        eye_camera.Fall(deltaTime);
-    }
 
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-        eye_camera.Jump();
-    }
+    if (!player.onGround && !player.isFalling) //then rising
+        player.Rise(deltaTime);
+    else if (!player.onGround)
+        player.Fall(deltaTime);
+
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        player.Jump();
 
     static int oldState = GLFW_RELEASE;
     int        newState = glfwGetKey(window, GLFW_KEY_T);
