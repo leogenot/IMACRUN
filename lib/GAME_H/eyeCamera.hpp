@@ -50,14 +50,14 @@ public:
 
         // make sure that when pitch is out of bounds, screen doesn't get flipped
         if (constrainPitch) {
-            if (Pitch > MAXLOOKANGLE)
-                Pitch = MAXLOOKANGLE;
-            if (Pitch < -MAXLOOKANGLE)
-                Pitch = -MAXLOOKANGLE;
-            if (Yaw > MAXLOOKANGLE)
-                Yaw = MAXLOOKANGLE;
-            if (Yaw < -MAXLOOKANGLE)
-                Yaw = -MAXLOOKANGLE; 
+            if (Pitch > MAXPITCHANGLE)
+                Pitch = MAXPITCHANGLE;
+            if (Pitch < -MAXPITCHANGLE)
+                Pitch = -MAXPITCHANGLE;
+            if (Yaw > MAXYAWANGLE)
+                Yaw = MAXYAWANGLE;
+            if (Yaw < MINYAWANGLE)
+                Yaw = MINYAWANGLE; 
         }
 
         // update Front, Right and Up Vectors using the updated Euler angles

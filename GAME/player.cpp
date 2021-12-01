@@ -123,10 +123,20 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime)
         m_pos += Right * velocity;
     if (direction == FORWARD)
         m_pos += Front * velocity;
-    if (direction == ROTATE)
+    if (direction == ROTATELEFT)
     {
         Yaw = Yaw + 90;
-        m_camera->Yaw = Yaw / 360;
+        m_camera->Yaw += 90;
+        m_camera->MAXYAWANGLE += 90;
+        m_camera->MINYAWANGLE += 90;
+        m_camera->updateCameraVectors();
+    }
+    if (direction == ROTATERIGHT)
+    {
+        Yaw = Yaw - 90;
+        m_camera->Yaw -= 90;
+        m_camera->MAXYAWANGLE -= 90;
+        m_camera->MINYAWANGLE -= 90;
         m_camera->updateCameraVectors();
     }
     if (onGround) {

@@ -169,6 +169,7 @@ int main()
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow* window)
 {
+    //Quit
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     
@@ -181,13 +182,13 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         player.ProcessKeyboard(RIGHT, deltaTime);
 
+    //Rotate player
     static int oldStateRotate = GLFW_RELEASE;
     int        newStateRotate = glfwGetKey(window, GLFW_KEY_S);
     if (newStateRotate == GLFW_RELEASE && oldStateRotate == GLFW_PRESS) {
         player.ProcessKeyboard(ROTATE, deltaTime);
     }
     oldStateRotate = newStateRotate;
-
 
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
         eye_camera.Reset();
@@ -197,9 +198,11 @@ void processInput(GLFWwindow* window)
     else if (!player.onGround)
         player.Fall(deltaTime);
 
+    //Jump
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
         player.Jump();
 
+    //Switch camera
     static int oldState = GLFW_RELEASE;
     int        newState = glfwGetKey(window, GLFW_KEY_T);
     if (newState == GLFW_RELEASE && oldState == GLFW_PRESS) {
@@ -213,6 +216,7 @@ void processInput(GLFWwindow* window)
     }
     oldState = newState;
 
+    //Fixed camera
     static int oldStateFixedCam = GLFW_RELEASE;
     int        newStateFixedCam = glfwGetKey(window, GLFW_KEY_L);
     if (newStateFixedCam == GLFW_RELEASE && oldStateFixedCam == GLFW_PRESS) {
