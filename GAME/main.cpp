@@ -91,11 +91,10 @@ int main()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     Shader boxShader("GAME/shaders/floor.vs", "GAME/shaders/floor.fs");
-    Shader ourShader("GAME/shaders/model_loading.vs", "GAME/shaders/model_loading.fs");
+    
 
-
-    Model ourModel("assets/models/cube.obj");
-
+    Model ourModel("assets/models/flash.obj");
+    player.initPlayer();
     // generate gamemap whith file
     gamemap.loadGameMap("assets/map.pgm");
     int nbObstacles = 5;
@@ -103,8 +102,7 @@ int main()
     gamemap.initObstacles(nbObstacles);
     gamemap.initLights(nbLights);
     skybox.initSkybox();
-    //cube.initCube();
-    player.initCube();
+    
     textrendering.initTextRendering(window_width, window_height);
 
     /* Create the App */
@@ -129,25 +127,16 @@ int main()
         // ------
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        //app.render(camera);
-        ourShader.use();
+
         glm::mat4 model      = glm::mat4(1.0f);
         glm::mat4 view       = player.getCamera()->GetViewMatrix(player.getPos());
         glm::mat4 projection = glm::perspective(eye_camera.Zoom, (float)window_width / (float)window_height, 0.1f, 100.0f);
 
-        //glm::mat4 viewcam = glm::translate(view, glm::vec3(camera->getPos().x-1.f, camera->getPos().y, camera->getPos().z));
-        ourShader.setMat4("projection", projection);
-        ourShader.setMat4("view", view);
 
-        // render the loaded model
-        glm::mat4 modelOBJ = glm::scale(model, glm::vec3(.4f, .4f, .4f));	// it's a bit too big for our scene, so scale it down
-        ourShader.setMat4("model", modelOBJ);
-        ourModel.Draw(ourShader);
-        // floor
         processInput(window);
-        //cube.draw(view, projection, model, .0f, .0f, 0.5f);
+        
         if (player.getCamera()->getCameraType() == 0) //no drawing with eye camera
-            player.draw(view, projection, model);
+            player.draw(view, projection, model, ourModel);
 
         gamemap.drawGameMap(view, projection, model, player.getCamera()->getPos());
         skybox.draw(view, projection, model, player.getCamera()->GetViewMatrix(player.getPos()));
@@ -186,7 +175,7 @@ void processInput(GLFWwindow* window)
     static int oldStateRotate = GLFW_RELEASE;
     int        newStateRotate = glfwGetKey(window, GLFW_KEY_S);
     if (newStateRotate == GLFW_RELEASE && oldStateRotate == GLFW_PRESS) {
-        player.ProcessKeyboard(ROTATE, deltaTime);
+        player.ProcessKeyboard(ROTATERIGHT, deltaTime);
     }
     oldStateRotate = newStateRotate;
 

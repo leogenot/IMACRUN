@@ -4,6 +4,7 @@
 #include "element.hpp"
 #include <vector>
 #include "camera.h"
+#include "model.hpp"
 
 constexpr float PLAYERSTART[3] = {1.0f, 0.0f, 1.0f};
 constexpr float PLAYERJUMPHEIGHT = PLAYERSTART[1] + 0.4f;
@@ -44,8 +45,8 @@ public:
     Camera* getCamera() const {return m_camera;};
     void setCamera(Camera* camera) {m_camera = camera;};
     glm::vec3 getPos() const {return m_pos;};
-    void initCube();
-    void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model) const;
+    void initPlayer();
+    void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, Model modelObj) ;
 
     void Jump();
     void Rise(float deltatime);

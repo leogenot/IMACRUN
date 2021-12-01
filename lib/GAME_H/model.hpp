@@ -20,6 +20,7 @@
 #include <map>
 #include <vector>
 #include "utilityFunction.hpp"
+#include <filesystem>
 using namespace std;
 
 
@@ -38,11 +39,11 @@ public:
         loadModel(path);
     }
 
-    // draws the model, and thus all its meshes
-    void Draw(Shader &shader)
+    // Models the model, and thus all its meshes
+    void DrawModel(Shader &shader)
     {
         for(unsigned int i = 0; i < meshes.size(); i++)
-            meshes[i].Draw(shader);
+            meshes[i].DrawModel(shader);
     }
     
 private:
@@ -191,9 +192,14 @@ private:
             if(!skip)
             {   // if texture hasn't been loaded already, load it
                 Texture texture;
-                texture.id = loadTexture<const char>(str.C_Str());
+                string currentPath = __fs::filesystem::current_path();
+                string assets = "/assets/models/";
+                string textName = str.C_Str();
+                string fullPath = currentPath + assets + textName;
+                const char* texturePath = fullPath.c_str();
+                texture.id = loadTexture<const char>(texturePath);
                 texture.type = typeName;
-                texture.path = str.C_Str();
+                texture.path = fullPath;
                 textures.push_back(texture);
                 textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
             }
