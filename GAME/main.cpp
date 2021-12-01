@@ -181,8 +181,13 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         player.ProcessKeyboard(RIGHT, deltaTime);
 
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    static int oldStateRotate = GLFW_RELEASE;
+    int        newStateRotate = glfwGetKey(window, GLFW_KEY_S);
+    if (newStateRotate == GLFW_RELEASE && oldStateRotate == GLFW_PRESS) {
         player.ProcessKeyboard(ROTATE, deltaTime);
+    }
+    oldStateRotate = newStateRotate;
+
 
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
         eye_camera.Reset();
