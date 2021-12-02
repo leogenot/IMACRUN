@@ -16,7 +16,7 @@ enum Camera_Movement {
 };
 
 // Default camera values
-constexpr float YAW         = -90.0f;
+constexpr float YAW         = 90.0f;
 constexpr float PITCH       = 0.0f;
 constexpr float SPEED       = 1.2f;
 constexpr float SENSITIVITY = 0.1f;
@@ -36,8 +36,8 @@ protected:
 public:
     float MovementSpeed;
     float Yaw;
-    float MINYAWANGLE = -135.0f;
-    float MAXYAWANGLE = -45.0f;
+    float MINYAWANGLE = 45.0f;
+    float MAXYAWANGLE = 135.0f;
 
     Camera() : Yaw(YAW), MovementSpeed(SPEED){};
 

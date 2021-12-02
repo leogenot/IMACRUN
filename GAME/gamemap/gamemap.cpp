@@ -32,7 +32,9 @@ void GameMap::loadGameMap(const std::string &path)
 		myfile >> data;
         switch(data)
         {
-            case 255:   m_grid.push_back(new Floor);
+            case 255:   m_grid.push_back(new Floor(false));
+                        break;
+            case 155:   m_grid.push_back(new Floor(true));
                         break;
             case 100:   m_grid.push_back(new Wall);
                         break;
@@ -43,16 +45,16 @@ void GameMap::loadGameMap(const std::string &path)
         }
     }
 
-    int midX = (int)(m_sizeX*0.5);
-    int midY = (int)(m_sizeY*0.5);
+    //int midX = (int)(m_sizeX*0.5);
+    //int midY = (int)(m_sizeY*0.5);
 
     for (int i = 0; i < m_sizeX; i++)
     {
         for (int j = 0; j < m_sizeY; j++)
         {
             // set position with i,j
-            m_grid[i*m_sizeX+j]->setPosX(i-midX);
-            m_grid[i*m_sizeX+j]->setPosZ(j-midY);
+            m_grid[i*m_sizeX+j]->setPosX(i);
+            m_grid[i*m_sizeX+j]->setPosZ(j);
         }
     }
 
@@ -64,8 +66,8 @@ void GameMap::initObstacles(const int nbObstacles)
 {
     int posX;
     int posY;
-    int midX = (int)(m_sizeX*0.5);
-    int midY = (int)(m_sizeY*0.5);
+    //int midX = (int)(m_sizeX*0.5);
+    //int midY = (int)(m_sizeY*0.5);
 
     for (int i = 0; i < nbObstacles; i++)
     {
@@ -74,18 +76,18 @@ void GameMap::initObstacles(const int nbObstacles)
             posY = rand() % m_sizeY;
         } while(!isEmpty(posX, posY)); // can't put obstacle (we want a floor with no obstacle)
         
-        m_obstacles.push_back(new Obstacle(glm::vec3(posX - midX, rand()%2 * 0.25 - 0.2, posY - midY)));  //TODO: mieux gérer la hauteur des obstacles   
+        m_obstacles.push_back(new Obstacle(glm::vec3(posX, rand()%2 * 0.25 - 0.2, posY)));  //TODO: mieux gérer la hauteur des obstacles   
     }
 }
 
 void GameMap::initLights(const int nbLights)
 {
-    int midX =(int)(m_sizeX*0.5);
-    int midY =(int)(m_sizeY*0.5);
+    //int midX =(int)(m_sizeX*0.5);
+    //int midY =(int)(m_sizeY*0.5);
 
     for (int i = 0; i < nbLights; i++)
     {
-        glm::vec3 pos(rand() % m_sizeX - midX, 0.2, rand() % m_sizeY - midY);
+        glm::vec3 pos(rand() % m_sizeX, 0.2, rand() % m_sizeY);
         glm::vec3 color(rand() % 100 * 0.01, rand() % 100 * 0.01, rand() % 100 * 0.01);
 
         m_lights.push_back(new Light(pos, color));    
@@ -94,17 +96,22 @@ void GameMap::initLights(const int nbLights)
 
 bool GameMap::isEmpty(const int posX, const int posZ) const
 {
-    int midX = (int)(m_sizeX*0.5);
-    int midY = (int)(m_sizeY*0.5);
+    //int midX = (int)(m_sizeX*0.5);
+    //int midY = (int)(m_sizeY*0.5);
 
     // if there is already an obstacle
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++)
     {
-        if((*it)->getPosX() == posX - midX && (*it)->getPosZ() == posZ - midY)
+        if((*it)->getPosX() == posX && (*it)->getPosZ() == posZ)
             return false;
     }
     return m_grid[posX*m_sizeX+posZ]->possibleAdd;
 }
+
+bool GameMap::onAngle(const glm::vec3 pos) const
+{ 
+    return m_grid[(int)pos.x*m_sizeX + (int)pos.z]->canTurn; //test if player is on a turn case
+};
 
 void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos) const
 {
@@ -118,5 +125,5 @@ void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model,
 
     //draw lights
     for (auto it = m_lights.begin(); it != m_lights.end(); it++)
-        (*it)->draw(view, projection, model, 0.2);
+        (*it)->draw(view, projection, model, 0.2f);
 }

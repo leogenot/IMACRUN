@@ -6,7 +6,7 @@
 #include "camera.h"
 #include "model.hpp"
 
-constexpr float PLAYERSTART[3] = {1.0f, 0.0f, 1.0f};
+constexpr float PLAYERSTART[3] = {2.0f, 0.0f, 0.0f};
 constexpr float PLAYERJUMPHEIGHT = PLAYERSTART[1] + 0.4f;
 
 class Player
@@ -51,9 +51,10 @@ public:
     void Jump();
     void Rise(float deltatime);
     void Fall(float deltatime);
+    bool OnAngle(); // to see if player can turn
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
     void ProcessKeyboard(Camera_Movement direction, float deltaTime);
-
+    
 private:
     // calculates the front vector from the Camera's (updated) Euler Angles
     void updateCameraVectors();

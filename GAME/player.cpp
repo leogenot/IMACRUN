@@ -1,6 +1,8 @@
 #include "GAME_H/player.hpp"
 #include "GAME_H/utilityFunction.hpp"
 
+# define M_PI           3.14159265358979323846
+
 void Player::initPlayer()
 {
 
@@ -21,7 +23,8 @@ void Player::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, Model m
     m_shader.setMat4("view", view);
     m_shader.setMat4("projection", projection);
     model = glm::translate(model, m_pos);
-    model = glm::scale(model, glm::vec3(.1f, .1f, .1f));
+    model = glm::rotate(model, -90-Yaw, glm::vec3(0, 1, 0));
+    model = glm::scale(model, glm::vec3(.2f, .2f, .2f));
     m_shader.setMat4("model", model);
     modelObj.DrawModel(m_shader);
     
@@ -56,33 +59,44 @@ void Player::Fall(float deltatime)
     //updateCameraVectors();
 }
 
+bool Player::OnAngle()
+{
+    //if()
+    return false;
+}
+
 // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
 void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 {
     bool  positionChanged = true;
     float velocity        = m_camera->MovementSpeed * deltaTime;
-   if (direction == LEFT)
-        m_pos -= Right * velocity; //on veut se déplacer d'une seule case sinon on multiplie par velocity
-    if (direction == RIGHT)
-        m_pos += Right * velocity;
+    std::cout << m_pos.x << " " << m_pos.y << " " << m_pos.z << std::endl;
     if (direction == FORWARD)
         m_pos += Front * velocity;
+
+    if (direction == LEFT)
+        m_pos -= Right; // * velocity; //TODO : transition
+    if (direction == RIGHT)
+        m_pos += Right; // * velocity; //TODO : transition
     if (direction == ROTATELEFT)
     {
-        Yaw = Yaw + 90;
-        m_camera->Yaw += 90;
-        m_camera->MAXYAWANGLE += 90;
-        m_camera->MINYAWANGLE += 90;
+        Yaw -= 90; // player rotation
+        m_camera->Yaw -= 90; // camera rotation
+        m_camera->MAXYAWANGLE -= 90;
+        m_camera->MINYAWANGLE -= 90;
+        m_pos = glm::ivec3(m_pos); // to make the player stay in a case and not in between
         m_camera->updateCameraVectors();
     }
     if (direction == ROTATERIGHT)
     {
-        Yaw = Yaw - 90;
-        m_camera->Yaw -= 90;
-        m_camera->MAXYAWANGLE -= 90;
-        m_camera->MINYAWANGLE -= 90;
+        Yaw += 90; // player rotation
+        m_camera->Yaw += 90; // camera rotation
+        m_camera->MAXYAWANGLE += 90;
+        m_camera->MINYAWANGLE += 90;
+        m_pos = glm::ivec3(m_pos); // to make the player stay in a case and not in between
         m_camera->updateCameraVectors();
     }
+
     if (onGround) {
         // feet on the floor
         m_pos.y = PLAYERSTART[1];
@@ -95,8 +109,8 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime)
     }
 
     // check collision
-    if (m_pos.x > 5.f || m_pos.z > 5.f ||
-        m_pos.x < -5.f || m_pos.z < -5.f) {
+    if (m_pos.x > 16.f || m_pos.z > 16.f ||
+        m_pos.x < -1.f || m_pos.z < -1.f) {
         if (direction == FORWARD) {
             m_pos -= Front * velocity;
         }
@@ -122,6 +136,7 @@ void Player::updateCameraVectors()
     front.y = sin(glm::radians(Pitch));
     front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
     Front   = glm::normalize(front);
+
     // also re-calculate the Right and Up vector
     Right = glm::normalize(glm::cross(Front, WorldUp)); // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
     Up    = glm::normalize(glm::cross(Right, Front));

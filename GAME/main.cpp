@@ -24,13 +24,13 @@ eyeCamera       eye_camera;
 Camera*         camera = &eye_camera;
 Player          player(camera);
 
-float lastX       = (float)window_width / 2.0;
-float lastY       = (float)window_height / 2.0;
+double lastX       = (double)window_width / 2.0;
+double lastY       = (double)window_height / 2.0;
 bool  firstMouse  = true;
 bool  fixedCamera = false;
 
 // light
-glm::vec3  lightDir(-0.5, -1.0, -0.6);
+glm::vec3  lightDir(-0.8, -1.0, -0.6);
 glm::vec3  lightColor(0.7, 0.9, 1.0);
 SceneLight sceneLight(lightDir, lightColor);
 
@@ -96,7 +96,7 @@ int main()
     Model ourModel("assets/models/flash.obj");
     player.initPlayer();
     // generate gamemap whith file
-    gamemap.loadGameMap("assets/map.pgm");
+    gamemap.loadGameMap("assets/map16.pgm");
     int nbObstacles = 5;
     int nbLights    = 5;
     gamemap.initObstacles(nbObstacles);
@@ -119,7 +119,7 @@ int main()
     while (!glfwWindowShouldClose(window)) {
         // per-frame time logic
         // --------------------
-        float currentFrame = glfwGetTime();
+        float currentFrame = (float)glfwGetTime();
         deltaTime          = currentFrame - lastFrame;
         lastFrame          = currentFrame;
 
@@ -165,19 +165,46 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         player.ProcessKeyboard(FORWARD, deltaTime);
 
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    /*if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         player.ProcessKeyboard(LEFT, deltaTime);
 
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        player.ProcessKeyboard(RIGHT, deltaTime);
+        player.ProcessKeyboard(RIGHT, deltaTime);*/
 
-    //Rotate player
-    static int oldStateRotate = GLFW_RELEASE;
-    int        newStateRotate = glfwGetKey(window, GLFW_KEY_S);
-    if (newStateRotate == GLFW_RELEASE && oldStateRotate == GLFW_PRESS) {
-        player.ProcessKeyboard(ROTATERIGHT, deltaTime);
+    if (gamemap.onAngle(player.getPos()))  // Rotate player
+    {
+        static int oldStateRotateLeft = GLFW_RELEASE;
+        int        newStateRotateLeft = glfwGetKey(window, GLFW_KEY_A);
+        if (newStateRotateLeft == GLFW_RELEASE && oldStateRotateLeft == GLFW_PRESS) {
+            player.ProcessKeyboard(ROTATELEFT, deltaTime);
+        }
+        oldStateRotateLeft = newStateRotateLeft;
+
+        static int oldStateRotateRight = GLFW_RELEASE;
+        int        newStateRotateRight = glfwGetKey(window, GLFW_KEY_D);
+        if (newStateRotateRight == GLFW_RELEASE && oldStateRotateRight == GLFW_PRESS) {
+            player.ProcessKeyboard(ROTATERIGHT, deltaTime);
+        }
+        oldStateRotateRight = newStateRotateRight;
     }
-    oldStateRotate = newStateRotate;
+    else // Translate player
+    {
+        //left
+        static int oldStateLeft = GLFW_RELEASE;
+        int        newStateLeft = glfwGetKey(window, GLFW_KEY_A);
+        if (newStateLeft == GLFW_RELEASE && oldStateLeft == GLFW_PRESS) {
+            player.ProcessKeyboard(LEFT, deltaTime);
+        }
+        oldStateLeft = newStateLeft;
+
+        //right
+        static int oldStateRight = GLFW_RELEASE;
+        int        newStateRight = glfwGetKey(window, GLFW_KEY_D);
+        if (newStateRight == GLFW_RELEASE && oldStateRight == GLFW_PRESS) {
+            player.ProcessKeyboard(RIGHT, deltaTime);
+        }
+        oldStateRight = newStateRight;
+    }
 
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
         eye_camera.Reset();
@@ -239,13 +266,13 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
             firstMouse = false;
         }
 
-        float xoffset = xpos - lastX;
-        float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+        double xoffset = xpos - lastX;
+        double yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
 
         lastX = xpos;
         lastY = ypos;
 
-        player.getCamera()->ProcessMouseMovement(xoffset, yoffset);
+        player.getCamera()->ProcessMouseMovement((float)xoffset, (float)yoffset);
     }
 }
 
@@ -254,6 +281,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     if (!fixedCamera) {
-        player.getCamera()->ProcessMouseScroll(yoffset);
+        player.getCamera()->ProcessMouseScroll((float)yoffset);
     }
 }

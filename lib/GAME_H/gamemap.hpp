@@ -30,6 +30,7 @@ public:
     void initObstacles(const int nbObstacles);
     void initLights(const int nbLights);
     bool isEmpty(const int posX, const int posY) const;
+    bool onAngle(const glm::vec3 pos) const;
 };
 
 #endif
