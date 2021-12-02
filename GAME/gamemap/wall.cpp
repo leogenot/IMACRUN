@@ -6,7 +6,7 @@ Wall::Wall()
     possibleAdd = false;
     Shader shader("GAME/shaders/objet3D.vs", "GAME/shaders/multipleLights.fs");
     m_shader = shader;
-    setPosY(-0.5);
+    setPosY(0);
     m_texture = loadTexture<const char>("assets/textures/cube/cube.jpg");
 
     float vertices[] = {
@@ -85,13 +85,8 @@ void Wall::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3
     int i = 0;
     for (auto it = lights.begin(); it != lights.end(); it++)
     {
-        const char* variable = "pointLights[";
-        const char* attribPos = "].position";
-        const char* attribColor = "].color";
-        char uniformNamePosition[24];
-        char uniformNameColor[21];
-        sprintf(uniformNamePosition, "%s%i%s", variable, i, attribPos);
-        sprintf(uniformNameColor, "%s%i%s", variable, i, attribColor);
+        std::string uniformNamePosition = "pointLights[" + std::to_string(i) + "].position";
+        std::string uniformNameColor = "pointLights[" + std::to_string(i) + "].color";
         
         m_shader.setVec3(uniformNamePosition, (*it)->getPos());
         m_shader.setVec3(uniformNameColor, (*it)->getColor());
@@ -113,7 +108,7 @@ void Wall::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3
     m_shader.setMat4("view", view);
     m_shader.setMat4("projection", projection);
     model = glm::scale(model, glm::vec3(1, 0.5, 1));
-    model = glm::translate(model, getPos());
+    model = glm::translate(model, glm::vec3(getPos()));
     m_shader.setMat4("model", model);
 
     glBindVertexArray(m_VAO);

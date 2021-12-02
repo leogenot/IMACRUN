@@ -2,6 +2,7 @@
 #define ELEMENT_H
 #include <glm/glm.hpp>
 #include <iostream>
+#include <string>
 #include <glm/gtx/transform.hpp>
 #include <stb_image.h>
 #include <glm/gtc/type_ptr.hpp>
@@ -15,13 +16,13 @@
 class Element
 {
 protected:
-    glm::vec3 m_pos;
+    glm::ivec3 m_pos;
 public:
-    Element() {};
+    Element(): canTurn(false) {};
     virtual void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, std::vector<Light*> lights) const = 0;
 
     //getter & setter pos
-    glm::vec3 getPos() const {return m_pos;};
+    glm::ivec3 getPos() const {return m_pos;};
     int getPosX() const {return m_pos.x;};
     int getPosY() const {return m_pos.y;};
     int getPosZ() const {return m_pos.z;};
@@ -31,6 +32,7 @@ public:
 
     //virtual fonction de collision
     bool possibleAdd; //if we can add another element (obsacle, money)
+    bool canTurn; //if we are in an angle and we can turn
 };
 
 #endif
