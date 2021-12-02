@@ -10,27 +10,9 @@ To use CMake I recommend this VS Code extension : [ms-vscode.cmake-tools](https:
 
 Alternatively you can just create a *build* folder at the root of this project, open a terminal and run `cmake ..` ; chances are it will detect what compiler you have installed and generate the appropriate Makefile / Visual Studio solution / Xcode project.
 
-## TPs
-
-I have already made 9 TP directories that are ready for you to code.
-If you ever need more, simply duplicate one of them and update CMakeLists.txt (at the bottom of the file you will see the registration of all the TP folders : 
-```cmake
-setup_tp(TP1)
-setup_tp(TP2)
-# ...
-```
-
 ## main.cpp
 
 In here we initialize [*glfw*](https://www.glfw.org/docs/latest/) (the library that handles the window and user inputs), create a window and then start the app. You don't really need to modify this file, except to change your window name or initial size.
-
-## App
-
-This is the actual root of your project. This is where your drawing code should go, as well as handling inputs from the user.
-
-## User inputs
-
-To learn more about the parameters you receive in the callbacks, read [glfw's documentation](https://www.glfw.org/docs/latest/input_guide.html).
 
 ## assets
 
