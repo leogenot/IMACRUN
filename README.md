@@ -1,6 +1,6 @@
 # IMACRUN Setup
 
-**it is easy to use an all platforms** (Linux, Windows and Mac).
+**it is easy to use on all platforms** (Linux, Windows and Mac).
 
 ## Compiling
 
