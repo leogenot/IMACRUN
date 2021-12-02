@@ -1,6 +1,6 @@
 # IMACRUN Setup
 
-This is an alternative setup to follow [these tutorials](https://igm.univ-mlv.fr/~biri/Enseignement/IMAC2/opengl-TPs/opengl.php?section=teaching&teaching=opengl&teaching_section=tds). It has the advantage that **it is easy to use an all platforms** (Linux, Windows and Mac).
+**it is easy to use an all platforms** (Linux, Windows and Mac).
 
 ## Compiling
 
