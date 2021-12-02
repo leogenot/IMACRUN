@@ -200,7 +200,7 @@ private:
                 
 
                 #else
-                string assets = "/assets/models/";
+                string assets = "assets/models/";
                 string textName = str.C_Str();
                 string fullPath = assets + textName;
                 #endif
