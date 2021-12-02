@@ -192,10 +192,19 @@ private:
             if(!skip)
             {   // if texture hasn't been loaded already, load it
                 Texture texture;
+                #ifdef __APPLE__
                 string currentPath = __fs::filesystem::current_path();
                 string assets = "/assets/models/";
                 string textName = str.C_Str();
                 string fullPath = currentPath + assets + textName;
+                
+
+                #else
+                string assets = "/assets/models/";
+                string textName = str.C_Str();
+                string fullPath = assets + textName;
+                #endif
+
                 const char* texturePath = fullPath.c_str();
                 texture.id = loadTexture<const char>(texturePath);
                 texture.type = typeName;
