@@ -1,14 +1,13 @@
 #include "GAME_H/floor.hpp"
 #include "GAME_H/utilityFunction.hpp"
 
-Floor::Floor(bool angle)
+Floor::Floor(bool angle, unsigned int texture) : m_texture(texture)
 {
     possibleAdd = true;
     Shader shader("GAME/shaders/objet3D.vs", "GAME/shaders/multipleLights.fs");
     m_shader = shader;
     setPosY(0);
     canTurn = angle;
-    m_texture = loadTexture<const char>("assets/textures/floor/brickwall.jpg");
 
     float planeVertices[] = {
         // positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)

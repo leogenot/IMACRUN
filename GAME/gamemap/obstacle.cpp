@@ -1,11 +1,10 @@
 #include "GAME_H/obstacle.hpp"
 #include "GAME_H/utilityFunction.hpp"
 
-Obstacle::Obstacle(glm::vec3 pos) : m_pos(pos)
+Obstacle::Obstacle(glm::vec3 pos, unsigned int texture) : m_pos(pos), m_texture(texture)
 {
     Shader shader("GAME/shaders/objet3D.vs", "GAME/shaders/multipleLights.fs");
     m_shader = shader;
-    m_texture = loadTexture<const char>("assets/textures/cube/cube.jpg");
 
     float vertices[] = {
         // positions          // normals           // texture coords

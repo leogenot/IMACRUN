@@ -1,9 +1,15 @@
 #include "GAME_H/gamemap.hpp"
 #include <random>
 #include <chrono>
+#include "GAME_H/utilityFunction.hpp"
 
 void GameMap::loadGameMap(const std::string &path)
 {
+    //initialize tab of id
+    m_textures.push_back(loadTexture<const char>("assets/textures/floor/brickwall.jpg"));
+    m_textures.push_back(loadTexture<const char>("assets/textures/cube/cube.jpg"));
+    m_textures.push_back(loadTexture<const char>("assets/textures/cube/cube.jpg"));
+
     // open the file
     std::ifstream myfile;
     myfile.open(path, std::ios::in | std::ios::binary);
@@ -34,11 +40,11 @@ void GameMap::loadGameMap(const std::string &path)
 		myfile >> data;
         switch(data)
         {
-            case 255:   m_grid.push_back(new Floor(false));
+            case 255:   m_grid.push_back(new Floor(false, m_textures[0]));
                         break;
-            case 155:   m_grid.push_back(new Floor(true));
+            case 155:   m_grid.push_back(new Floor(true, m_textures[0]));
                         break;
-            case 100:   m_grid.push_back(new Wall);
+            case 100:   m_grid.push_back(new Wall(m_textures[1]));
                         break;
             case 0:     m_grid.push_back(new Space);
                         break;
@@ -46,6 +52,9 @@ void GameMap::loadGameMap(const std::string &path)
                         break;
         }
     }
+
+    // close file
+	myfile.close();
 
     //int midX = (int)(m_sizeX*0.5);
     //int midY = (int)(m_sizeY*0.5);
@@ -59,9 +68,6 @@ void GameMap::loadGameMap(const std::string &path)
             m_grid[i*m_sizeX+j]->setPosZ(j);
         }
     }
-
-	// close file
-	myfile.close();
 }
 
 void GameMap::initObstacles(const int nbObstacles)
@@ -86,7 +92,7 @@ void GameMap::initObstacles(const int nbObstacles)
             posY = uniformIntYDistrib(generator);
         } while(!isEmpty(posX, posY)); // can't put obstacle (we want a floor with no obstacle)
         
-        m_obstacles.push_back(new Obstacle(glm::vec3(posX, uniformIntXDistrib(generator)%2 * 0.25, posY)));  //TODO: mieux gérer la hauteur des obstacles   
+        m_obstacles.push_back(new Obstacle(glm::vec3(posX, uniformIntXDistrib(generator)%2 * 0.25, posY), m_textures[2]));  //TODO: mieux gérer la hauteur des obstacles   
     }
 }
 

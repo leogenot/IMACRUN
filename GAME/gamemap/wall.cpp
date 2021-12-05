@@ -1,13 +1,12 @@
 #include "GAME_H/wall.hpp"
 #include "GAME_H/utilityFunction.hpp"
 
-Wall::Wall()
+Wall::Wall(unsigned int texture) : m_texture(texture)
 {
     possibleAdd = false;
     Shader shader("GAME/shaders/objet3D.vs", "GAME/shaders/multipleLights.fs");
     m_shader = shader;
     setPosY(0);
-    m_texture = loadTexture<const char>("assets/textures/cube/cube.jpg");
 
     float vertices[] = {
         // positions          // normals           // texture coords
