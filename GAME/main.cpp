@@ -26,8 +26,11 @@ Player          player(camera);
 
 double lastX       = (double)window_width / 2.0;
 double lastY       = (double)window_height / 2.0;
-bool  firstMouse  = true;
-bool  fixedCamera = false;
+bool   firstMouse  = true;
+bool   fixedCamera = false;
+
+bool MouseIn  = false;
+bool MouseOut = true;
 
 // light
 glm::vec3  lightDir(-0.8, -1.0, -0.6);
@@ -73,7 +76,7 @@ int main()
     glfwSetScrollCallback(window, scroll_callback);
 
     // tell GLFW to capture our mouse
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -91,19 +94,27 @@ int main()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     Shader boxShader("GAME/shaders/floor.vs", "GAME/shaders/floor.fs");
-    
 
     Model ourModel("assets/models/flash.obj");
     player.initPlayer();
     // generate gamemap whith file
     gamemap.loadGameMap("assets/map16.pgm");
-    int nbObstacles = 5;
+    int nbObstacles = 50;
     int nbLights    = 5;
     gamemap.initObstacles(nbObstacles);
     gamemap.initLights(nbLights);
     skybox.initSkybox();
-    
+
     textrendering.initTextRendering(window_width, window_height);
+
+    // Initialize ImGUI
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
 
     /* Create the App */
     int w, h;
@@ -123,18 +134,28 @@ int main()
         deltaTime          = currentFrame - lastFrame;
         lastFrame          = currentFrame;
 
+        // Tell OpenGL a new frame is about to begin
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
         // render
         // ------
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // ImGUI window creation
+        ImGui::Begin("My name is window, ImGUI window");
+        // Text that appears in the window
+        ImGui::Text("Hello there adventurer!");
+        // Ends the window
+        ImGui::End();
+
         glm::mat4 model      = glm::mat4(1.0f);
         glm::mat4 view       = player.getCamera()->GetViewMatrix(player.getPos());
         glm::mat4 projection = glm::perspective(eye_camera.Zoom, (float)window_width / (float)window_height, 0.1f, 100.0f);
 
-
         processInput(window);
-        
+
         if (player.getCamera()->getCameraType() == 0) //no drawing with eye camera
             player.draw(view, projection, model, ourModel);
 
@@ -142,10 +163,14 @@ int main()
         skybox.draw(view, projection, model, player.getCamera()->GetViewMatrix(player.getPos()));
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
+        if(MouseIn)
+            textrendering.RenderText("Flash McQueen", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
+        else
+            textrendering.RenderText("KATCHAAAAW", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
 
-        textrendering.RenderText("Flash McQueen", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-        textrendering.RenderText("KATCHAAAAW", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
-
+        // Renders the ImGUI elements
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -159,19 +184,31 @@ int main()
 void processInput(GLFWwindow* window)
 {
     //Quit
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    
+
+    //Mouse capture
+    static int oldStateMouseapture = GLFW_RELEASE;
+    int        newStateMouseapture = glfwGetKey(window, GLFW_KEY_ESCAPE);
+    if (newStateMouseapture == GLFW_RELEASE && oldStateMouseapture == GLFW_PRESS) {
+        if (MouseIn) {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            MouseIn  = false;
+            MouseOut = true;
+            
+        }
+        else {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            MouseIn = true;
+            
+        }
+    }
+    oldStateMouseapture = newStateMouseapture;
+
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         player.ProcessKeyboard(FORWARD, deltaTime);
 
-    /*if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        player.ProcessKeyboard(LEFT, deltaTime);
-
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        player.ProcessKeyboard(RIGHT, deltaTime);*/
-
-    if (gamemap.onAngle(player.getPos()))  // Rotate player
+    if (gamemap.onAngle(player.getPos())) // Rotate player
     {
         static int oldStateRotateLeft = GLFW_RELEASE;
         int        newStateRotateLeft = glfwGetKey(window, GLFW_KEY_A);

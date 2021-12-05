@@ -59,6 +59,12 @@ void Player::Fall(float deltatime)
     //updateCameraVectors();
 }
 
+
+
+
+
+
+
 bool Player::OnAngle()
 {
     //if()
@@ -70,7 +76,7 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 {
     bool  positionChanged = true;
     float velocity        = m_camera->MovementSpeed * deltaTime;
-    std::cout << m_pos.x << " " << m_pos.y << " " << m_pos.z << std::endl;
+    std::cout << "X: " << m_pos.x << " " << "Y: " << m_pos.y << " " << "Z: "<< m_pos.z << std::endl;
     if (direction == FORWARD)
         m_pos += Front * velocity;
 
@@ -78,6 +84,7 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime)
         m_pos -= Right; // * velocity; //TODO : transition
     if (direction == RIGHT)
         m_pos += Right; // * velocity; //TODO : transition
+
     if (direction == ROTATELEFT)
     {
         Yaw -= 90; // player rotation
@@ -110,7 +117,7 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 
     // check collision
     if (m_pos.x > 16.f || m_pos.z > 16.f ||
-        m_pos.x < -1.f || m_pos.z < -1.f) {
+        m_pos.x < 1 || m_pos.z < -1.f) {
         if (direction == FORWARD) {
             m_pos -= Front * velocity;
         }
@@ -118,10 +125,10 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime)
             m_pos += Front * velocity;
         }
         if (direction == LEFT) {
-            m_pos += Right * velocity;
+            m_pos += Right;
         }
         if (direction == RIGHT) {
-            m_pos -= Right * velocity;
+            m_pos -= Right;
         }
         positionChanged = false;
     }

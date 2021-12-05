@@ -15,12 +15,7 @@ App::App(int window_width, int window_height)
 
 void App::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if (key == GLFW_KEY_L && action == GLFW_PRESS) {
-        fixedCamera = !fixedCamera;
-        std::cout << fixedCamera << std::endl;
-    }
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+
 }
 
 void App::mouse_button_callback(int button, int action, int mods)
@@ -43,6 +38,11 @@ void App::size_callback(int width, int height)
 
 void App::destroy()
 {
+
+    // Deletes all ImGUI instances
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
     glDeleteVertexArrays(1, &skyboxVAO);

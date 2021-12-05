@@ -21,6 +21,7 @@ private:
 public:
     bool onGround;
     bool isFalling;
+
     // camera Attributes
     glm::vec3 Front;
     glm::vec3 Up;

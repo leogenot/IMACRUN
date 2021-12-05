@@ -18,7 +18,7 @@ enum Camera_Movement {
 // Default camera values
 constexpr float YAW         = 90.0f;
 constexpr float PITCH       = 0.0f;
-constexpr float SPEED       = 1.2f;
+constexpr float SPEED       = 3.f;
 constexpr float SENSITIVITY = 0.1f;
 constexpr float ZOOM        = 70.0f;
 constexpr float CAMSTART[3] = {1.0f, 0.0f, 1.0f};
