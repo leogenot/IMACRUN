@@ -1,4 +1,6 @@
 #include "GAME_H/gamemap.hpp"
+#include <random>
+#include <chrono>
 
 void GameMap::loadGameMap(const std::string &path)
 {
@@ -69,14 +71,22 @@ void GameMap::initObstacles(const int nbObstacles)
     //int midX = (int)(m_sizeX*0.5);
     //int midY = (int)(m_sizeY*0.5);
 
+    // select seed from time
+    unsigned seed = (unsigned int)std::chrono::system_clock::now().time_since_epoch().count();
+    // select a generator
+    std::mt19937 generator(seed);
+    // uniform int distribution
+    std::uniform_int_distribution<int> uniformIntXDistrib(0, m_sizeX-1);
+    std::uniform_int_distribution<int> uniformIntYDistrib(0, m_sizeY-1);
+  
     for (int i = 0; i < nbObstacles; i++)
     {
         do {
-            posX = rand() % m_sizeX;
-            posY = rand() % m_sizeY;
+            posX = uniformIntXDistrib(generator);
+            posY = uniformIntYDistrib(generator);
         } while(!isEmpty(posX, posY)); // can't put obstacle (we want a floor with no obstacle)
         
-        m_obstacles.push_back(new Obstacle(glm::vec3(posX, rand()%2 * 0.25 - 0.2, posY)));  //TODO: mieux gérer la hauteur des obstacles   
+        m_obstacles.push_back(new Obstacle(glm::vec3(posX, uniformIntXDistrib(generator)%2 * 0.25, posY)));  //TODO: mieux gérer la hauteur des obstacles   
     }
 }
 
@@ -85,10 +95,21 @@ void GameMap::initLights(const int nbLights)
     //int midX =(int)(m_sizeX*0.5);
     //int midY =(int)(m_sizeY*0.5);
 
+    // select seed from time
+    unsigned seed = (unsigned int)std::chrono::system_clock::now().time_since_epoch().count();
+    // select a generator
+    std::mt19937 generator(seed);
+    // uniform int distribution
+    std::uniform_int_distribution<int> uniformIntXDistrib(0, m_sizeX-1);
+    std::uniform_int_distribution<int> uniformIntYDistrib(0, m_sizeY-1);
+    // uniform real distribution
+    std::uniform_real_distribution<float> uniformRealColorDistrib(0, 1);
+
+  
     for (int i = 0; i < nbLights; i++)
     {
-        glm::vec3 pos(rand() % m_sizeX, 0.2, rand() % m_sizeY);
-        glm::vec3 color(rand() % 100 * 0.01, rand() % 100 * 0.01, rand() % 100 * 0.01);
+        glm::vec3 pos(uniformIntXDistrib(generator), 0.2, uniformIntYDistrib(generator));
+        glm::vec3 color(uniformRealColorDistrib(generator), uniformRealColorDistrib(generator), uniformRealColorDistrib(generator));
 
         m_lights.push_back(new Light(pos, color));    
     }

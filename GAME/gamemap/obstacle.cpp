@@ -106,7 +106,7 @@ void Obstacle::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::
     m_shader.setMat4("view", view);
     m_shader.setMat4("projection", projection);
     model = glm::translate(model, m_pos);
-    model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2)); //TODO: gérer si l'obsacle est bien perpendiculaire au chemin
+    model = glm::scale(model, glm::vec3(0.4, 0.4, 0.4)); //TODO: gérer si l'obsacle est bien perpendiculaire au chemin
     m_shader.setMat4("model", model);
 
     glBindVertexArray(m_VAO);
