@@ -1,11 +1,10 @@
 #include "GAME_H/obstacle.hpp"
 #include "GAME_H/utilityFunction.hpp"
 
-Obstacle::Obstacle(glm::vec3 pos) : m_pos(pos)
+Obstacle::Obstacle(glm::vec3 pos, unsigned int texture) : m_pos(pos), m_texture(texture)
 {
     Shader shader("GAME/shaders/objet3D.vs", "GAME/shaders/multipleLights.fs");
     m_shader = shader;
-    m_texture = loadTexture<const char>("assets/textures/cube/cube.jpg");
 
     float vertices[] = {
         // positions          // normals           // texture coords
@@ -106,7 +105,7 @@ void Obstacle::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::
     m_shader.setMat4("view", view);
     m_shader.setMat4("projection", projection);
     model = glm::translate(model, m_pos);
-    model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2)); //TODO: gérer si l'obsacle est bien perpendiculaire au chemin
+    model = glm::scale(model, glm::vec3(0.4, 0.4, 0.4)); //TODO: gérer si l'obsacle est bien perpendiculaire au chemin
     m_shader.setMat4("model", model);
 
     glBindVertexArray(m_VAO);

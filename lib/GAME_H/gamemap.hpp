@@ -21,6 +21,7 @@ private:
     std::vector<Obstacle*> m_obstacles;
     std::vector<Light*> m_lights;
     SceneLight m_sceneLight;
+    std::vector<unsigned int> m_textures;
 
 public:
     GameMap(SceneLight sceneLight) : m_sceneLight(sceneLight) {};

@@ -10,7 +10,7 @@ private:
     unsigned int m_texture;
     unsigned int m_VAO;
 public:
-    Wall();
+    Wall(unsigned int texture);
     void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, std::vector<Light*> lights) const override;
     //fonction de collision  
 };

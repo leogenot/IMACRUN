@@ -1,7 +1,15 @@
 #include "GAME_H/gamemap.hpp"
+#include <random>
+#include <chrono>
+#include "GAME_H/utilityFunction.hpp"
 
 void GameMap::loadGameMap(const std::string &path)
 {
+    //initialize tab of id
+    m_textures.push_back(loadTexture<const char>("assets/textures/floor/brickwall.jpg"));
+    m_textures.push_back(loadTexture<const char>("assets/textures/cube/cube.jpg"));
+    m_textures.push_back(loadTexture<const char>("assets/textures/cube/cube.jpg"));
+
     // open the file
     std::ifstream myfile;
     myfile.open(path, std::ios::in | std::ios::binary);
@@ -32,11 +40,11 @@ void GameMap::loadGameMap(const std::string &path)
 		myfile >> data;
         switch(data)
         {
-            case 255:   m_grid.push_back(new Floor(false));
+            case 255:   m_grid.push_back(new Floor(false, m_textures[0]));
                         break;
-            case 155:   m_grid.push_back(new Floor(true));
+            case 155:   m_grid.push_back(new Floor(true, m_textures[0]));
                         break;
-            case 100:   m_grid.push_back(new Wall);
+            case 100:   m_grid.push_back(new Wall(m_textures[1]));
                         break;
             case 0:     m_grid.push_back(new Space);
                         break;
@@ -44,6 +52,9 @@ void GameMap::loadGameMap(const std::string &path)
                         break;
         }
     }
+
+    // close file
+	myfile.close();
 
     //int midX = (int)(m_sizeX*0.5);
     //int midY = (int)(m_sizeY*0.5);
@@ -57,9 +68,6 @@ void GameMap::loadGameMap(const std::string &path)
             m_grid[i*m_sizeX+j]->setPosZ(j);
         }
     }
-
-	// close file
-	myfile.close();
 }
 
 void GameMap::initObstacles(const int nbObstacles)
@@ -69,14 +77,22 @@ void GameMap::initObstacles(const int nbObstacles)
     //int midX = (int)(m_sizeX*0.5);
     //int midY = (int)(m_sizeY*0.5);
 
+    // select seed from time
+    unsigned seed = (unsigned int)std::chrono::system_clock::now().time_since_epoch().count();
+    // select a generator
+    std::mt19937 generator(seed);
+    // uniform int distribution
+    std::uniform_int_distribution<int> uniformIntXDistrib(0, m_sizeX-1);
+    std::uniform_int_distribution<int> uniformIntYDistrib(0, m_sizeY-1);
+  
     for (int i = 0; i < nbObstacles; i++)
     {
         do {
-            posX = rand() % m_sizeX;
-            posY = rand() % m_sizeY;
+            posX = uniformIntXDistrib(generator);
+            posY = uniformIntYDistrib(generator);
         } while(!isEmpty(posX, posY)); // can't put obstacle (we want a floor with no obstacle)
         
-        m_obstacles.push_back(new Obstacle(glm::vec3(posX, rand()%2 * 0.25 - 0.2, posY)));  //TODO: mieux gérer la hauteur des obstacles   
+        m_obstacles.push_back(new Obstacle(glm::vec3(posX, uniformIntXDistrib(generator)%2 * 0.25, posY), m_textures[2]));  //TODO: mieux gérer la hauteur des obstacles   
     }
 }
 
@@ -85,10 +101,21 @@ void GameMap::initLights(const int nbLights)
     //int midX =(int)(m_sizeX*0.5);
     //int midY =(int)(m_sizeY*0.5);
 
+    // select seed from time
+    unsigned seed = (unsigned int)std::chrono::system_clock::now().time_since_epoch().count();
+    // select a generator
+    std::mt19937 generator(seed);
+    // uniform int distribution
+    std::uniform_int_distribution<int> uniformIntXDistrib(0, m_sizeX-1);
+    std::uniform_int_distribution<int> uniformIntYDistrib(0, m_sizeY-1);
+    // uniform real distribution
+    std::uniform_real_distribution<float> uniformRealColorDistrib(0, 1);
+
+  
     for (int i = 0; i < nbLights; i++)
     {
-        glm::vec3 pos(rand() % m_sizeX, 0.2, rand() % m_sizeY);
-        glm::vec3 color(rand() % 100 * 0.01, rand() % 100 * 0.01, rand() % 100 * 0.01);
+        glm::vec3 pos(uniformIntXDistrib(generator), 0.2, uniformIntYDistrib(generator));
+        glm::vec3 color(uniformRealColorDistrib(generator), uniformRealColorDistrib(generator), uniformRealColorDistrib(generator));
 
         m_lights.push_back(new Light(pos, color));    
     }
