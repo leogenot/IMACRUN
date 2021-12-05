@@ -35,7 +35,7 @@ void Player::Jump()
     if (onGround) {
         isFalling = false;
         onGround  = false;
-        //      updateCameraVectors();
+        //      updatePlayerVectors();
     }
 }
 void Player::Rise(float deltatime)
@@ -56,26 +56,14 @@ void Player::Fall(float deltatime)
     else {
         m_pos.y -= (1.5f * deltatime);
     }
-    //updateCameraVectors();
-}
-
-
-
-
-
-
-
-bool Player::OnAngle()
-{
-    //if()
-    return false;
+    //updatePlayerVectors();
 }
 
 // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
 void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime)
 {
     bool  positionChanged = true;
-    float velocity        = m_camera->MovementSpeed * deltaTime;
+    float velocity        = MovementSpeed * deltaTime;
     std::cout << "X: " << m_pos.x << " " << "Y: " << m_pos.y << " " << "Z: "<< m_pos.z << std::endl;
     if (direction == FORWARD)
         m_pos += Front * velocity;
@@ -88,20 +76,14 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime)
     if (direction == ROTATELEFT)
     {
         Yaw -= 90; // player rotation
-        m_camera->Yaw -= 90; // camera rotation
-        m_camera->MAXYAWANGLE -= 90;
-        m_camera->MINYAWANGLE -= 90;
+        m_camera->setDirection(Yaw);
         m_pos = glm::ivec3(m_pos); // to make the player stay in a case and not in between
-        m_camera->updateCameraVectors();
     }
     if (direction == ROTATERIGHT)
     {
         Yaw += 90; // player rotation
-        m_camera->Yaw += 90; // camera rotation
-        m_camera->MAXYAWANGLE += 90;
-        m_camera->MINYAWANGLE += 90;
+        m_camera->setDirection(Yaw);
         m_pos = glm::ivec3(m_pos); // to make the player stay in a case and not in between
-        m_camera->updateCameraVectors();
     }
 
     if (onGround) {
@@ -132,10 +114,10 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime)
         }
         positionChanged = false;
     }
-    updateCameraVectors();
+    updatePlayerVectors();
 }
 
-void Player::updateCameraVectors()
+void Player::updatePlayerVectors()
 {
     // calculate the new Front vector
     glm::vec3 front;

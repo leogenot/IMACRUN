@@ -6,6 +6,12 @@
 #include <vector>
 #include "camera.h"
 
+constexpr float SENSITIVITY = 0.1f;
+constexpr float MAXPITCHANGLE = 45.0f;
+constexpr float MINYAWANGLE = 45.0f;
+constexpr float MAXYAWANGLE = 135.0f;
+
+
 // An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
 class eyeCamera : public Camera {
 
@@ -16,22 +22,30 @@ public:
     glm::vec3 Right;
     glm::vec3 WorldUp;
     // euler Angles
-    //float Yaw;
+    float Yaw;
     float Pitch;
+    float MinYawAngle;
+    float MaxYawAngle;
     // camera options
-    //float MovementSpeed;
-    float MouseSensitivity;
     float Zoom;
-
 
     // constructor with vectors
     eyeCamera(glm::vec3 position = glm::vec3(CAMSTART[0], CAMSTART[1], CAMSTART[2]))
-    : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MouseSensitivity(SENSITIVITY), Zoom(ZOOM), Pitch(PITCH), WorldUp(glm::vec3(0.0f, 1.0f, 0.0f))
+    : Front(glm::vec3(0.0f, 0.0f, -1.0f)), Zoom(ZOOM), Yaw(YAW), Pitch(PITCH), MinYawAngle(MINYAWANGLE), MaxYawAngle(MAXYAWANGLE), WorldUp(glm::vec3(0.0f, 1.0f, 0.0f))
     {
         m_cameraType = 1;
-        Position     = position;
+        m_position     = position;
+        MouseSensitivity = SENSITIVITY;
         updateCameraVectors();
     }
+
+    void setDirection(float degrees) 
+    {
+        Yaw = degrees;
+        MaxYawAngle = degrees + 45.0f;
+        MinYawAngle = degrees - 45.0f;
+        updateCameraVectors();
+    };
 
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
     glm::mat4 GetViewMatrix(glm::vec3 player_pos) const
@@ -54,10 +68,10 @@ public:
                 Pitch = MAXPITCHANGLE;
             if (Pitch < -MAXPITCHANGLE)
                 Pitch = -MAXPITCHANGLE;
-            if (Yaw > MAXYAWANGLE)
-                Yaw = MAXYAWANGLE;
-            if (Yaw < MINYAWANGLE)
-                Yaw = MINYAWANGLE; 
+            if (Yaw > MaxYawAngle)
+                Yaw = MaxYawAngle;
+            if (Yaw < MinYawAngle)
+                Yaw = MinYawAngle; 
         }
 
         // update Front, Right and Up Vectors using the updated Euler angles
@@ -77,12 +91,11 @@ public:
     // Resets all the camera values back to the defaults
     void Reset()
     {
-        Position         = glm::vec3(CAMSTART[0], CAMSTART[1], CAMSTART[2]);
+        m_position         = glm::vec3(CAMSTART[0], CAMSTART[1], CAMSTART[2]);
         WorldUp          = glm::vec3(0.0f, 1.0f, 0.0f);
         Yaw              = YAW;
         Pitch            = PITCH;
         Front            = glm::vec3(0.0f, 0.0f, -1.0f);
-        MovementSpeed    = SPEED;
         MouseSensitivity = SENSITIVITY;
         Zoom             = ZOOM;
         updateCameraVectors();

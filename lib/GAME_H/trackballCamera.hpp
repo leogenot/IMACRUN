@@ -17,16 +17,15 @@ private:
     float m_fAngleY;
     float m_fDistance;
 
-    // camera options
-    float m_mouseSensitivity;
-
 public:
 
     TrackballCamera(float angleX = 0, float angleY = 0) 
-    : m_fDistance(TRACKZOOM), m_fAngleX(angleX), m_fAngleY(angleY), m_mouseSensitivity(TRACKSENSITIVITY) {
+    : m_fDistance(TRACKZOOM), m_fAngleX(angleX), m_fAngleY(angleY) {
         m_cameraType = 0;
+        MouseSensitivity = TRACKSENSITIVITY;
     }
 
+    void setDirection(float degrees) {m_fAngleY += degrees*2*m_fDistance*m_fDistance;}; //TODO comprendre le rotate pour avoir la bonne valeur lors d'une rotation 90
     void rotateLeft(float degrees) {m_fAngleY += degrees;}
     void rotateUp(float degrees) {m_fAngleX -= degrees;}
 
@@ -44,8 +43,8 @@ public:
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true)
     {
-        xoffset *= m_mouseSensitivity;
-        yoffset *= m_mouseSensitivity;
+        xoffset *= MouseSensitivity;
+        yoffset *= MouseSensitivity;
 
         rotateLeft(xoffset);
         rotateUp(yoffset);
