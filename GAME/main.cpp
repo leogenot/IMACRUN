@@ -16,9 +16,6 @@ static App& get_app(GLFWwindow* window)
 const unsigned int window_width  = 1280;
 const unsigned int window_height = 720;
 
-// camera
-//Camera          camera(glm::vec3(0.0f, 0.0f, 3.0f));
-//TrackballCamera Trackcamera;
 TrackballCamera trackball_camera;
 eyeCamera       eye_camera;
 Camera*         camera = &eye_camera;
@@ -34,6 +31,8 @@ bool MouseOut = true;
 
 bool show_demo_window    = false;
 bool show_another_window = false;
+
+bool paused = false;
 
 // light
 glm::vec3  lightDir(-0.8, -1.0, -0.6);
@@ -116,12 +115,9 @@ int main()
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -142,80 +138,79 @@ int main()
         get_app(window).key_callback(window, key, scancode, action, mods);
     });
     /* Loop until the user closes the window */
+
     while (!glfwWindowShouldClose(window)) {
-        // per-frame time logic
-        // --------------------
-        float currentFrame = (float)glfwGetTime();
-        deltaTime          = currentFrame - lastFrame;
-        lastFrame          = currentFrame;
-
-        // render
-        // ------
-        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // Start the Dear ImGui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window);
-
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-        if (show_demo_window) {
-            static float f       = 0.0f;
-            static int   counter = 0;
-
-            ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
-
-            ImGui::Text("This is some useful text.");          // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
-            ImGui::Checkbox("Another Window", &show_another_window);
-
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-            if (ImGui::Button("Button")) // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
-        }
-
-        // 3. Show another simple window.
-        if (show_another_window) {
-            ImGui::Begin("Another Window", &show_another_window); // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            ImGui::Text("Hello from another window!");
-            if (ImGui::Button("Close Me"))
-                show_another_window = false;
-            ImGui::End();
-        }
-
-        glm::mat4 model      = glm::mat4(1.0f);
-        glm::mat4 view       = player.getCamera()->GetViewMatrix(player.getPos());
-        glm::mat4 projection = glm::perspective(eye_camera.Zoom, (float)window_width / (float)window_height, 0.1f, 100.0f);
-
         processInput(window);
+        if (!paused) {
+            // per-frame time logic
+            // --------------------
+            float currentFrame = (float)glfwGetTime();
+            deltaTime          = currentFrame - lastFrame;
+            lastFrame          = currentFrame;
+            // render
+            // ------
+            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        if (player.getCamera()->getCameraType() == 0) //no drawing with eye camera
-            player.draw(view, projection, model, ourModel);
+            glm::mat4 model      = glm::mat4(1.0f);
+            glm::mat4 view       = player.getCamera()->GetViewMatrix(player.getPos());
+            glm::mat4 projection = glm::perspective(eye_camera.Zoom, (float)window_width / (float)window_height, 0.1f, 100.0f);
 
-        gamemap.drawGameMap(view, projection, model, player.getCamera()->getPos());
-        skybox.draw(view, projection, model, player.getCamera()->GetViewMatrix(player.getPos()));
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
-        if (MouseIn)
+            if (player.getCamera()->getCameraType() == 0) //no drawing with eye camera
+                player.draw(view, projection, model, ourModel);
+
+            gamemap.drawGameMap(view, projection, model, player.getCamera()->getPos());
+            skybox.draw(view, projection, model, player.getCamera()->GetViewMatrix(player.getPos()));
+            // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+            // -------------------------------------------------------------------------------
             textrendering.RenderText("Flash McQueen", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
-        else
             textrendering.RenderText("KATCHAAAAW", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
+        }
+        else {
+            // Start the Dear ImGui frame
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
 
-        // Renders the ImGUI elements
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+            if (show_demo_window)
+                ImGui::ShowDemoWindow(&show_demo_window);
+
+            // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+            if (show_demo_window) {
+                static float f       = 0.0f;
+                static int   counter = 0;
+
+                ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
+
+                ImGui::Text("This is some useful text.");          // Display some text (you can use a format strings too)
+                ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
+                ImGui::Checkbox("Another Window", &show_another_window);
+
+                ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+                ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
+                if (ImGui::Button("Button")) // Buttons return true when clicked (most widgets return true when edited/activated)
+                    counter++;
+                ImGui::SameLine();
+                ImGui::Text("counter = %d", counter);
+
+                ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+                ImGui::End();
+            }
+
+            // 3. Show another simple window.
+            if (show_another_window) {
+                ImGui::Begin("Another Window", &show_another_window); // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+                ImGui::Text("Hello from another window!");
+                if (ImGui::Button("Close Me"))
+                    show_another_window = false;
+                ImGui::End();
+            }
+            // Renders the ImGUI elements
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        }
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -233,22 +228,21 @@ void processInput(GLFWwindow* window)
         glfwSetWindowShouldClose(window, true);
 
     //Mouse capture
-    static int oldStateMouseapture = GLFW_RELEASE;
-    int        newStateMouseapture = glfwGetKey(window, GLFW_KEY_ESCAPE);
-    if (newStateMouseapture == GLFW_RELEASE && oldStateMouseapture == GLFW_PRESS) {
-        if (MouseIn) {
+    static int oldStatePause = GLFW_RELEASE;
+    int        newStatePause = glfwGetKey(window, GLFW_KEY_ESCAPE);
+    if (newStatePause == GLFW_RELEASE && oldStatePause == GLFW_PRESS) {
+        if (paused) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            MouseIn          = false;
-            MouseOut         = true;
-            show_demo_window = true;
+            show_demo_window = !show_demo_window;
+            paused = false;
         }
         else {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            MouseIn = true;
-            show_demo_window = false;
+            paused = true;
+            show_demo_window = !show_demo_window;
         }
     }
-    oldStateMouseapture = newStateMouseapture;
+    oldStatePause = newStatePause;
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         player.ProcessKeyboard(FORWARD, deltaTime);
