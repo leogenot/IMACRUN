@@ -40,7 +40,7 @@ public:
     void size_callback(int width, int height);
     void destroy();
     bool fixedCamera = true;
-
+    
     
 
 private:

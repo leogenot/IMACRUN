@@ -32,6 +32,9 @@ bool   fixedCamera = false;
 bool MouseIn  = false;
 bool MouseOut = true;
 
+bool show_demo_window    = false;
+bool show_another_window = false;
+
 // light
 glm::vec3  lightDir(-0.8, -1.0, -0.6);
 glm::vec3  lightColor(0.7, 0.9, 1.0);
@@ -76,7 +79,7 @@ int main()
     glfwSetScrollCallback(window, scroll_callback);
 
     // tell GLFW to capture our mouse
-    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -100,7 +103,7 @@ int main()
     player.initPlayer();
     // generate gamemap whith file
     gamemap.loadGameMap("assets/map16.pgm");
-    int nbObstacles = 50;
+    int nbObstacles = 10;
     int nbLights    = 5;
     gamemap.initObstacles(nbObstacles);
     gamemap.initLights(nbLights);
@@ -111,7 +114,8 @@ int main()
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO();
+    (void)io;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
@@ -124,8 +128,7 @@ int main()
     ImGui_ImplOpenGL3_Init("#version 330");
 
     // Our state
-    bool show_demo_window = true;
-    bool show_another_window = false;
+
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     /* Create the App */
@@ -146,7 +149,6 @@ int main()
         deltaTime          = currentFrame - lastFrame;
         lastFrame          = currentFrame;
 
-        
         // render
         // ------
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -162,20 +164,20 @@ int main()
             ImGui::ShowDemoWindow(&show_demo_window);
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-        {
-            static float f = 0.0f;
-            static int counter = 0;
+        if (show_demo_window) {
+            static float f       = 0.0f;
+            static int   counter = 0;
 
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+            ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
 
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+            ImGui::Text("This is some useful text.");          // Display some text (you can use a format strings too)
+            ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
             ImGui::Checkbox("Another Window", &show_another_window);
 
             ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
             ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
 
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+            if (ImGui::Button("Button")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 counter++;
             ImGui::SameLine();
             ImGui::Text("counter = %d", counter);
@@ -185,9 +187,8 @@ int main()
         }
 
         // 3. Show another simple window.
-        if (show_another_window)
-        {
-            ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+        if (show_another_window) {
+            ImGui::Begin("Another Window", &show_another_window); // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
             ImGui::Text("Hello from another window!");
             if (ImGui::Button("Close Me"))
                 show_another_window = false;
@@ -207,7 +208,7 @@ int main()
         skybox.draw(view, projection, model, player.getCamera()->GetViewMatrix(player.getPos()));
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
-        if(MouseIn)
+        if (MouseIn)
             textrendering.RenderText("Flash McQueen", 25.0f, 25.0f, 1.0f, glm::vec3(0.5, 0.8f, 0.2f));
         else
             textrendering.RenderText("KATCHAAAAW", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
@@ -237,14 +238,14 @@ void processInput(GLFWwindow* window)
     if (newStateMouseapture == GLFW_RELEASE && oldStateMouseapture == GLFW_PRESS) {
         if (MouseIn) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            MouseIn  = false;
-            MouseOut = true;
-            
+            MouseIn          = false;
+            MouseOut         = true;
+            show_demo_window = true;
         }
         else {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             MouseIn = true;
-            
+            show_demo_window = false;
         }
     }
     oldStateMouseapture = newStateMouseapture;
