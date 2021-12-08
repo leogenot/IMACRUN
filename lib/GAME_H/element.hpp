@@ -29,6 +29,7 @@ public:
     void setPosX(const int posX) {m_pos.x = posX;};
     void setPosY(const int posY) {m_pos.y = posY;};
     void setPosZ(const int posZ) {m_pos.z = posZ;};
+    virtual bool collision() const = 0;
 
     //virtual fonction de collision
     bool possibleAdd; //if we can add another element (obsacle, money)

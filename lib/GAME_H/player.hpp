@@ -5,6 +5,7 @@
 #include <vector>
 #include "camera.h"
 #include "model.hpp"
+#include "gamemap.hpp"
 
 
 constexpr float SPEED       = 3.f;
@@ -55,7 +56,7 @@ public:
     void Rise(float deltatime);
     void Fall(float deltatime);
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-    void ProcessKeyboard(Camera_Movement direction, float deltaTime);
+    void ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap gamemap);
     // calculates the front vector from the Camera's (updated) Euler Angles
     void updatePlayerVectors();
 };

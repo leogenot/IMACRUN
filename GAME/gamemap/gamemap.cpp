@@ -140,6 +140,11 @@ bool GameMap::onAngle(const glm::vec3 pos) const
     return m_grid[(int)pos.x*m_sizeX + (int)pos.z]->canTurn; //test if player is on a turn case
 };
 
+bool GameMap::collision(const glm::vec3 pos) const
+{ 
+    return m_grid[(int)pos.x*m_sizeX + (int)pos.z]->collision(); //test if player is on collision
+};
+
 void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos) const
 {
     //draw path

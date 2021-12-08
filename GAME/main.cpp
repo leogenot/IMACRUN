@@ -288,21 +288,21 @@ void processInput(GLFWwindow* window)
     oldStatePause = newStatePause;
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        player.ProcessKeyboard(FORWARD, deltaTime);
+        player.ProcessKeyboard(FORWARD, deltaTime, gamemap);
 
     if (gamemap.onAngle(player.getPos())) // Rotate player
     {
         static int oldStateRotateLeft = GLFW_RELEASE;
         int        newStateRotateLeft = glfwGetKey(window, GLFW_KEY_A);
         if (newStateRotateLeft == GLFW_RELEASE && oldStateRotateLeft == GLFW_PRESS) {
-            player.ProcessKeyboard(ROTATELEFT, deltaTime);
+            player.ProcessKeyboard(ROTATELEFT, deltaTime, gamemap);
         }
         oldStateRotateLeft = newStateRotateLeft;
 
         static int oldStateRotateRight = GLFW_RELEASE;
         int        newStateRotateRight = glfwGetKey(window, GLFW_KEY_D);
         if (newStateRotateRight == GLFW_RELEASE && oldStateRotateRight == GLFW_PRESS) {
-            player.ProcessKeyboard(ROTATERIGHT, deltaTime);
+            player.ProcessKeyboard(ROTATERIGHT, deltaTime, gamemap);
         }
         oldStateRotateRight = newStateRotateRight;
     }
@@ -312,7 +312,7 @@ void processInput(GLFWwindow* window)
         static int oldStateLeft = GLFW_RELEASE;
         int        newStateLeft = glfwGetKey(window, GLFW_KEY_A);
         if (newStateLeft == GLFW_RELEASE && oldStateLeft == GLFW_PRESS) {
-            player.ProcessKeyboard(LEFT, deltaTime);
+            player.ProcessKeyboard(LEFT, deltaTime, gamemap);
         }
         oldStateLeft = newStateLeft;
 
@@ -320,7 +320,7 @@ void processInput(GLFWwindow* window)
         static int oldStateRight = GLFW_RELEASE;
         int        newStateRight = glfwGetKey(window, GLFW_KEY_D);
         if (newStateRight == GLFW_RELEASE && oldStateRight == GLFW_PRESS) {
-            player.ProcessKeyboard(RIGHT, deltaTime);
+            player.ProcessKeyboard(RIGHT, deltaTime, gamemap);
         }
         oldStateRight = newStateRight;
     }

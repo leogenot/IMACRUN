@@ -60,17 +60,16 @@ void Player::Fall(float deltatime)
 }
 
 // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime)
+void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap gamemap)
 {
     bool  positionChanged = true;
     float velocity        = MovementSpeed * deltaTime;
-    std::cout << "X: " << m_pos.x << " " << "Y: " << m_pos.y << " " << "Z: "<< m_pos.z << std::endl;
     if (direction == FORWARD)
         m_pos += Front * velocity;
 
-    if (direction == LEFT)
+    if (direction == LEFT && !gamemap.collision(m_pos - Right))
         m_pos -= Right; // * velocity; //TODO : transition
-    if (direction == RIGHT)
+    if (direction == RIGHT && !gamemap.collision(m_pos + Right))
         m_pos += Right; // * velocity; //TODO : transition
 
     if (direction == ROTATELEFT)
@@ -98,8 +97,8 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime)
     }
 
     // check collision
-    if (m_pos.x > 16.f || m_pos.z > 16.f ||
-        m_pos.x < 1 || m_pos.z < -1.f) {
+    /*if (m_pos.x > 16.f || m_pos.z > 16.f ||
+        m_pos.x < 1 || m_pos.z < -1) {
         if (direction == FORWARD) {
             m_pos -= Front * velocity;
         }
@@ -113,8 +112,9 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime)
             m_pos -= Right;
         }
         positionChanged = false;
-    }
+    }*/
     updatePlayerVectors();
+    std::cout << "X: " << m_pos.x << " " << "Y: " << m_pos.y << " " << "Z: "<< m_pos.z << std::endl;
 }
 
 void Player::updatePlayerVectors()
