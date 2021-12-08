@@ -116,6 +116,7 @@ int main()
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     (void)io;
+    io.Fonts->AddFontFromFileTTF("assets/fonts/Antonio-Regular.ttf", 70);
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
