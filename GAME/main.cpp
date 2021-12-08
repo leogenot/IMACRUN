@@ -143,12 +143,12 @@ int main()
 
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
+        float currentFrame = (float)glfwGetTime();
         if (!paused) {
             // per-frame time logic
             // --------------------
-            float currentFrame = (float)glfwGetTime();
+            
             deltaTime          = currentFrame - lastFrame;
-            lastFrame          = currentFrame;
             // render
             // ------
             glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -169,6 +169,7 @@ int main()
             textrendering.RenderText("KATCHAAAAW", 540.0f, 570.0f, 0.5f, glm::vec3(0.3, 0.7f, 0.9f));
         }
         else {
+            deltaTime = 0;
             // Start the Dear ImGui frame
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
@@ -255,8 +256,11 @@ int main()
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         }
+        
+        lastFrame          = currentFrame;
         glfwSwapBuffers(window);
         glfwPollEvents();
+
     }
 
     app.destroy();
@@ -279,17 +283,22 @@ void processInput(GLFWwindow* window)
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             show_main_menu_window = !show_main_menu_window;
             paused           = false;
+            std::cout << "not paused" << std::endl;
+            
         }
         else {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             paused           = true;
             show_main_menu_window = !show_main_menu_window;
+            std::cout << "paused" << std::endl;
+            
+            
         }
     }
     oldStatePause = newStatePause;
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        player.ProcessKeyboard(FORWARD, deltaTime, gamemap);
+    //if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        player.ProcessKeyboard(FORWARD,deltaTime, gamemap);
 
     if (gamemap.onAngle(player.getPos())) // Rotate player
     {
