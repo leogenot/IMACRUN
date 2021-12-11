@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.0)
 # Set project name
 project(IMACRUN C CXX)
 # Set C++ version
-set(CXX_STANDARD 11)
+set(CXX_STANDARD 14)
 
 ##
 # Boring setup

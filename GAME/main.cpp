@@ -29,9 +29,9 @@ bool   fixedCamera = false;
 bool MouseIn  = false;
 bool MouseOut = true;
 
-bool show_main_menu_window    = true;
-bool show_quit_window = false;
-bool show_options_window = false;
+bool show_main_menu_window = true;
+bool show_quit_window      = false;
+bool show_options_window   = false;
 
 bool paused = true;
 
@@ -147,8 +147,9 @@ int main()
         if (!paused) {
             // per-frame time logic
             // --------------------
-            
-            deltaTime          = currentFrame - lastFrame;
+
+            deltaTime = currentFrame - lastFrame;
+
             // render
             // ------
             glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -197,7 +198,7 @@ int main()
                 if (ImGui::Button("Resume Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
                     show_main_menu_window = false;
-                    paused           = !paused;
+                    paused                = !paused;
                 }
 
                 if (ImGui::Button("Save Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
@@ -209,7 +210,7 @@ int main()
                 if (ImGui::Button("Options")) // Buttons return true when clicked (most widgets return true when edited/activated)
                     show_options_window = true;
 
-                if(ImGui::Button("Quit Game"))
+                if (ImGui::Button("Quit Game"))
                     show_quit_window = true; // Buttons return true when clicked (most widgets return true when edited/activated)
 
                 ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -256,11 +257,10 @@ int main()
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         }
-        
-        lastFrame          = currentFrame;
+
+        lastFrame = currentFrame;
         glfwSwapBuffers(window);
         glfwPollEvents();
-
     }
 
     app.destroy();
@@ -280,25 +280,27 @@ void processInput(GLFWwindow* window)
     int        newStatePause = glfwGetKey(window, GLFW_KEY_ESCAPE);
     if (newStatePause == GLFW_RELEASE && oldStatePause == GLFW_PRESS) {
         if (paused) {
+            for (int i = 3; i > 0; --i) {
+                std::cout << i << std::endl;
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             show_main_menu_window = !show_main_menu_window;
-            paused           = false;
+
+            paused = false;
             std::cout << "not paused" << std::endl;
-            
         }
         else {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            paused           = true;
+            paused                = true;
             show_main_menu_window = !show_main_menu_window;
             std::cout << "paused" << std::endl;
-            
-            
         }
     }
     oldStatePause = newStatePause;
 
     //if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        player.ProcessKeyboard(FORWARD,deltaTime, gamemap);
+    player.ProcessKeyboard(FORWARD, deltaTime, gamemap);
 
     if (gamemap.onAngle(player.getPos())) // Rotate player
     {
