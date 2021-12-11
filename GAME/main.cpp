@@ -29,11 +29,11 @@ bool   fixedCamera = false;
 bool MouseIn  = false;
 bool MouseOut = true;
 
-bool show_main_menu_window    = false;
+bool show_main_menu_window    = true;
 bool show_quit_window = false;
 bool show_options_window = false;
 
-bool paused = false;
+bool paused = true;
 
 // light
 glm::vec3  lightDir(-0.8, -1.0, -0.6);
@@ -79,7 +79,7 @@ int main()
     glfwSetScrollCallback(window, scroll_callback);
 
     // tell GLFW to capture our mouse
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
