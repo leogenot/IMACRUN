@@ -148,7 +148,7 @@ int main()
             // per-frame time logic
             // --------------------
 
-            deltaTime = currentFrame - lastFrame;
+            deltaTime = std::min(currentFrame - lastFrame, 1.f / 60.f);
 
             // render
             // ------
@@ -284,6 +284,7 @@ void processInput(GLFWwindow* window)
                 std::cout << i << std::endl;
                 std::this_thread::sleep_for(std::chrono::seconds(1));
             }
+            lastFrame = (float)glfwGetTime();
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             show_main_menu_window = !show_main_menu_window;
 
