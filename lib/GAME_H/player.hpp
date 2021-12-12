@@ -8,7 +8,7 @@
 #include "gamemap.hpp"
 
 
-constexpr float SPEED       = 3.f;
+constexpr float SPEED       = 1.f;
 constexpr float PLAYERSTART[3] = {2.0f, 0.0f, 0.0f};
 constexpr float PLAYERJUMPHEIGHT = PLAYERSTART[1] + 0.4f;
 
@@ -20,6 +20,8 @@ private:
     Shader m_shader;
     unsigned int m_texture;
     unsigned int m_VAO, m_VBO;
+
+    int m_score;
 
 public:
     bool onGround;
@@ -37,7 +39,7 @@ public:
 
     Player(Camera *camera, glm::vec3 pos = glm::vec3(PLAYERSTART[0], PLAYERSTART[1], PLAYERSTART[2])) 
     : m_camera(camera), m_pos(pos), onGround(true), isFalling(false), 
-    Front(glm::vec3(0., 0., -1.)), MovementSpeed(SPEED), Yaw(YAW), Pitch(PITCH), WorldUp(0., 1., 0.) 
+    Front(glm::vec3(0., 0., -1.)), MovementSpeed(SPEED), Yaw(YAW), Pitch(PITCH), WorldUp(0., 1., 0.), m_score(0) 
     {
         updatePlayerVectors();
     };
@@ -49,6 +51,9 @@ public:
     };
 
     glm::vec3 getPos() const {return m_pos;};
+    int getScore() const {return m_score;};
+    void addScore() {m_score++;};
+
     void initPlayer();
     void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, Model modelObj) ;
 

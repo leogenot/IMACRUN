@@ -1,7 +1,7 @@
 #include "GAME_H/light.hpp"
 #include "GAME_H/utilityFunction.hpp"
 
-Light::Light(const glm::vec3 pos, const glm::vec3 color) : m_pos(pos), m_color(color)
+Light::Light(const glm::ivec3 pos, const glm::vec3 color) : m_pos(pos), m_color(color)
 {
     Shader shader("GAME/shaders/lightSource.vs", "GAME/shaders/lightSource.fs");
     m_shader = shader;

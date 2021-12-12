@@ -11,13 +11,13 @@ Floor::Floor(bool angle, unsigned int texture) : m_texture(texture)
 
     float planeVertices[] = {
         // positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
-         0.5f, -0.25f,  0.5f, 1.0f, 0.0f, 0.0f, 2.0f, 0.0f,
-        -0.5f, -0.25f,  0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-        -0.5f, -0.25f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 2.0f,
+         0.5f, 0.0f,  0.5f, 1.0f, 0.0f, 0.0f, 2.0f, 0.0f,
+        -0.5f, 0.0f,  0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        -0.5f, 0.0f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 2.0f,
 
-         0.5f, -0.25f,  0.5f, 1.0f, 0.0f, 0.0f, 2.0f, 0.0f,
-        -0.5f, -0.25f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 2.0f,
-         0.5f, -0.25f, -0.5f, 1.0f, 0.0f, 0.0f, 2.0f, 2.0f};
+         0.5f, 0.0f,  0.5f, 1.0f, 0.0f, 0.0f, 2.0f, 0.0f,
+        -0.5f, 0.0f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 2.0f,
+         0.5f, 0.0f, -0.5f, 1.0f, 0.0f, 0.0f, 2.0f, 2.0f};
 
     // VAO
     glGenVertexArrays(1, &m_VAO);
@@ -53,7 +53,7 @@ void Floor::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec
         std::string uniformNamePosition = "pointLights[" + std::to_string(i) + "].position";
         std::string uniformNameColor = "pointLights[" + std::to_string(i) + "].color";
         
-        m_shader.setVec3(uniformNamePosition, (*it)->getPos());
+        m_shader.setVec3(uniformNamePosition, glm::vec3((*it)->getPos()));
         m_shader.setVec3(uniformNameColor, (*it)->getColor());
         i++;
     }

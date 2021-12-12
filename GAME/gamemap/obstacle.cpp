@@ -85,7 +85,7 @@ void Obstacle::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::
         std::string uniformNamePosition = "pointLights[" + std::to_string(i) + "].position";
         std::string uniformNameColor = "pointLights[" + std::to_string(i) + "].color";
         
-        m_shader.setVec3(uniformNamePosition, (*it)->getPos());
+        m_shader.setVec3(uniformNamePosition,  glm::vec3((*it)->getPos()));
         m_shader.setVec3(uniformNameColor, (*it)->getColor());
         i++;
     }

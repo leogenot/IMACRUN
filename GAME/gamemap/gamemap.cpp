@@ -92,12 +92,14 @@ void GameMap::initObstacles(const int nbObstacles)
             posY = uniformIntYDistrib(generator);
         } while(!isEmpty(posX, posY)); // can't put obstacle (we want a floor with no obstacle)
         
-        m_obstacles.push_back(new Obstacle(glm::vec3(posX, uniformIntXDistrib(generator)%2 * 0.25, posY), m_textures[2]));  //TODO: mieux gérer la hauteur des obstacles   
+        m_obstacles.push_back(new Obstacle(glm::vec3(posX, uniformIntXDistrib(generator)%2 *0.5, posY), m_textures[2]));  //TODO: mieux gérer la hauteur des obstacles   
     }
 }
 
 void GameMap::initLights(const int nbLights)
 {
+    int posX;
+    int posY;
     //int midX =(int)(m_sizeX*0.5);
     //int midY =(int)(m_sizeY*0.5);
 
@@ -111,14 +113,29 @@ void GameMap::initLights(const int nbLights)
     // uniform real distribution
     std::uniform_real_distribution<float> uniformRealColorDistrib(0, 1);
 
-  
+    
     for (int i = 0; i < nbLights; i++)
+    {
+        do {
+            posX = uniformIntXDistrib(generator);
+            posY = uniformIntYDistrib(generator);
+        } while(!isEmpty(posX, posY)); // can't put light (we want a floor with no obstacle)
+        
+        glm::ivec3 pos(posX, 0, posY);
+        glm::vec3 color(uniformRealColorDistrib(generator), uniformRealColorDistrib(generator), uniformRealColorDistrib(generator));
+        m_lights.push_back(new Light(pos, color));
+
+        m_grid[posX*m_sizeX+posY]->point = true;
+        m_grid[posX*m_sizeX+posY]->possibleAdd = false;
+    }
+
+    /*for (int i = 0; i < nbLights; i++)
     {
         glm::vec3 pos(uniformIntXDistrib(generator), 0.2, uniformIntYDistrib(generator));
         glm::vec3 color(uniformRealColorDistrib(generator), uniformRealColorDistrib(generator), uniformRealColorDistrib(generator));
 
         m_lights.push_back(new Light(pos, color));    
-    }
+    }*/
 }
 
 bool GameMap::isEmpty(const int posX, const int posZ) const
@@ -129,7 +146,7 @@ bool GameMap::isEmpty(const int posX, const int posZ) const
     // if there is already an obstacle
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++)
     {
-        if((*it)->getPosX() == posX && (*it)->getPosZ() == posZ)
+        if((*it)->getPos().x == posX && (*it)->getPos().z == posZ)
             return false;
     }
     return m_grid[posX*m_sizeX+posZ]->possibleAdd;
@@ -138,6 +155,25 @@ bool GameMap::isEmpty(const int posX, const int posZ) const
 bool GameMap::onAngle(const glm::vec3 pos) const
 { 
     return m_grid[(int)pos.x*m_sizeX + (int)pos.z]->canTurn; //test if player is on a turn case
+};
+
+bool GameMap::onPoint(const glm::vec3 pos)
+{ 
+    if (m_grid[(int)pos.x*m_sizeX + (int)pos.z]->point)
+    {
+        // Destruction of point
+        m_grid[(int)pos.x*m_sizeX + (int)pos.z]->point = false; 
+        for(auto it = m_lights.begin(); it != m_lights.end(); it++)
+        {
+            if((*it)->getPos().x == (int)pos.x && (*it)->getPos().z == (int)pos.z)
+            {
+                std::cout << "delete" << std::endl;
+                //m_lights.erase(it); //TODO : comprendre pourquoi ça marche pas !!!!!
+            }
+        }
+        return true;
+    }
+    return false;
 };
 
 bool GameMap::collision(const glm::vec3 pos) const

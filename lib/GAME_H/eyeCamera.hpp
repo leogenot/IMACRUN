@@ -48,9 +48,11 @@ public:
     };
 
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
-    glm::mat4 GetViewMatrix(glm::vec3 player_pos) const
+    glm::mat4 GetViewMatrix(glm::vec3 player_pos)
     {
-        return glm::lookAt(player_pos, player_pos + Front, Up);
+        m_position = player_pos;
+        m_position.y += 0.2;
+        return glm::lookAt(m_position, m_position + Front, Up);
     }
 
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
