@@ -152,7 +152,8 @@ bool GameMap::onPoint(const glm::vec3 pos)
         for (auto it = m_lights.begin(); it != m_lights.end(); it++) {
             if ((*it)->getPos().x == (int)pos.x && (*it)->getPos().z == (int)pos.z) {
 
-                std::remove(m_lights.begin(), m_lights.end(), *it);
+                //std::remove(m_lights.begin(), m_lights.end(), *it);
+                m_lights.erase(it);
                 return true;
             }
         }
@@ -163,17 +164,14 @@ bool GameMap::onPoint(const glm::vec3 pos)
 
 bool GameMap::onObstacle(const glm::vec3 pos)
 {
-    
-        for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++) {
-            if ((*it)->getPos().x == (int)pos.x && (*it)->getPos().z == (int)pos.z && (*it)->getPos().y == (int)pos.y) {
-
-                std::remove(m_obstacles.begin(), m_obstacles.end(), *it);
-                std::cout << "Collision obstacle" << std::endl;
-                return true;
-            }
+    for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++) {
+        if ((*it)->getPos().x == (int)pos.x && (*it)->getPos().z == (int)pos.z && pos.y > (*it)->getPos().y - 0.2 && pos.y < (*it)->getPos().y + 0.2) // TODO : remplacer 0.2 par la taille de l'obstacle (hauteur)
+        {
+            std::remove(m_obstacles.begin(), m_obstacles.end(), *it);
+            std::cout << "Collision obstacle" << std::endl;
+            return true;
         }
-        
-    
+    }
     return false;
 };
 
