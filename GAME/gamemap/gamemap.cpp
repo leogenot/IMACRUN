@@ -151,9 +151,6 @@ bool GameMap::onPoint(const glm::vec3 pos)
         m_grid[(int)pos.x * m_sizeX + (int)pos.z]->point = false;
         for (auto it = m_lights.begin(); it != m_lights.end(); it++) {
             if ((*it)->getPos().x == (int)pos.x && (*it)->getPos().z == (int)pos.z) {
-                
-
-
                 std::remove(m_lights.begin(), m_lights.end(), *it);
 
                 //m_lights.erase(it); //TODO : comprendre pourquoi ça marche pas !!!!!
