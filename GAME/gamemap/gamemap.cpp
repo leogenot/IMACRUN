@@ -6,7 +6,7 @@
 void GameMap::loadGameMap(const std::string& path)
 {
     //initialize tab of id
-    m_textures.push_back(loadTexture<const char>("assets/textures/floor/brickwall.jpg"));
+    m_textures.push_back(loadTexture<const char>("assets/textures/floor/ground.jpg"));
     m_textures.push_back(loadTexture<const char>("assets/textures/cube/cube.jpg"));
     m_textures.push_back(loadTexture<const char>("assets/textures/cube/cube.jpg"));
 
@@ -158,6 +158,22 @@ bool GameMap::onPoint(const glm::vec3 pos)
         }
         return true;
     }
+    return false;
+};
+
+bool GameMap::onObstacle(const glm::vec3 pos)
+{
+    
+        for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++) {
+            if ((*it)->getPos().x == (int)pos.x && (*it)->getPos().z == (int)pos.z && (*it)->getPos().y == (int)pos.y) {
+
+                std::remove(m_obstacles.begin(), m_obstacles.end(), *it);
+                std::cout << "Collision obstacle" << std::endl;
+                return true;
+            }
+        }
+        
+    
     return false;
 };
 

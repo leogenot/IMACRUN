@@ -113,6 +113,10 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap
     if(gamemap.onPoint(m_pos))
         addScore();
 
+    // check light collision
+    if(gamemap.onObstacle(m_pos))
+        removeLife();
+
     updatePlayerVectors();
     //std::cout << "X: " << m_pos.x << " " << "Y: " << m_pos.y << " " << "Z: "<< m_pos.z << std::endl;
 }

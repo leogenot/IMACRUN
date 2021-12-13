@@ -22,6 +22,7 @@ private:
     unsigned int m_VAO, m_VBO;
 
     int m_score;
+    int m_life = 5;
 
 public:
     bool onGround;
@@ -39,7 +40,7 @@ public:
 
     Player(Camera *camera, glm::vec3 pos = glm::vec3(PLAYERSTART[0], PLAYERSTART[1], PLAYERSTART[2])) 
     : m_camera(camera), m_pos(pos), onGround(true), isFalling(false), 
-    Front(glm::vec3(0., 0., -1.)), MovementSpeed(SPEED), Yaw(YAW), Pitch(PITCH), WorldUp(0., 1., 0.), m_score(0) 
+    Front(glm::vec3(0., 0., -1.)), MovementSpeed(SPEED), Yaw(YAW), Pitch(PITCH), WorldUp(0., 1., 0.), m_score(0), m_life(5) 
     {
         updatePlayerVectors();
     };
@@ -53,6 +54,9 @@ public:
     glm::vec3 getPos() const {return m_pos;};
     int getScore() const {return m_score;};
     void addScore() {m_score++;};
+
+    int getLife() const {return m_life;};
+    void removeLife() {m_life--;};
 
     void initPlayer();
     void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, Model modelObj) ;

@@ -33,6 +33,7 @@ bool MouseOut = true;
 bool show_main_menu_window = true;
 bool show_quit_window      = false;
 bool show_options_window   = false;
+bool show_looser_window    = false;
 
 bool paused = true;
 
@@ -170,8 +171,14 @@ int main()
             // -------------------------------------------------------------------------------
             textrendering.RenderText("Flash McQueen", 25.0f, 25.0f, 1.0f, glm::vec3(0.5f, 0.8f, 0.2f));
             textrendering.RenderText("KATCHAAAAW", 540.0f, 570.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f));
-            textrendering.RenderText("Score : "+std::to_string(player.getScore()), 1100.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
+            textrendering.RenderText("Score : " + std::to_string(player.getScore()), 1100.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
+            textrendering.RenderText("Life : " + std::to_string(player.getLife()), 1000.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
 
+            /* int player_life = player.getLife();
+            if (player_life = 0) {
+                paused             = !paused;
+                show_looser_window = true;
+            } */
         }
         else {
             deltaTime = 0;
@@ -198,7 +205,6 @@ int main()
 
                 if (ImGui::Button("New Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
-
                     show_main_menu_window = false;
                     paused                = !paused;
                     player.ResetPlayer();
@@ -262,6 +268,28 @@ int main()
                     show_quit_window = false;
                 if (ImGui::Button("YES quit game"))
                     glfwSetWindowShouldClose(window, true);
+                ImGui::End();
+            }
+
+            // Looser window
+            if (show_looser_window) {
+                static bool             use_work_area = true;
+                static ImGuiWindowFlags flags         = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings;
+
+                // We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
+                // Based on your use case you may want one of the other.
+                const ImGuiViewport* viewport = ImGui::GetMainViewport();
+                ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
+                ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
+
+                ImGui::Begin("You lost the game...", &show_looser_window, flags);
+                if (ImGui::Button("New Game")) {
+                    show_looser_window    = false;
+                    show_main_menu_window = false;
+                    paused                = !paused;
+                    player.ResetPlayer();
+                    CountDown(countdown_time);
+                }
                 ImGui::End();
             }
             // Renders the ImGUI elements
