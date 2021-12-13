@@ -1,9 +1,9 @@
 #include "GAME_H/gamemap.hpp"
-#include <random>
 #include <chrono>
+#include <random>
 #include "GAME_H/utilityFunction.hpp"
 
-void GameMap::loadGameMap(const std::string &path)
+void GameMap::loadGameMap(const std::string& path)
 {
     //initialize tab of id
     m_textures.push_back(loadTexture<const char>("assets/textures/floor/brickwall.jpg"));
@@ -15,18 +15,16 @@ void GameMap::loadGameMap(const std::string &path)
     myfile.open(path, std::ios::in | std::ios::binary);
 
     // error
-    if (!myfile.is_open())
-    {
+    if (!myfile.is_open()) {
         std::cout << "Can not open file: " << path << std::endl;
         return;
     }
     std::string type;
     myfile >> type;
-    if (type.compare("P2") != 0)
-    {
+    if (type.compare("P2") != 0) {
         std::cout << "PGM file should begin with P2" << std::endl;
         return;
-    } 
+    }
 
     // read size
     myfile >> m_sizeX;
@@ -35,37 +33,38 @@ void GameMap::loadGameMap(const std::string &path)
 
     // read the data
     int data;
-	for(int i = 0; i < m_sizeX * m_sizeY; ++i)
-    {
-		myfile >> data;
-        switch(data)
-        {
-            case 255:   m_grid.push_back(new Floor(false, m_textures[0]));
-                        break;
-            case 155:   m_grid.push_back(new Floor(true, m_textures[0]));
-                        break;
-            case 100:   m_grid.push_back(new Wall(m_textures[1]));
-                        break;
-            case 0:     m_grid.push_back(new Space);
-                        break;
-            default :   std::cout << "default" << std::endl;
-                        break;
+    for (int i = 0; i < m_sizeX * m_sizeY; ++i) {
+        myfile >> data;
+        switch (data) {
+        case 255:
+            m_grid.push_back(new Floor(false, m_textures[0]));
+            break;
+        case 155:
+            m_grid.push_back(new Floor(true, m_textures[0]));
+            break;
+        case 100:
+            m_grid.push_back(new Wall(m_textures[1]));
+            break;
+        case 0:
+            m_grid.push_back(new Space);
+            break;
+        default:
+            std::cout << "default" << std::endl;
+            break;
         }
     }
 
     // close file
-	myfile.close();
+    myfile.close();
 
     //int midX = (int)(m_sizeX*0.5);
     //int midY = (int)(m_sizeY*0.5);
 
-    for (int i = 0; i < m_sizeX; i++)
-    {
-        for (int j = 0; j < m_sizeY; j++)
-        {
+    for (int i = 0; i < m_sizeX; i++) {
+        for (int j = 0; j < m_sizeY; j++) {
             // set position with i,j
-            m_grid[i*m_sizeX+j]->setPosX(i);
-            m_grid[i*m_sizeX+j]->setPosZ(j);
+            m_grid[i * m_sizeX + j]->setPosX(i);
+            m_grid[i * m_sizeX + j]->setPosZ(j);
         }
     }
 }
@@ -82,17 +81,16 @@ void GameMap::initObstacles(const int nbObstacles)
     // select a generator
     std::mt19937 generator(seed);
     // uniform int distribution
-    std::uniform_int_distribution<int> uniformIntXDistrib(0, m_sizeX-1);
-    std::uniform_int_distribution<int> uniformIntYDistrib(0, m_sizeY-1);
-  
-    for (int i = 0; i < nbObstacles; i++)
-    {
+    std::uniform_int_distribution<int> uniformIntXDistrib(0, m_sizeX - 1);
+    std::uniform_int_distribution<int> uniformIntYDistrib(0, m_sizeY - 1);
+
+    for (int i = 0; i < nbObstacles; i++) {
         do {
             posX = uniformIntXDistrib(generator);
             posY = uniformIntYDistrib(generator);
-        } while(!isEmpty(posX, posY)); // can't put obstacle (we want a floor with no obstacle)
-        
-        m_obstacles.push_back(new Obstacle(glm::vec3(posX, uniformIntXDistrib(generator)%2 *0.5, posY), m_textures[2]));  //TODO: mieux gérer la hauteur des obstacles   
+        } while (!isEmpty(posX, posY)); // can't put obstacle (we want a floor with no obstacle)
+
+        m_obstacles.push_back(new Obstacle(glm::vec3(posX, uniformIntXDistrib(generator) % 2 * 0.5, posY), m_textures[2])); //TODO: mieux gérer la hauteur des obstacles
     }
 }
 
@@ -108,34 +106,24 @@ void GameMap::initLights(const int nbLights)
     // select a generator
     std::mt19937 generator(seed);
     // uniform int distribution
-    std::uniform_int_distribution<int> uniformIntXDistrib(0, m_sizeX-1);
-    std::uniform_int_distribution<int> uniformIntYDistrib(0, m_sizeY-1);
+    std::uniform_int_distribution<int> uniformIntXDistrib(0, m_sizeX - 1);
+    std::uniform_int_distribution<int> uniformIntYDistrib(0, m_sizeY - 1);
     // uniform real distribution
     std::uniform_real_distribution<float> uniformRealColorDistrib(0, 1);
 
-    
-    for (int i = 0; i < nbLights; i++)
-    {
+    for (int i = 0; i < nbLights; i++) {
         do {
             posX = uniformIntXDistrib(generator);
             posY = uniformIntYDistrib(generator);
-        } while(!isEmpty(posX, posY)); // can't put light (we want a floor with no obstacle)
-        
+        } while (!isEmpty(posX, posY)); // can't put light (we want a floor with no obstacle)
+
         glm::ivec3 pos(posX, 0, posY);
-        glm::vec3 color(uniformRealColorDistrib(generator), uniformRealColorDistrib(generator), uniformRealColorDistrib(generator));
+        glm::vec3  color(uniformRealColorDistrib(generator), uniformRealColorDistrib(generator), uniformRealColorDistrib(generator));
         m_lights.push_back(new Light(pos, color));
 
-        m_grid[posX*m_sizeX+posY]->point = true;
-        m_grid[posX*m_sizeX+posY]->possibleAdd = false;
+        m_grid[posX * m_sizeX + posY]->point       = true;
+        m_grid[posX * m_sizeX + posY]->possibleAdd = false;
     }
-
-    /*for (int i = 0; i < nbLights; i++)
-    {
-        glm::vec3 pos(uniformIntXDistrib(generator), 0.2, uniformIntYDistrib(generator));
-        glm::vec3 color(uniformRealColorDistrib(generator), uniformRealColorDistrib(generator), uniformRealColorDistrib(generator));
-
-        m_lights.push_back(new Light(pos, color));    
-    }*/
 }
 
 bool GameMap::isEmpty(const int posX, const int posZ) const
@@ -144,30 +132,30 @@ bool GameMap::isEmpty(const int posX, const int posZ) const
     //int midY = (int)(m_sizeY*0.5);
 
     // if there is already an obstacle
-    for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++)
-    {
-        if((*it)->getPos().x == posX && (*it)->getPos().z == posZ)
+    for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++) {
+        if ((*it)->getPos().x == posX && (*it)->getPos().z == posZ)
             return false;
     }
-    return m_grid[posX*m_sizeX+posZ]->possibleAdd;
+    return m_grid[posX * m_sizeX + posZ]->possibleAdd;
 }
 
 bool GameMap::onAngle(const glm::vec3 pos) const
-{ 
-    return m_grid[(int)pos.x*m_sizeX + (int)pos.z]->canTurn; //test if player is on a turn case
+{
+    return m_grid[(int)pos.x * m_sizeX + (int)pos.z]->canTurn; //test if player is on a turn case
 };
 
 bool GameMap::onPoint(const glm::vec3 pos)
-{ 
-    if (m_grid[(int)pos.x*m_sizeX + (int)pos.z]->point)
-    {
+{
+    if (m_grid[(int)pos.x * m_sizeX + (int)pos.z]->point) {
         // Destruction of point
-        m_grid[(int)pos.x*m_sizeX + (int)pos.z]->point = false; 
-        for(auto it = m_lights.begin(); it != m_lights.end(); it++)
-        {
-            if((*it)->getPos().x == (int)pos.x && (*it)->getPos().z == (int)pos.z)
-            {
-                std::cout << "delete" << std::endl;
+        m_grid[(int)pos.x * m_sizeX + (int)pos.z]->point = false;
+        for (auto it = m_lights.begin(); it != m_lights.end(); it++) {
+            if ((*it)->getPos().x == (int)pos.x && (*it)->getPos().z == (int)pos.z) {
+                
+
+
+                std::remove(m_lights.begin(), m_lights.end(), *it);
+
                 //m_lights.erase(it); //TODO : comprendre pourquoi ça marche pas !!!!!
             }
         }
@@ -177,8 +165,8 @@ bool GameMap::onPoint(const glm::vec3 pos)
 };
 
 bool GameMap::collision(const glm::vec3 pos) const
-{ 
-    return m_grid[(int)pos.x*m_sizeX + (int)pos.z]->collision(); //test if player is on collision
+{
+    return m_grid[(int)pos.x * m_sizeX + (int)pos.z]->collision(); //test if player is on collision
 };
 
 void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos) const
