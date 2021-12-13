@@ -53,7 +53,7 @@ void Player::Fall(float deltatime)
 }
 
 // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap gamemap)
+void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap &gamemap)
 {
     bool  positionChanged = true;
     float velocity        = MovementSpeed * deltaTime;
