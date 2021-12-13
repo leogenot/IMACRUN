@@ -154,6 +154,7 @@ bool GameMap::onPoint(const glm::vec3 pos)
                 std::remove(m_lights.begin(), m_lights.end(), *it);
 
                 //m_lights.erase(it); //TODO : comprendre pourquoi ça marche pas !!!!!
+                return true;
             }
         }
         return true;
