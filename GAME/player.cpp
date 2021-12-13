@@ -5,15 +5,8 @@
 
 void Player::initPlayer()
 {
-
-
-
     Shader shader("GAME/shaders/model_loading.vs", "GAME/shaders/model_loading.fs");
     m_shader = shader;
-
-
-
-
 }
 
 void Player::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, Model modelObj) 
@@ -64,7 +57,9 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap
 {
     bool  positionChanged = true;
     float velocity        = MovementSpeed * deltaTime;
-    if (direction == FORWARD)
+    if(direction == FORWARD && gamemap.collision(m_pos))
+        std::cout << "THE END" << std::endl;
+    else if(direction == FORWARD)
         m_pos += Front * velocity;
 
     if (direction == LEFT && !gamemap.collision(m_pos - Right))
@@ -97,7 +92,7 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap
     }
 
     // check collision
-    /*if (m_pos.x > 16.f || m_pos.z > 16.f ||
+    if (m_pos.x > 16.f || m_pos.z > 16.f ||
         m_pos.x < 1 || m_pos.z < -1) {
         if (direction == FORWARD) {
             m_pos -= Front * velocity;
@@ -112,9 +107,14 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap
             m_pos -= Right;
         }
         positionChanged = false;
-    }*/
+    }
+
+    // check light collision
+    if(gamemap.onPoint(m_pos))
+        addScore();
+
     updatePlayerVectors();
-    std::cout << "X: " << m_pos.x << " " << "Y: " << m_pos.y << " " << "Z: "<< m_pos.z << std::endl;
+    //std::cout << "X: " << m_pos.x << " " << "Y: " << m_pos.y << " " << "Z: "<< m_pos.z << std::endl;
 }
 
 void Player::updatePlayerVectors()

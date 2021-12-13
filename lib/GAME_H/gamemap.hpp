@@ -32,6 +32,7 @@ public:
     void initLights(const int nbLights);
     bool isEmpty(const int posX, const int posY) const;
     bool onAngle(const glm::vec3 pos) const;
+    bool onPoint(const glm::vec3 pos);
     bool collision(const glm::vec3 pos) const;
 };
 

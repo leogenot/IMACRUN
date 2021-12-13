@@ -18,7 +18,11 @@ class Element
 protected:
     glm::ivec3 m_pos;
 public:
-    Element(): canTurn(false) {};
+    bool possibleAdd; //if we can add another element (obsacle, point)
+    bool canTurn; //if we are in an angle and we can turn
+    bool point; //if their is a point
+
+    Element(): canTurn(false), point(false) {};
     virtual void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, std::vector<Light*> lights) const = 0;
 
     //getter & setter pos
@@ -30,10 +34,6 @@ public:
     void setPosY(const int posY) {m_pos.y = posY;};
     void setPosZ(const int posZ) {m_pos.z = posZ;};
     virtual bool collision() const = 0;
-
-    //virtual fonction de collision
-    bool possibleAdd; //if we can add another element (obsacle, money)
-    bool canTurn; //if we are in an angle and we can turn
 };
 
 #endif
