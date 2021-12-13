@@ -130,3 +130,9 @@ void Player::updatePlayerVectors()
     Right = glm::normalize(glm::cross(Front, WorldUp)); // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
     Up    = glm::normalize(glm::cross(Right, Front));
 };
+
+void Player::ResetPlayer(){
+    glm::vec3 pos = glm::vec3(PLAYERSTART[0], PLAYERSTART[1], PLAYERSTART[2]);
+    m_pos = pos;
+    updatePlayerVectors();
+}

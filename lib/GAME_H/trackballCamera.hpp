@@ -65,6 +65,8 @@ public:
         if (m_fDistance > 10.0f)
             m_fDistance = 10.0f; 
     }
+
+
 };
 
 #endif

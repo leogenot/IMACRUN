@@ -6,6 +6,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
+void CountDown(unsigned int time_in_sec);
 
 static App& get_app(GLFWwindow* window)
 {
@@ -34,6 +35,8 @@ bool show_quit_window      = false;
 bool show_options_window   = false;
 
 bool paused = true;
+
+unsigned int countdown_time = 3;
 
 // light
 glm::vec3  lightDir(-0.8, -1.0, -0.6);
@@ -149,7 +152,7 @@ int main()
             // --------------------
 
             deltaTime = std::min(currentFrame - lastFrame, 1.f / 60.f);
-
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             // render
             // ------
             glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -193,12 +196,19 @@ int main()
                 ImGui::Begin("Main Menu IMACRUN", &show_main_menu_window, flags);
 
                 if (ImGui::Button("New Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
-                    std::cout << "hello" << std::endl;
+                {
+
+                    show_main_menu_window = false;
+                    paused                = !paused;
+                    player.ResetPlayer();
+                    CountDown(countdown_time);
+                }
 
                 if (ImGui::Button("Resume Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
                     show_main_menu_window = false;
                     paused                = !paused;
+                    CountDown(countdown_time);
                 }
 
                 if (ImGui::Button("Save Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
@@ -280,15 +290,11 @@ void processInput(GLFWwindow* window)
     int        newStatePause = glfwGetKey(window, GLFW_KEY_ESCAPE);
     if (newStatePause == GLFW_RELEASE && oldStatePause == GLFW_PRESS) {
         if (paused) {
-            for (int i = 3; i > 0; --i) {
-                std::cout << i << std::endl;
-                std::this_thread::sleep_for(std::chrono::seconds(1));
-            }
-            lastFrame = (float)glfwGetTime();
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             show_main_menu_window = !show_main_menu_window;
 
             paused = false;
+            CountDown(countdown_time);
             std::cout << "not paused" << std::endl;
         }
         else {
@@ -339,7 +345,7 @@ void processInput(GLFWwindow* window)
     }
 
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-        eye_camera.Reset();
+        player.ResetPlayer();
 
     if (!player.onGround && !player.isFalling) //then rising
         player.Rise(deltaTime);
@@ -415,4 +421,13 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     if (!fixedCamera) {
         player.getCamera()->ProcessMouseScroll((float)yoffset);
     }
+}
+
+void CountDown(unsigned int time_in_sec)
+{
+    for (time_in_sec; time_in_sec > 0; --time_in_sec) {
+        std::cout << time_in_sec << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+    lastFrame = (float)glfwGetTime();
 }

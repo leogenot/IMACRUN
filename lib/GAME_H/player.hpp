@@ -59,6 +59,8 @@ public:
     void ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap gamemap);
     // calculates the front vector from the Camera's (updated) Euler Angles
     void updatePlayerVectors();
+
+    void ResetPlayer();
 };
 
 #endif
