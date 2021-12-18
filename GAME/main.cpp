@@ -17,15 +17,9 @@ static App& get_app(GLFWwindow* window)
 const unsigned int window_width  = 1280;
 const unsigned int window_height = 720;
 
-TrackballCamera trackball_camera;
-eyeCamera       eye_camera;
-Camera*         camera = &eye_camera;
-Player          player(camera);
-
 double lastX       = (double)window_width / 2.0;
 double lastY       = (double)window_height / 2.0;
 bool   firstMouse  = true;
-bool   fixedCamera = false;
 
 bool MouseIn  = false;
 bool MouseOut = true;
@@ -35,8 +29,6 @@ bool show_quit_window      = false;
 bool show_options_window   = false;
 bool show_looser_window    = false;
 
-bool paused = true;
-
 unsigned int countdown_time = 3;
 
 // light
@@ -44,11 +36,9 @@ glm::vec3  lightDir(-0.8, -1.0, -0.6);
 glm::vec3  lightColor(0.7, 0.9, 1.0);
 SceneLight sceneLight(lightDir, lightColor);
 
-// gamemap
-GameMap       gamemap(sceneLight);
-Skybox        skybox;
-Cube          cube;
+// game
 TextRendering textrendering;
+Game game(sceneLight);
 
 // timing
 float deltaTime = 0.0f;
@@ -104,14 +94,9 @@ int main()
     Shader boxShader("GAME/shaders/floor.vs", "GAME/shaders/floor.fs");
 
     Model ourModel("assets/models/flash.obj");
-    player.initPlayer();
-    // generate gamemap whith file
-    gamemap.loadGameMap("assets/map16.pgm");
     int nbObstacles = 10;
     int nbLights    = 5;
-    gamemap.initObstacles(nbObstacles);
-    gamemap.initLights(nbLights);
-    skybox.initSkybox();
+    game.InitGame("assets/map16.pgm", nbObstacles, nbLights);
 
     textrendering.initTextRendering(window_width, window_height);
 
@@ -147,7 +132,7 @@ int main()
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
         float currentFrame = (float)glfwGetTime();
-        if (!paused) {
+        if (!game.paused) {
             // per-frame time logic
             // --------------------
 
@@ -158,25 +143,20 @@ int main()
             glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            glm::mat4 model      = glm::mat4(1.0f);
-            glm::mat4 view       = player.getCamera()->GetViewMatrix(player.getPos());
-            glm::mat4 projection = glm::perspective(eye_camera.Zoom, (float)window_width / (float)window_height, 0.1f, 100.0f);
+            // render 3D
+            game.renderGame((float)window_width, (float)window_height, ourModel); // display map
 
-            if (player.getCamera()->getCameraType() == 0) //no drawing with eye camera
-                player.draw(view, projection, model, ourModel);
-
-            gamemap.drawGameMap(view, projection, model, player.getCamera()->getPos());
-            skybox.draw(view, projection, model, player.getCamera()->GetViewMatrix(player.getPos()));
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
+            // render 2D
             textrendering.RenderText("Flash McQueen", 25.0f, 25.0f, 1.0f, glm::vec3(0.5f, 0.8f, 0.2f));
             textrendering.RenderText("KATCHAAAAW", 540.0f, 570.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f));
-            textrendering.RenderText("Score : " + std::to_string(player.getScore()), 1100.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
-            textrendering.RenderText("Life : " + std::to_string(player.getLife()), 1000.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
+            textrendering.RenderText("Score : " + std::to_string(game.getPlayer()->getScore()), 1100.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
+            textrendering.RenderText("Life : " + std::to_string(game.getPlayer()->getLife()), 1000.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
 
-            /* int player_life = player.getLife();
-            if (player_life = 0) {
-                paused             = !paused;
+            /* int player_life = game.getPlayer()->getLife();
+            if (game.getPlayer()_life = 0) {
+                game.paused             = !game.paused;
                 show_looser_window = true;
             } */
         }
@@ -206,15 +186,16 @@ int main()
                 if (ImGui::Button("New Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
                     show_main_menu_window = false;
-                    paused                = !paused;
-                    player.ResetPlayer();
+                    game.paused                = !game.paused;
+                    //game.InitGame();
+                    game.getPlayer()->ResetPlayer();
                     CountDown(countdown_time);
                 }
 
                 if (ImGui::Button("Resume Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
                     show_main_menu_window = false;
-                    paused                = !paused;
+                    game.ResumeGame();
                     CountDown(countdown_time);
                 }
 
@@ -286,8 +267,7 @@ int main()
                 if (ImGui::Button("New Game")) {
                     show_looser_window    = false;
                     show_main_menu_window = false;
-                    paused                = !paused;
-                    player.ResetPlayer();
+                    game.ResetGame();
                     CountDown(countdown_time);
                 }
                 ImGui::End();
@@ -318,17 +298,17 @@ void processInput(GLFWwindow* window)
     static int oldStatePause = GLFW_RELEASE;
     int        newStatePause = glfwGetKey(window, GLFW_KEY_ESCAPE);
     if (newStatePause == GLFW_RELEASE && oldStatePause == GLFW_PRESS) {
-        if (paused) {
+        if (game.paused) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             show_main_menu_window = !show_main_menu_window;
 
-            paused = false;
+            game.paused = false;
             CountDown(countdown_time);
             std::cout << "not paused" << std::endl;
         }
         else {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            paused                = true;
+            game.paused                = true;
             show_main_menu_window = !show_main_menu_window;
             std::cout << "paused" << std::endl;
         }
@@ -336,21 +316,21 @@ void processInput(GLFWwindow* window)
     oldStatePause = newStatePause;
 
     //if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-    player.ProcessKeyboard(FORWARD, deltaTime, gamemap);
+    game.getPlayer()->ProcessKeyboard(FORWARD, deltaTime, game.getGameMap());
 
-    if (gamemap.onAngle(player.getPos())) // Rotate player
+    if (game.getGameMap()->onAngle(game.getPlayer()->getPos())) // Rotate player
     {
         static int oldStateRotateLeft = GLFW_RELEASE;
         int        newStateRotateLeft = glfwGetKey(window, GLFW_KEY_A);
         if (newStateRotateLeft == GLFW_RELEASE && oldStateRotateLeft == GLFW_PRESS) {
-            player.ProcessKeyboard(ROTATELEFT, deltaTime, gamemap);
+            game.getPlayer()->ProcessKeyboard(ROTATELEFT, deltaTime, game.getGameMap());
         }
         oldStateRotateLeft = newStateRotateLeft;
 
         static int oldStateRotateRight = GLFW_RELEASE;
         int        newStateRotateRight = glfwGetKey(window, GLFW_KEY_D);
         if (newStateRotateRight == GLFW_RELEASE && oldStateRotateRight == GLFW_PRESS) {
-            player.ProcessKeyboard(ROTATERIGHT, deltaTime, gamemap);
+            game.getPlayer()->ProcessKeyboard(ROTATERIGHT, deltaTime, game.getGameMap());
         }
         oldStateRotateRight = newStateRotateRight;
     }
@@ -360,7 +340,7 @@ void processInput(GLFWwindow* window)
         static int oldStateLeft = GLFW_RELEASE;
         int        newStateLeft = glfwGetKey(window, GLFW_KEY_A);
         if (newStateLeft == GLFW_RELEASE && oldStateLeft == GLFW_PRESS) {
-            player.ProcessKeyboard(LEFT, deltaTime, gamemap);
+            game.getPlayer()->ProcessKeyboard(LEFT, deltaTime, game.getGameMap());
         }
         oldStateLeft = newStateLeft;
 
@@ -368,34 +348,28 @@ void processInput(GLFWwindow* window)
         static int oldStateRight = GLFW_RELEASE;
         int        newStateRight = glfwGetKey(window, GLFW_KEY_D);
         if (newStateRight == GLFW_RELEASE && oldStateRight == GLFW_PRESS) {
-            player.ProcessKeyboard(RIGHT, deltaTime, gamemap);
+            game.getPlayer()->ProcessKeyboard(RIGHT, deltaTime, game.getGameMap());
         }
         oldStateRight = newStateRight;
     }
 
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-        player.ResetPlayer();
+        game.getPlayer()->ResetPlayer();
 
-    if (!player.onGround && !player.isFalling) //then rising
-        player.Rise(deltaTime);
-    else if (!player.onGround)
-        player.Fall(deltaTime);
+    if (!game.getPlayer()->onGround && !game.getPlayer()->isFalling) //then rising
+        game.getPlayer()->Rise(deltaTime);
+    else if (!game.getPlayer()->onGround)
+        game.getPlayer()->Fall(deltaTime);
 
     //Jump
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        player.Jump();
+        game.getPlayer()->Jump();
 
     //Switch camera
     static int oldState = GLFW_RELEASE;
     int        newState = glfwGetKey(window, GLFW_KEY_T);
     if (newState == GLFW_RELEASE && oldState == GLFW_PRESS) {
-        if (player.getCamera()->getCameraType() == 0) {
-            player.setCamera(&eye_camera);
-        }
-        else {
-            player.setCamera(&trackball_camera);
-        }
-        std::cout << player.getCamera()->getCameraType() << std::endl;
+        game.switchCamera();
     }
     oldState = newState;
 
@@ -403,12 +377,12 @@ void processInput(GLFWwindow* window)
     static int oldStateFixedCam = GLFW_RELEASE;
     int        newStateFixedCam = glfwGetKey(window, GLFW_KEY_L);
     if (newStateFixedCam == GLFW_RELEASE && oldStateFixedCam == GLFW_PRESS) {
-        if (fixedCamera) {
-            fixedCamera = false;
+        if (game.fixedCamera) {
+            game.fixedCamera = false;
             firstMouse  = true;
         }
         else
-            fixedCamera = true;
+            game.fixedCamera = true;
     }
     oldStateFixedCam = newStateFixedCam;
 }
@@ -426,7 +400,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    if (!fixedCamera) {
+    if (!game.fixedCamera) {
         if (firstMouse) {
             lastX      = xpos;
             lastY      = ypos;
@@ -439,7 +413,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
         lastX = xpos;
         lastY = ypos;
 
-        player.getCamera()->ProcessMouseMovement((float)xoffset, (float)yoffset);
+        game.getPlayer()->getCamera()->ProcessMouseMovement((float)xoffset, (float)yoffset);
     }
 }
 
@@ -447,8 +421,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    if (!fixedCamera) {
-        player.getCamera()->ProcessMouseScroll((float)yoffset);
+    if (!game.fixedCamera) {
+        game.getPlayer()->getCamera()->ProcessMouseScroll((float)yoffset);
     }
 }
 

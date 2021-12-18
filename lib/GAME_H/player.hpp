@@ -18,8 +18,7 @@ private:
     glm::vec3 m_pos;
     Camera *m_camera;
     Shader m_shader;
-    unsigned int m_texture;
-    unsigned int m_VAO, m_VBO;
+    //Model m_objModel;
 
     int m_score;
     int m_life = 5;
@@ -59,13 +58,13 @@ public:
     void removeLife() {m_life--;};
 
     void initPlayer();
-    void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, Model modelObj) ;
+    void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, Model objModel) ;
 
     void Jump();
     void Rise(float deltatime);
     void Fall(float deltatime);
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-    void ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap &gamemap);
+    void ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap *gamemap);
     // calculates the front vector from the Camera's (updated) Euler Angles
     void updatePlayerVectors();
 

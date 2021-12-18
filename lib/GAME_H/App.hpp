@@ -19,6 +19,7 @@
 #include "trackballCamera.hpp"
 #include "eyeCamera.hpp"
 #include "player.hpp"
+#include "game.hpp"
 #include "textrendering.hpp"
 #include "cube.hpp"
 #include "light.hpp"

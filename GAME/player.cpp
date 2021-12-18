@@ -9,7 +9,7 @@ void Player::initPlayer()
     m_shader = shader;
 }
 
-void Player::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, Model modelObj) 
+void Player::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, Model objModel) 
 {
     m_shader.use();
 
@@ -19,8 +19,7 @@ void Player::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, Model m
     model = glm::rotate(model, -90-Yaw, glm::vec3(0, 1, 0));
     model = glm::scale(model, glm::vec3(.2f, .2f, .2f));
     m_shader.setMat4("model", model);
-    modelObj.DrawModel(m_shader);
-    
+    objModel.DrawModel(m_shader);
 }
 
 void Player::Jump()
@@ -53,18 +52,18 @@ void Player::Fall(float deltatime)
 }
 
 // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap &gamemap)
+void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap *gamemap)
 {
     bool  positionChanged = true;
     float velocity        = MovementSpeed * deltaTime;
-    if(direction == FORWARD && gamemap.collision(m_pos))
+    if(direction == FORWARD && gamemap->collision(m_pos))
         std::cout << "THE END" << std::endl;
     else if(direction == FORWARD)
         m_pos += Front * velocity;
 
-    if (direction == LEFT && !gamemap.collision(m_pos - Right))
+    if (direction == LEFT && !gamemap->collision(m_pos - Right))
         m_pos -= Right; // * velocity; //TODO : transition
-    if (direction == RIGHT && !gamemap.collision(m_pos + Right))
+    if (direction == RIGHT && !gamemap->collision(m_pos + Right))
         m_pos += Right; // * velocity; //TODO : transition
 
     if (direction == ROTATELEFT)
@@ -110,11 +109,11 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap
     }
 
     // check light collision
-    if(gamemap.onPoint(m_pos))
+    if(gamemap->onPoint(m_pos))
         addScore();
 
     // check light collision
-    if(gamemap.onObstacle(m_pos))
+    if(gamemap->onObstacle(m_pos))
         removeLife();
 
     updatePlayerVectors();
