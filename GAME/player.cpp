@@ -71,13 +71,13 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap
     {
         Yaw -= 90; // player rotation
         m_camera->setDirection(Yaw);
-        m_pos = glm::ivec3(m_pos); // to make the player stay in a case and not in between
+        m_pos = glm::ivec3(round(m_pos.x), round(m_pos.y), round(m_pos.z)); // to make the player stay in a case and not in between
     }
     if (direction == ROTATERIGHT)
     {
         Yaw += 90; // player rotation
         m_camera->setDirection(Yaw);
-        m_pos = glm::ivec3(m_pos); // to make the player stay in a case and not in between
+        m_pos = glm::ivec3(round(m_pos.x), round(m_pos.y), round(m_pos.z)); // to make the player stay in a case and not in between
     }
 
     if (onGround) {
