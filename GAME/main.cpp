@@ -206,7 +206,11 @@ int main()
                     std::cout << "hello" << std::endl;
 
                 if (ImGui::Button("Options")) // Buttons return true when clicked (most widgets return true when edited/activated)
+                {
                     show_options_window = true;
+                    game.AddScore();
+                    game.ShowScores();
+                }
 
                 if (ImGui::Button("Quit Game"))
                     show_quit_window = true; // Buttons return true when clicked (most widgets return true when edited/activated)

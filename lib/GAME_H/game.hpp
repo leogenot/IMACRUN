@@ -6,6 +6,7 @@
 #include "eyeCamera.hpp"
 #include "trackballCamera.hpp"
 #include "skybox.hpp"
+#include "json.hpp"
 
 class Game
 {
@@ -71,6 +72,47 @@ public:
     };
     void LoadGame(); //load from file data
     void SaveGame();
+
+    void AddScore()
+    {
+        // read a JSON file
+        std::ifstream readingFile("assets/scores.json"); // TODO : gestion erreur lecture fichier
+        if (readingFile.is_open())
+        {
+            nlohmann::json json;
+            readingFile >> json;
+            readingFile.close();
+
+            //add new score
+            json["scores"].push_back({{"name", "playerName"},{"score", m_player.getScore()}});
+
+            // write prettified JSON to another file
+            std::ofstream writtingFile("assets/scores.json"); // TODO : gestion erreur
+            if (writtingFile.is_open())
+            {
+                writtingFile << json << std::endl;
+                writtingFile.close();
+            }
+            else cout << "Unable to open file";
+        }
+        else cout << "Unable to open file";
+    };
+    void ShowScores()
+    {
+        // read a JSON file
+        std::ifstream i("assets/scores.json"); // TODO : gestion erreur lecture fichier
+        nlohmann::json json;
+        i >> json;
+
+        std::cout << "Scores : " << std:: endl;
+        // iterate the array
+        for (auto it = json["scores"].begin(); it != json["scores"].end(); ++it)
+        {
+            for (auto it2 = it->begin(); it2 != it->end(); ++it2)
+                std::cout << it2.value() << " ";
+            std::cout << std::endl;
+        }
+    };
 };
 
 #endif
