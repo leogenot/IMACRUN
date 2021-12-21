@@ -332,58 +332,39 @@ void processInput(GLFWwindow* window)
     }
     oldStatePause = newStatePause;
 
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+        game.getPlayer()->ResetPlayer();
+        
     //if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     game.getPlayer()->ProcessKeyboard(FORWARD, deltaTime, game.getGameMap());
 
-    if (game.getGameMap()->onAngle(game.getPlayer()->getPos())) // Rotate player
-    {
-        static int oldStateRotateLeft = GLFW_RELEASE;
-        int        newStateRotateLeft = glfwGetKey(window, GLFW_KEY_A);
-        if (newStateRotateLeft == GLFW_RELEASE && oldStateRotateLeft == GLFW_PRESS) {
-            game.getPlayer()->ProcessKeyboard(ROTATELEFT, deltaTime, game.getGameMap());
-        }
-        oldStateRotateLeft = newStateRotateLeft;
+    game.getEnemy()->Follow(game.getGameMap(), deltaTime);
 
-        static int oldStateRotateRight = GLFW_RELEASE;
-        int        newStateRotateRight = glfwGetKey(window, GLFW_KEY_D);
-        if (newStateRotateRight == GLFW_RELEASE && oldStateRotateRight == GLFW_PRESS) {
-            game.getPlayer()->ProcessKeyboard(ROTATERIGHT, deltaTime, game.getGameMap());
-        }
-        oldStateRotateRight = newStateRotateRight;
+    //left
+    static int oldStateLeft = GLFW_RELEASE;
+    int        newStateLeft = glfwGetKey(window, GLFW_KEY_A);
+    if (newStateLeft == GLFW_RELEASE && oldStateLeft == GLFW_PRESS) {
+        game.getPlayer()->ProcessKeyboard(LEFT, deltaTime, game.getGameMap());
     }
-    else // Translate player
-    {
-        //left
-        static int oldStateLeft = GLFW_RELEASE;
-        int        newStateLeft = glfwGetKey(window, GLFW_KEY_A);
-        if (newStateLeft == GLFW_RELEASE && oldStateLeft == GLFW_PRESS) {
-            game.getPlayer()->ProcessKeyboard(LEFT, deltaTime, game.getGameMap());
-        }
-        oldStateLeft = newStateLeft;
+    oldStateLeft = newStateLeft;
 
-        //right
-        static int oldStateRight = GLFW_RELEASE;
-        int        newStateRight = glfwGetKey(window, GLFW_KEY_D);
-        if (newStateRight == GLFW_RELEASE && oldStateRight == GLFW_PRESS) {
-            game.getPlayer()->ProcessKeyboard(RIGHT, deltaTime, game.getGameMap());
-        }
-        oldStateRight = newStateRight;
+    //right
+    static int oldStateRight = GLFW_RELEASE;
+    int        newStateRight = glfwGetKey(window, GLFW_KEY_D);
+    if (newStateRight == GLFW_RELEASE && oldStateRight == GLFW_PRESS) {
+        game.getPlayer()->ProcessKeyboard(RIGHT, deltaTime, game.getGameMap());
     }
-
-    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-        game.getPlayer()->ResetPlayer();
-
-    if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
-        cout << "Player name : " << player_username << endl;
-
-    if (!game.getPlayer()->onGround && !game.getPlayer()->isFalling) //then rising
-        game.getPlayer()->Rise(deltaTime);
-    else if (!game.getPlayer()->onGround)
-        game.getPlayer()->Fall(deltaTime);
+    oldStateRight = newStateRight;
 
     //Jump
+    /*if (!game.getPlayer()->onGround && !game.getPlayer()->isFalling) //then rising
+        game.getPlayer()->Rise(deltaTime);
+    else if (!game.getPlayer()->onGround)
+        game.getPlayer()->Fall(deltaTime);*/
+
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
         game.getPlayer()->Jump();
+
 
     //Switch camera
     static int oldState = GLFW_RELEASE;
