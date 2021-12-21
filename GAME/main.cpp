@@ -17,9 +17,9 @@ static App& get_app(GLFWwindow* window)
 const unsigned int window_width  = 1280;
 const unsigned int window_height = 720;
 
-double lastX       = (double)window_width / 2.0;
-double lastY       = (double)window_height / 2.0;
-bool   firstMouse  = true;
+double lastX      = (double)window_width / 2.0;
+double lastY      = (double)window_height / 2.0;
+bool   firstMouse = true;
 
 bool MouseIn  = false;
 bool MouseOut = true;
@@ -28,6 +28,7 @@ bool show_main_menu_window = true;
 bool show_quit_window      = false;
 bool show_options_window   = false;
 bool show_looser_window    = false;
+bool show_demo_window      = false;
 
 unsigned int countdown_time = 3;
 
@@ -38,7 +39,7 @@ SceneLight sceneLight(lightDir, lightColor);
 
 // game
 TextRendering textrendering;
-Game game(sceneLight);
+Game          game(sceneLight);
 
 // timing
 float deltaTime = 0.0f;
@@ -94,8 +95,8 @@ int main()
     Shader boxShader("GAME/shaders/floor.vs", "GAME/shaders/floor.fs");
 
     Model ourModel("assets/models/flash.obj");
-    int nbObstacles = 10;
-    int nbLights    = 5;
+    int   nbObstacles = 10;
+    int   nbLights    = 5;
     game.InitGame("assets/map16.pgm", nbObstacles, nbLights);
 
     textrendering.initTextRendering(window_width, window_height);
@@ -167,9 +168,11 @@ int main()
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
+            io.KeyMap[ImGuiKey_Delete]    = GLFW_KEY_DELETE;
+            io.KeyMap[ImGuiKey_Backspace] = GLFW_KEY_BACKSPACE;
             // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-            /* if (show_main_menu_window)
-                ImGui::ShowDemoWindow(&show_main_menu_window); */
+           /*  if (show_demo_window)
+                ImGui::ShowDemoWindow(&show_demo_window); */
 
             // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
             if (show_main_menu_window) {
@@ -186,7 +189,7 @@ int main()
                 if (ImGui::Button("New Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
                     show_main_menu_window = false;
-                    game.paused                = !game.paused;
+                    game.paused           = !game.paused;
                     //game.InitGame();
                     game.getPlayer()->ResetPlayer();
                     CountDown(countdown_time);
@@ -200,7 +203,10 @@ int main()
                 }
 
                 if (ImGui::Button("Save Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
-                    std::cout << "hello" << std::endl;
+                {
+                    game.AddScore();
+                    game.ShowScores();
+                }
 
                 if (ImGui::Button("Load Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
                     std::cout << "hello" << std::endl;
@@ -208,8 +214,6 @@ int main()
                 if (ImGui::Button("Options")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
                     show_options_window = true;
-                    game.AddScore();
-                    game.ShowScores();
                 }
 
                 if (ImGui::Button("Quit Game"))
@@ -231,6 +235,8 @@ int main()
                 ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
 
                 ImGui::Begin("Game options", &show_options_window, flags);
+                static char str0[128] = "Hello, world!";
+                ImGui::InputText("input text", str0, IM_ARRAYSIZE(str0));
                 if (ImGui::Button("Back to main menu"))
                     show_options_window = false;
                 ImGui::End();
@@ -312,7 +318,7 @@ void processInput(GLFWwindow* window)
         }
         else {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            game.paused                = true;
+            game.paused           = true;
             show_main_menu_window = !show_main_menu_window;
             std::cout << "paused" << std::endl;
         }
@@ -359,6 +365,7 @@ void processInput(GLFWwindow* window)
 
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
         game.getPlayer()->ResetPlayer();
+    
 
     if (!game.getPlayer()->onGround && !game.getPlayer()->isFalling) //then rising
         game.getPlayer()->Rise(deltaTime);
@@ -383,7 +390,7 @@ void processInput(GLFWwindow* window)
     if (newStateFixedCam == GLFW_RELEASE && oldStateFixedCam == GLFW_PRESS) {
         if (game.fixedCamera) {
             game.fixedCamera = false;
-            firstMouse  = true;
+            firstMouse       = true;
         }
         else
             game.fixedCamera = true;
