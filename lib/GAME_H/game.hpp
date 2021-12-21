@@ -1,19 +1,18 @@
 #ifndef GAME_H
 #define GAME_H
-#include "gamemap.hpp"
-#include "sceneLight.hpp"
-#include "player.hpp"
 #include "eyeCamera.hpp"
-#include "trackballCamera.hpp"
-#include "skybox.hpp"
+#include "gamemap.hpp"
 #include "json.hpp"
+#include "player.hpp"
+#include "sceneLight.hpp"
+#include "skybox.hpp"
+#include "trackballCamera.hpp"
 
-class Game
-{
-private: 
-    Player m_player;
-    GameMap m_gameMap;
-    Skybox m_skybox;
+class Game {
+private:
+    Player          m_player;
+    GameMap         m_gameMap;
+    Skybox          m_skybox;
     TrackballCamera m_trackballCamera;
     eyeCamera       m_eyeCamera;
 
@@ -21,8 +20,9 @@ public:
     bool paused;
     bool fixedCamera;
 
-    Game(SceneLight sceneLight): m_gameMap(sceneLight), m_player(&m_eyeCamera), paused(true), fixedCamera(false) {};
-    void renderGame(float window_width, float window_height, Model objModel) 
+    Game(SceneLight sceneLight)
+        : m_gameMap(sceneLight), m_player(&m_eyeCamera), paused(true), fixedCamera(false){};
+    void renderGame(float window_width, float window_height, Model objModel)
     {
         glm::mat4 model      = glm::mat4(1.0f);
         glm::mat4 view       = m_player.getCamera()->GetViewMatrix(m_player.getPos());
@@ -34,16 +34,16 @@ public:
 
         // draw gameMap
         m_gameMap.drawGameMap(view, projection, model, m_player.getCamera()->getPos());
-    
+
         // draw skybox
         m_skybox.draw(view, projection, model, m_player.getCamera()->GetViewMatrix(m_player.getPos()));
     };
 
     // getter
-    GameMap* getGameMap() {return &m_gameMap;};
-    Player* getPlayer() {return &m_player;};
+    GameMap* getGameMap() { return &m_gameMap; };
+    Player*  getPlayer() { return &m_player; };
 
-    void switchCamera() 
+    void switchCamera()
     {
         if (m_player.getCamera()->getCameraType() == 0) {
             m_player.setCamera(&m_eyeCamera);
@@ -62,10 +62,10 @@ public:
         m_gameMap.initLights(nbLights);
         m_skybox.initSkybox();
     }
-    void PauseGame() {paused = true;};
-    void ResumeGame() {paused = false;};
+    void PauseGame() { paused = true; };
+    void ResumeGame() { paused = false; };
     void EndGame();
-    void ResetGame() 
+    void ResetGame()
     {
         paused = !paused;
         m_player.ResetPlayer();
@@ -75,44 +75,51 @@ public:
 
     void AddScore()
     {
-        // read a JSON file
-        std::ifstream readingFile("assets/scores.json"); // TODO : gestion erreur lecture fichier
-        if (readingFile.is_open())
-        {
-            nlohmann::json json;
-            readingFile >> json;
-            readingFile.close();
+         using json = nlohmann::json;
+        try {
+            // read a JSON file
+            std::ifstream readingFile(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
+            if (readingFile.is_open()) {
+                nlohmann::json json;
+                readingFile >> json;
+                readingFile.close();
 
-            //add new score
-            json["scores"].push_back({{"name", "playerName"},{"score", m_player.getScore()}});
-
-            // write prettified JSON to another file
-            std::ofstream writtingFile("assets/scores.json"); // TODO : gestion erreur
-            if (writtingFile.is_open())
-            {
-                writtingFile << json << std::endl;
-                writtingFile.close();
+                //add new score
+                json["scores"].push_back({{"name", "playerName"}, {"score", m_player.getScore()}});
+                // write prettified JSON to another file
+                std::ofstream writtingFile(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur
+                if (writtingFile.is_open()) {
+                    writtingFile << json << std::endl;
+                    writtingFile.close();
+                }
+                else
+                    cout << "Unable to open file WRITE";
             }
-            else cout << "Unable to open file";
+            else
+                cout << "Unable to open file READ";
         }
-        else cout << "Unable to open file";
+        catch (json::parse_error& e) {
+            // output exception information
+            std::cout << "message: " << e.what() << '\n'
+                      << "exception id: " << e.id << '\n'
+                      << "byte position of error: " << e.byte << std::endl;
+        } 
     };
     void ShowScores()
     {
-        // read a JSON file
-        std::ifstream i("assets/scores.json"); // TODO : gestion erreur lecture fichier
+         // read a JSON file
+        std::ifstream  i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
         nlohmann::json json;
         i >> json;
 
-        std::cout << "Scores : " << std:: endl;
+        std::cout << "Scores : " << std::endl;
         // iterate the array
-        for (auto it = json["scores"].begin(); it != json["scores"].end(); ++it)
-        {
+        for (auto it = json["scores"].begin(); it != json["scores"].end(); ++it) {
             for (auto it2 = it->begin(); it2 != it->end(); ++it2)
                 std::cout << it2.value() << " ";
             std::cout << std::endl;
-        }
-    };
+        } 
+    }
 };
 
 #endif

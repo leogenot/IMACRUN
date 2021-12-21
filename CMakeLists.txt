@@ -15,6 +15,7 @@ set(EXECUTABLE_OUTPUT_PATH
     ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE}
 )
 
+
 # Glfw
 set(GLFW_DIR lib/glfw)
 option(GLFW_BUILD_EXAMPLES "Build the GLFW example programs" OFF)
@@ -41,7 +42,13 @@ function(setup_game GAME)
         ${MY_SOURCES}
     )
 
+    target_compile_definitions(${TARGET_NAME} PRIVATE
+    BIN_PATH=std::string{\"$<TARGET_FILE_DIR:${TARGET_NAME}>\"}
+    )
+
     set_property(TARGET ${TARGET_NAME} PROPERTY CXX_STANDARD ${CXX_STANDARD})
+
+
 
     # Set include directories
     include_directories(
@@ -64,6 +71,8 @@ function(setup_game GAME)
         assimp
     )
 
+
+
     # GLFW
     include_directories(${GLFW_DIR}/include)
     include_directories(${GLFW_DIR}/deps)
@@ -83,13 +92,13 @@ function(setup_game GAME)
     tinyobjloader
     )
 
-        # ---Add assimp---
-        add_subdirectory(${LIB_DIR}/assimp)
-        target_link_libraries(${TARGET_NAME}
-        assimp
-        )
+    # ---Add assimp---
+    add_subdirectory(${LIB_DIR}/assimp)
+    target_link_libraries(${TARGET_NAME}
+    assimp
+    )
 
-
+        
     ##
     # Add a post build operation to copy shaders to the output folder (where the executable is created)
     ##
@@ -99,10 +108,16 @@ function(setup_game GAME)
         COMMAND ${CMAKE_COMMAND} -E copy_directory
             ${CMAKE_SOURCE_DIR}/${_FOLDERPATH}
             $<TARGET_FILE_DIR:${TARGET_NAME}>/${_FOLDERPATH}
+            
     )
+    
     endfunction()
+    
     copy_folder_to_the_output_folder("assets")
     copy_folder_to_the_output_folder(${GAME}/"shaders")
 endfunction(setup_game)
 
+
 setup_game(GAME)
+
+
