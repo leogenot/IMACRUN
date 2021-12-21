@@ -1,7 +1,4 @@
 #include "GAME_H/player.hpp"
-#include "GAME_H/utilityFunction.hpp"
-
-# define M_PI           3.14159265358979323846
 
 void Player::initPlayer()
 {
@@ -27,7 +24,6 @@ void Player::Jump()
     if (onGround) {
         isFalling = false;
         onGround  = false;
-        //      updatePlayerVectors();
     }
 }
 void Player::Rise(float deltatime)
@@ -48,7 +44,6 @@ void Player::Fall(float deltatime)
     else {
         m_pos.y -= (1.5f * deltatime);
     }
-    //updatePlayerVectors();
 }
 
 // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
@@ -61,34 +56,34 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap
     else if(direction == FORWARD)
         m_pos += Front * velocity;
 
-    if (direction == LEFT && !gamemap->collision(m_pos - Right))
-        m_pos -= Right; // * velocity; //TODO : transition
-    if (direction == RIGHT && !gamemap->collision(m_pos + Right))
-        m_pos += Right; // * velocity; //TODO : transition
-
-    if (direction == ROTATELEFT)
+    if(direction == LEFT)
     {
-        Yaw -= 90; // player rotation
-        m_camera->setDirection(Yaw);
-        m_pos = glm::ivec3(round(m_pos.x), round(m_pos.y), round(m_pos.z)); // to make the player stay in a case and not in between
+        if (gamemap->onAngle(m_pos)) // rotate
+        {
+            Yaw -= 90; // player rotation
+            m_camera->setDirection(Yaw);
+            m_pos = glm::ivec3(round(m_pos.x), round(m_pos.y), round(m_pos.z)); // to make the player stay in a case and not in between
+        }
+        else if(!gamemap->collision(m_pos - Right)) // translate
+            m_pos -= Right; // * velocity; //TODO : transition
     }
-    if (direction == ROTATERIGHT)
+    else if(direction == RIGHT)
     {
-        Yaw += 90; // player rotation
-        m_camera->setDirection(Yaw);
-        m_pos = glm::ivec3(round(m_pos.x), round(m_pos.y), round(m_pos.z)); // to make the player stay in a case and not in between
+        if (gamemap->onAngle(m_pos)) // rotate
+        {
+            Yaw += 90; // player rotation
+            m_camera->setDirection(Yaw);
+            m_pos = glm::ivec3(round(m_pos.x), round(m_pos.y), round(m_pos.z)); // to make the player stay in a case and not in between
+        }
+        else if(!gamemap->collision(m_pos + Right)) //translate
+            m_pos += Right; // * velocity; //TODO : transition
     }
 
-    if (onGround) {
-        // feet on the floor
-        m_pos.y = PLAYERSTART[1];
-    }
-    else if (!onGround && !isFalling) {
-        //rising
-    }
-    else {
-        //falling
-    }
+    // jump
+    if (!onGround && !isFalling) //then rising
+        Rise(deltaTime);
+    else if (!onGround) //then falling
+        Fall(deltaTime);
 
     // check collision
     if (m_pos.x > 16.f || m_pos.z > 16.f ||
@@ -112,7 +107,7 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap
     if(gamemap->onPoint(m_pos))
         addScore();
 
-    // check light collision
+    // check obstacle collision
     if(gamemap->onObstacle(m_pos))
         removeLife();
 
