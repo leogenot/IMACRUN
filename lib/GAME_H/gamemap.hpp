@@ -39,6 +39,7 @@ public:
     bool onPoint(const glm::vec3 pos);
     bool onObstacle(const glm::vec3 pos);
     bool collision(const glm::vec3 pos) const;
+    void destroyCollision(const glm::vec3 pos, glm::vec3 step); //destroy light and obstacle on collision with the enemy
 };
 
 #endif

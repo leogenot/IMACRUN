@@ -331,6 +331,8 @@ void processInput(GLFWwindow* window)
     //if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     game.getPlayer()->ProcessKeyboard(FORWARD, deltaTime, game.getGameMap());
 
+    game.getEnemy()->Follow(game.getGameMap(), deltaTime);
+
     //left
     static int oldStateLeft = GLFW_RELEASE;
     int        newStateLeft = glfwGetKey(window, GLFW_KEY_A);

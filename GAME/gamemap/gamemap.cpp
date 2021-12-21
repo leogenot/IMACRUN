@@ -181,6 +181,53 @@ bool GameMap::collision(const glm::vec3 pos) const
     return m_grid[round(pos.x) * m_sizeX + round(pos.z)]->collision(); //test if player is on collision
 };
 
+void GameMap::destroyCollision(const glm::vec3 pos, glm::vec3 step)
+{
+    // destroy obstacles
+    for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++) {
+        if ((*it)->getPos().x == round(pos.x) && (*it)->getPos().z == round(pos.z))
+        {
+            m_obstacles.erase(it);
+            std::cout << "destroy" << std::endl;
+            break;
+        }
+        else if ((*it)->getPos().x == round(pos.x+step.x) && (*it)->getPos().z == round(pos.z+step.z))
+        {
+            m_obstacles.erase(it);
+            std::cout << "destroy" << std::endl;
+            break;
+        }
+        else if ((*it)->getPos().x == round(pos.x-step.x) && (*it)->getPos().z == round(pos.z-step.z))
+        {
+            m_obstacles.erase(it);
+            std::cout << "destroy" << std::endl;
+            break;
+        }
+    }
+
+    // destroy lights
+    for (auto it = m_lights.begin(); it != m_lights.end(); it++) {
+        if ((*it)->getPos().x == round(pos.x) && (*it)->getPos().z == round(pos.z))
+        {
+            m_lights.erase(it);
+            std::cout << "destroy" << std::endl;
+            break;
+        }
+        else if ((*it)->getPos().x == round(pos.x+step.x) && (*it)->getPos().z == round(pos.z+step.z))
+        {
+            m_lights.erase(it);
+            std::cout << "destroy" << std::endl;
+            break;
+        }
+        else if ((*it)->getPos().x == round(pos.x-step.x) && (*it)->getPos().z == round(pos.z-step.z))
+        {
+            m_lights.erase(it);
+            std::cout << "destroy" << std::endl;
+            break;
+        }
+    }
+}
+
 void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos) const
 {
     //draw path

@@ -7,10 +7,12 @@
 #include "sceneLight.hpp"
 #include "skybox.hpp"
 #include "trackballCamera.hpp"
+#include "enemy.hpp"
 
 class Game {
 private:
     Player          m_player;
+    Enemy          m_enemy;
     GameMap         m_gameMap;
     Skybox          m_skybox;
     TrackballCamera m_trackballCamera;
@@ -32,6 +34,9 @@ public:
         if (m_player.getCamera()->getCameraType() == 0) //no drawing with eye camera
             m_player.draw(view, projection, model, objModel);
 
+        //draw enemy
+        m_enemy.drawEnemy(view, projection, model, objModel);
+
         // draw gameMap
         m_gameMap.drawGameMap(view, projection, model, m_player.getCamera()->getPos());
 
@@ -42,6 +47,7 @@ public:
     // getter
     GameMap* getGameMap() { return &m_gameMap; };
     Player*  getPlayer() { return &m_player; };
+    Enemy*  getEnemy() { return &m_enemy; };
 
     void switchCamera()
     {
@@ -57,6 +63,7 @@ public:
     void InitGame(string pgmFile, int nbObstacles, int nbLights)
     {
         m_player.initPlayer();
+        m_enemy.initEnemy();
         m_gameMap.loadGameMap(pgmFile); // generate gamemap whith file
         m_gameMap.initObstacles(nbObstacles);
         m_gameMap.initLights(nbLights);
