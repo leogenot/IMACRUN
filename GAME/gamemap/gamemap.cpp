@@ -6,7 +6,7 @@
 void GameMap::loadGameMap(const std::string& path)
 {
     //initialize tab of id
-    m_textures.push_back(loadTexture<const char>("assets/textures/floor/ground.jpg"));
+    m_textures.push_back(loadTexture<const char>("assets/textures/floor/rocks.jpg"));
     m_textures.push_back(loadTexture<const char>("assets/textures/cube/cube.jpg"));
     m_textures.push_back(loadTexture<const char>("assets/textures/cube/cube.jpg"));
 
@@ -117,7 +117,7 @@ void GameMap::initLights(const int nbLights)
             posY = uniformIntYDistrib(generator);
         } while (!isEmpty(posX, posY)); // can't put light (we want a floor with no obstacle)
 
-        glm::ivec3 pos(posX, 0, posY);
+        glm::vec3 pos(posX, 0, posY);
         glm::vec3  color(uniformRealColorDistrib(generator), uniformRealColorDistrib(generator), uniformRealColorDistrib(generator));
         m_lights.push_back(new Light(pos, color));
 
@@ -228,7 +228,7 @@ void GameMap::destroyCollision(const glm::vec3 pos, glm::vec3 step)
     }
 }
 
-void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos) const
+void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, Model lightning_bolt) 
 {
     //draw path
     for (auto it = m_grid.begin(); it != m_grid.end(); it++)
@@ -240,5 +240,5 @@ void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model,
 
     //draw lights
     for (auto it = m_lights.begin(); it != m_lights.end(); it++)
-        (*it)->draw(view, projection, model, 0.2f);
+        (*it)->draw(view, projection, model, 0.2f, lightning_bolt);
 }

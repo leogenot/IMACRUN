@@ -1,0 +1,25 @@
+# Blender MTL File: 'None'
+# Material Count: 2
+
+newmtl Mietitrebia_A1
+Ns 10.000002
+Ka 1.000000 1.000000 1.000000
+Kd 0.588235 0.588235 0.588235
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 1
+map_Bump Mietitrebia-A1_normal.jpg
+map_Kd Mietitrebia-A1_diffuse.jpg
+map_Ks Mietitrebia-A1_specular.jpg
+
+newmtl Vetri
+Ns 29.999989
+Ka 1.000000 1.000000 1.000000
+Kd 0.588235 0.588235 0.588235
+Ks 0.693000 0.693000 0.693000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 0.130000
+illum 9

@@ -96,7 +96,10 @@ int main()
 
     Shader boxShader("GAME/shaders/floor.vs", "GAME/shaders/floor.fs");
 
-    Model ourModel("assets/models/flash.obj");
+    Model Flash_McQueen("assets/models/flash.obj");
+    Model Franck_harvester("assets/models/franck.obj");
+    Model lightning_bolt("assets/models/lightning_bolt.obj");
+
     int   nbObstacles = 10;
     int   nbLights    = 5;
     game.InitGame("assets/map16.pgm", nbObstacles, nbLights);
@@ -147,7 +150,7 @@ int main()
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             // render 3D
-            game.renderGame((float)window_width, (float)window_height, ourModel); // display map
+            game.renderGame((float)window_width, (float)window_height, Flash_McQueen, Franck_harvester, lightning_bolt); // display map
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------

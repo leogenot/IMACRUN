@@ -30,7 +30,7 @@ private:
 public:
     GameMap(SceneLight sceneLight) : m_sceneLight(sceneLight) {};
     void loadGameMap(const std::string &path);
-    void drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos) const;
+    void drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, Model lightning_bolt) ;
 
     void initObstacles(const int nbObstacles);
     void initLights(const int nbLights);

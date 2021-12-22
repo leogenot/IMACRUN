@@ -24,7 +24,7 @@ public:
 
     Game(SceneLight sceneLight)
         : m_gameMap(sceneLight), m_player(&m_eyeCamera), paused(true), fixedCamera(false){};
-    void renderGame(float window_width, float window_height, Model objModel)
+    void renderGame(float window_width, float window_height, Model player_model, Model enemy_model, Model lightning_bolt)
     {
         glm::mat4 model      = glm::mat4(1.0f);
         glm::mat4 view       = m_player.getCamera()->GetViewMatrix(m_player.getPos());
@@ -32,13 +32,13 @@ public:
 
         // draw player
         if (m_player.getCamera()->getCameraType() == 0) //no drawing with eye camera
-            m_player.draw(view, projection, model, objModel);
+            m_player.draw(view, projection, model, player_model);
 
         //draw enemy
-        m_enemy.drawEnemy(view, projection, model, objModel);
+        m_enemy.drawEnemy(view, projection, model, enemy_model);
 
         // draw gameMap
-        m_gameMap.drawGameMap(view, projection, model, m_player.getCamera()->getPos());
+        m_gameMap.drawGameMap(view, projection, model, m_player.getCamera()->getPos(), lightning_bolt);
 
         // draw skybox
         m_skybox.draw(view, projection, model, m_player.getCamera()->GetViewMatrix(m_player.getPos()));
