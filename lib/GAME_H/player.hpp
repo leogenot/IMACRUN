@@ -8,6 +8,7 @@
 #include "gamemap.hpp"
 
 
+
 constexpr float SPEED       = 2.f;
 constexpr float PLAYERSTART[3] = {2.0f, 0.0f, 2.0f};
 constexpr float PLAYERJUMPHEIGHT = PLAYERSTART[1] + 0.4f;
@@ -22,6 +23,7 @@ private:
 
     int m_score;
     int m_life = 5;
+    char player_username[128];
 
 public:
     bool onGround;
@@ -36,6 +38,8 @@ public:
     // euler Angles
     float Yaw;
     float Pitch;
+
+    
 
     Player(Camera *camera, glm::vec3 pos = glm::vec3(PLAYERSTART[0], PLAYERSTART[1], PLAYERSTART[2])) 
     : m_camera(camera), m_pos(pos), onGround(true), isFalling(false), 
@@ -52,6 +56,8 @@ public:
 
     glm::vec3 getPos() const {return m_pos;};
     int getScore() const {return m_score;};
+    char* getUsername() {return &player_username[0];};
+    void setUsername(char * s) { strcpy(player_username,s);}
     void addScore() {m_score++;};
 
     int getLife() const {return m_life;};

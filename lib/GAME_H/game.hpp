@@ -48,6 +48,7 @@ public:
     GameMap* getGameMap() { return &m_gameMap; };
     Player*  getPlayer() { return &m_player; };
     Enemy*  getEnemy() { return &m_enemy; };
+    
 
     void switchCamera()
     {
@@ -92,7 +93,7 @@ public:
                 readingFile.close();
 
                 //add new score
-                json["scores"].push_back({{"name", "playerName"}, {"score", m_player.getScore()}});
+                json["scores"].push_back({{"name", m_player.getUsername()}, {"score", m_player.getScore()}});
                 // write prettified JSON to another file
                 std::ofstream writtingFile(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur
                 if (writtingFile.is_open()) {
