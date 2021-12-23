@@ -100,8 +100,8 @@ int main()
     Model Franck_harvester("assets/models/franck.obj");
     Model lightning_bolt("assets/models/lightning_bolt.obj");
 
-    int   nbObstacles = 10;
-    int   nbLights    = 5;
+    int nbObstacles = 10;
+    int nbLights    = 5;
     game.InitGame("assets/map16.pgm", nbObstacles, nbLights);
 
     textrendering.initTextRendering(window_width, window_height);
@@ -138,7 +138,7 @@ int main()
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
         float currentFrame = (float)glfwGetTime();
-        int player_life = game.getPlayer()->getLife();
+        int   player_life  = game.getPlayer()->getLife();
         if (!game.paused) {
             // per-frame time logic
             // --------------------
@@ -161,11 +161,10 @@ int main()
             textrendering.RenderText("Life : " + std::to_string(game.getPlayer()->getLife()), 1000.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
             textrendering.RenderText("KATCHAAAAW", 540.0f, 570.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f));
 
-            
             if (game.getPlayer()->getLife() == 0) {
-                game.paused             = !game.paused;
+                game.paused        = !game.paused;
                 show_looser_window = true;
-            } 
+            }
         }
         else {
             deltaTime = 0;
@@ -175,16 +174,16 @@ int main()
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            io.KeyMap[ImGuiKey_Delete]    = GLFW_KEY_DELETE;
-            io.KeyMap[ImGuiKey_Backspace] = GLFW_KEY_ENTER;
+            static ImGuiWindowFlags flags         = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings;
+
             // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
             /*  if (show_demo_window)
                 ImGui::ShowDemoWindow(&show_demo_window); */
 
             // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
             if (show_main_menu_window) {
+                
                 static bool             use_work_area = true;
-                static ImGuiWindowFlags flags         = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings;
 
                 // We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
                 // Based on your use case you may want one of the other.
@@ -192,7 +191,6 @@ int main()
                 ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
                 ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
                 ImGui::Begin("Main Menu IMACRUN", &show_main_menu_window, flags);
-
                 if (ImGui::Button("New Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
                     show_main_menu_window = false;
@@ -233,7 +231,7 @@ int main()
             // Options confirmation window
             if (show_options_window) {
                 static bool             use_work_area = true;
-                static ImGuiWindowFlags flags         = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings;
+                
 
                 // We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
                 // Based on your use case you may want one of the other.
@@ -247,7 +245,7 @@ int main()
                 ImGui::InputText("", player_username, IM_ARRAYSIZE(player_username));
                 if (ImGui::Button("Delete last letter")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
-                    player_username[strlen(player_username)-1] = '\0';
+                    player_username[strlen(player_username) - 1] = '\0';
                 }
                 game.getPlayer()->setUsername(player_username);
                 if (ImGui::Button("Back to main menu"))
@@ -258,7 +256,7 @@ int main()
             // Exit confirmation window
             if (show_quit_window) {
                 static bool             use_work_area = true;
-                static ImGuiWindowFlags flags         = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings;
+                
 
                 // We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
                 // Based on your use case you may want one of the other.
@@ -278,7 +276,7 @@ int main()
             // Looser window
             if (show_looser_window) {
                 static bool             use_work_area = true;
-                static ImGuiWindowFlags flags         = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings;
+                
 
                 // We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
                 // Based on your use case you may want one of the other.
@@ -293,7 +291,7 @@ int main()
                 ImGui::InputText("", player_username, IM_ARRAYSIZE(player_username));
                 if (ImGui::Button("Delete last letter")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
-                    player_username[strlen(player_username)-1] = '\0';
+                    player_username[strlen(player_username) - 1] = '\0';
                 }
                 game.getPlayer()->setUsername(player_username);
                 if (ImGui::Button("Save your score")) {
@@ -351,12 +349,11 @@ void processInput(GLFWwindow* window)
 
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
         game.getPlayer()->ResetPlayer();
-        
+
     //if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     game.getPlayer()->ProcessKeyboard(FORWARD, deltaTime, game.getGameMap());
 
     game.getEnemy()->Follow(game.getGameMap(), deltaTime);
-      
 
     //left
     static int oldStateLeft = GLFW_RELEASE;
@@ -382,7 +379,6 @@ void processInput(GLFWwindow* window)
 
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
         game.getPlayer()->Jump();
-
 
     //Switch camera
     static int oldState = GLFW_RELEASE;
