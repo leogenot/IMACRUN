@@ -67,9 +67,10 @@ void Enemy::Follow(GameMap *gamemap, float deltaTime)
     float velocity = MovementSpeed * deltaTime;
     m_pos += Front * velocity;
 
-    if (gamemap->onAngle(m_pos) && gamemap->collision(m_pos+Front+Front)) 
+    // Auto turn
+    if (gamemap->onAngle(m_pos) && gamemap->collision(m_pos+Front+Front) == COLLIDE) // if their is a wall in front of him
     {
-        if (gamemap->collision(m_pos+Right+Right)) // if their is a wall then the rotation need to be in the other side
+        if (gamemap->collision(m_pos+Right+Right) == COLLIDE) // if their is a wall then the rotation need to be in the other side
         {
             Yaw -= 90; // enemy rotation
             m_pos = glm::ivec3(round(m_pos.x), round(m_pos.y), round(m_pos.z)); // to make the enemy stay in a case and not in between
@@ -81,9 +82,9 @@ void Enemy::Follow(GameMap *gamemap, float deltaTime)
         }
     }
 
-    //if (gamemap->inSpace()) //TODO in space
-    //    Jump();
-
+    // Auto jump
+    if (gamemap->collision(m_pos+Front) == FALL)
+        Jump();
     if (!onGround && !isFalling) //then rising
         Rise(deltaTime);
     else if (!onGround)
