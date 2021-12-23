@@ -19,12 +19,11 @@ private:
     eyeCamera       m_eyeCamera;
 
 public:
-    bool inGame;
     bool paused;
     bool fixedCamera;
 
     Game(SceneLight sceneLight)
-        : m_gameMap(sceneLight), m_player(&m_eyeCamera), inGame(false), paused(true), fixedCamera(false){};
+        : m_gameMap(sceneLight), m_player(&m_eyeCamera), paused(true), fixedCamera(false){};
     void renderGame(float window_width, float window_height, Model player_model, Model enemy_model, Model lightning_bolt)
     {
         glm::mat4 model      = glm::mat4(1.0f);
@@ -71,9 +70,15 @@ public:
         m_gameMap.initLights(nbLights);
         m_skybox.initSkybox();
     }
-    void PauseGame() { paused = true; };
-    void ResumeGame() { paused = false; };
-    void EndGame() { inGame = false; };
+    bool LoseGame() 
+    {
+        if (getPlayer()->getLife() == 0 || getPlayer()->getCollision(FORWARD, getGameMap()) == true) 
+        {
+            paused = !paused;
+            return true;
+        }
+        return false;
+    };
     void ResetGame(int nbObstacles, int nbLights)
     {
         m_eyeCamera.resetEyeCamera();
@@ -82,11 +87,10 @@ public:
         m_enemy.resetEnemy();
         m_gameMap.initObstacles(nbObstacles);
         m_gameMap.initLights(nbLights);
-        inGame = true;
         paused = !paused;
     };
-    void LoadGame() { inGame = true; }; //load from file data
-    void SaveGame() { inGame = false; };
+    void LoadGame() {}; //load from file data
+    void SaveGame() {};
 
     void AddScore()
     {

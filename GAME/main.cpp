@@ -161,8 +161,7 @@ int main()
             textrendering.RenderText("Life : " + std::to_string(game.getPlayer()->getLife()), 1000.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
             textrendering.RenderText("KATCHAAAAW", 540.0f, 570.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f));
 
-            if (game.getPlayer()->getLife() == 0 || game.getPlayer()->getCollision(FORWARD, game.getGameMap()) == true) {
-                game.paused        = !game.paused;
+            if (game.LoseGame()) {
                 show_looser_window = true;
             }
         }
@@ -201,7 +200,7 @@ int main()
                 if (ImGui::Button("Resume Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
                     show_main_menu_window = false;
-                    game.ResumeGame();
+                    game.paused = false;
                     CountDown(countdown_time);
                 }
 
@@ -345,57 +344,53 @@ void processInput(GLFWwindow* window)
     }
     oldStatePause = newStatePause;
 
+    if (!game.paused) // if playing
+    {
+        // moving players
+        game.getPlayer()->ProcessKeyboard(FORWARD, deltaTime, game.getGameMap());
+        game.getEnemy()->Follow(game.getGameMap(), deltaTime);
 
-    //if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-    game.getPlayer()->ProcessKeyboard(FORWARD, deltaTime, game.getGameMap());
-
-    game.getEnemy()->Follow(game.getGameMap(), deltaTime);
-
-    //left
-    static int oldStateLeft = GLFW_RELEASE;
-    int        newStateLeft = glfwGetKey(window, GLFW_KEY_A);
-    if (newStateLeft == GLFW_RELEASE && oldStateLeft == GLFW_PRESS) {
-        game.getPlayer()->ProcessKeyboard(LEFT, deltaTime, game.getGameMap());
-    }
-    oldStateLeft = newStateLeft;
-
-    //right
-    static int oldStateRight = GLFW_RELEASE;
-    int        newStateRight = glfwGetKey(window, GLFW_KEY_D);
-    if (newStateRight == GLFW_RELEASE && oldStateRight == GLFW_PRESS) {
-        game.getPlayer()->ProcessKeyboard(RIGHT, deltaTime, game.getGameMap());
-    }
-    oldStateRight = newStateRight;
-
-    //Jump
-    /*if (!game.getPlayer()->onGround && !game.getPlayer()->isFalling) //then rising
-        game.getPlayer()->Rise(deltaTime);
-    else if (!game.getPlayer()->onGround)
-        game.getPlayer()->Fall(deltaTime);*/
-
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        game.getPlayer()->Jump();
-
-    //Switch camera
-    static int oldState = GLFW_RELEASE;
-    int        newState = glfwGetKey(window, GLFW_KEY_T);
-    if (newState == GLFW_RELEASE && oldState == GLFW_PRESS) {
-        game.switchCamera();
-    }
-    oldState = newState;
-
-    //Fixed camera
-    static int oldStateFixedCam = GLFW_RELEASE;
-    int        newStateFixedCam = glfwGetKey(window, GLFW_KEY_L);
-    if (newStateFixedCam == GLFW_RELEASE && oldStateFixedCam == GLFW_PRESS) {
-        if (game.fixedCamera) {
-            game.fixedCamera = false;
-            firstMouse       = true;
+        // Left
+        static int oldStateLeft = GLFW_RELEASE;
+        int        newStateLeft = glfwGetKey(window, GLFW_KEY_A);
+        if (newStateLeft == GLFW_RELEASE && oldStateLeft == GLFW_PRESS) {
+            game.getPlayer()->ProcessKeyboard(LEFT, deltaTime, game.getGameMap());
         }
-        else
-            game.fixedCamera = true;
+        oldStateLeft = newStateLeft;
+
+        // Right
+        static int oldStateRight = GLFW_RELEASE;
+        int        newStateRight = glfwGetKey(window, GLFW_KEY_D);
+        if (newStateRight == GLFW_RELEASE && oldStateRight == GLFW_PRESS) {
+            game.getPlayer()->ProcessKeyboard(RIGHT, deltaTime, game.getGameMap());
+        }
+        oldStateRight = newStateRight;
+
+        // Jump
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+            game.getPlayer()->Jump();
+
+        // Switch camera
+        static int oldState = GLFW_RELEASE;
+        int        newState = glfwGetKey(window, GLFW_KEY_T);
+        if (newState == GLFW_RELEASE && oldState == GLFW_PRESS) {
+            game.switchCamera();
+        }
+        oldState = newState;
+
+        // Fixed camera
+        static int oldStateFixedCam = GLFW_RELEASE;
+        int        newStateFixedCam = glfwGetKey(window, GLFW_KEY_L);
+        if (newStateFixedCam == GLFW_RELEASE && oldStateFixedCam == GLFW_PRESS) {
+            if (game.fixedCamera) {
+                game.fixedCamera = false;
+                firstMouse       = true;
+            }
+            else
+                game.fixedCamera = true;
+        }
+        oldStateFixedCam = newStateFixedCam;
     }
-    oldStateFixedCam = newStateFixedCam;
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
