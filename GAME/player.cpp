@@ -45,7 +45,12 @@ void Player::Fall(float deltatime)
         m_pos.y -= (1.5f * deltatime);
     }
 }
-
+bool Player::getCollision(Camera_Movement direction, GameMap *gamemap){
+    if(direction == FORWARD && gamemap->collision(m_pos))
+        return true;
+    else    
+        return false;
+}
 // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
 void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap *gamemap)
 {

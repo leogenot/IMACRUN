@@ -161,7 +161,7 @@ int main()
             textrendering.RenderText("Life : " + std::to_string(game.getPlayer()->getLife()), 1000.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
             textrendering.RenderText("KATCHAAAAW", 540.0f, 570.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f));
 
-            if (game.getPlayer()->getLife() == 0) {
+            if (game.getPlayer()->getLife() == 0 || game.getPlayer()->getCollision(FORWARD, game.getGameMap()) == true) {
                 game.paused        = !game.paused;
                 show_looser_window = true;
             }
