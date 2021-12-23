@@ -46,7 +46,7 @@ void Player::Fall(float deltatime)
     }
 }
 bool Player::getCollision(Camera_Movement direction, GameMap *gamemap){
-    if(direction == FORWARD && gamemap->collision(m_pos))
+    if(direction == FORWARD && gamemap->collision(m_pos) == COLLIDE || gamemap->collision(m_pos) == FALL && onGround)
         return true;
     else    
         return false;
@@ -56,9 +56,8 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap
 {
     bool  positionChanged = true;
     float velocity        = MovementSpeed * deltaTime;
-    if(direction == FORWARD && gamemap->collision(m_pos))
-        std::cout << "THE END" << std::endl;
-    else if(direction == FORWARD)
+
+    if(direction == FORWARD)
         m_pos += Front * velocity;
 
     if(direction == LEFT)

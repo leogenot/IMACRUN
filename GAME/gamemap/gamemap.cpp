@@ -94,6 +94,12 @@ void GameMap::initObstacles(const int nbObstacles)
     }
 }
 
+void GameMap::resetObstacles(const int nbObstacles)
+{
+    m_obstacles.clear();
+    initObstacles(nbObstacles);
+}
+
 void GameMap::initLights(const int nbLights)
 {
     int posX;
@@ -124,6 +130,12 @@ void GameMap::initLights(const int nbLights)
         m_grid[posX * m_sizeX + posY]->point       = true;
         m_grid[posX * m_sizeX + posY]->possibleAdd = false;
     }
+}
+
+void GameMap::resetLights(const int nbLights)
+{
+    m_lights.clear();
+    initLights(nbLights);
 }
 
 bool GameMap::isEmpty(const int posX, const int posZ) const
@@ -176,7 +188,7 @@ bool GameMap::onObstacle(const glm::vec3 pos)
     return false;
 };
 
-bool GameMap::collision(const glm::vec3 pos) const
+Collision_Type GameMap::collision(const glm::vec3 pos) const
 {
     return m_grid[round(pos.x) * m_sizeX + round(pos.z)]->collision(); //test if player is on collision
 };

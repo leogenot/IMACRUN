@@ -13,6 +13,12 @@
 #include "light.hpp"
 #include "sceneLight.hpp"
 
+enum Collision_Type {
+    NONE,
+    FALL,
+    COLLIDE
+};
+
 class Element
 {
 protected:
@@ -33,7 +39,7 @@ public:
     void setPosX(const int posX) {m_pos.x = posX;};
     void setPosY(const int posY) {m_pos.y = posY;};
     void setPosZ(const int posZ) {m_pos.z = posZ;};
-    virtual bool collision() const = 0;
+    virtual Collision_Type collision() const = 0;
 };
 
 #endif
