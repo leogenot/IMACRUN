@@ -138,6 +138,7 @@ int main()
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
         float currentFrame = (float)glfwGetTime();
+        int player_life = game.getPlayer()->getLife();
         if (!game.paused) {
             // per-frame time logic
             // --------------------
@@ -160,14 +161,15 @@ int main()
             textrendering.RenderText("Life : " + std::to_string(game.getPlayer()->getLife()), 1000.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
             textrendering.RenderText("KATCHAAAAW", 540.0f, 570.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f));
 
-            /* int player_life = game.getPlayer()->getLife();
-            if (game.getPlayer()_life = 0) {
+            
+            if (game.getPlayer()->getLife() == 0) {
                 game.paused             = !game.paused;
                 show_looser_window = true;
-            } */
+            } 
         }
         else {
             deltaTime = 0;
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             // Start the Dear ImGui frame
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
@@ -285,11 +287,22 @@ int main()
                 ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
 
                 ImGui::Begin("You lost the game...", &show_looser_window, flags);
-                if (ImGui::Button("New Game")) {
+                ImGui::Text("You lost the game...");
+                ImGui::Text("Enter your username : ");
+
+                ImGui::InputText("", player_username, IM_ARRAYSIZE(player_username));
+                if (ImGui::Button("Delete last letter")) // Buttons return true when clicked (most widgets return true when edited/activated)
+                {
+                    player_username[strlen(player_username)-1] = '\0';
+                }
+                game.getPlayer()->setUsername(player_username);
+                if (ImGui::Button("Save your score")) {
+                    game.AddScore();
+                    game.ShowScores();
+                }
+                if (ImGui::Button("Back to main menu")) {
                     show_looser_window    = false;
-                    show_main_menu_window = false;
-                    game.ResetGame();
-                    CountDown(countdown_time);
+                    show_main_menu_window = true;
                 }
                 ImGui::End();
             }

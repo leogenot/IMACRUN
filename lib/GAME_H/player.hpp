@@ -22,7 +22,7 @@ private:
     //Model m_objModel;
 
     int m_score;
-    int m_life = 5;
+    int m_life = 3;
     char player_username[128];
 
 public:
