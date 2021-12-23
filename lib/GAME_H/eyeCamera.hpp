@@ -91,9 +91,9 @@ public:
     }
 
     // Resets all the camera values back to the defaults
-    void Reset()
+    void resetEyeCamera()
     {
-        m_position         = glm::vec3(CAMSTART[0], CAMSTART[1], CAMSTART[2]);
+        m_position       = glm::vec3(CAMSTART[0], CAMSTART[1], CAMSTART[2]);
         WorldUp          = glm::vec3(0.0f, 1.0f, 0.0f);
         Yaw              = YAW;
         Pitch            = PITCH;

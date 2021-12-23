@@ -5,6 +5,23 @@ void Enemy::initEnemy()
     Shader shader("GAME/shaders/model_loading.vs", "GAME/shaders/model_loading.fs");
     m_shader = shader;
 }
+
+void Enemy::resetEnemy()
+{
+    // Reset enemy info
+    m_pos = glm::vec3(ENEMYSTART[0], ENEMYSTART[1], ENEMYSTART[2]);
+    onGround = true;
+    isFalling = false;
+
+    // Reset angle and vector
+    Yaw = YAW;
+    Pitch = PITCH;
+    MovementSpeed = ENEMYSPEED;
+    WorldUp = glm::vec3(0., 1., 0.);
+    Front = glm::vec3(0., 0., -1.);
+    updateEnemyVectors();
+}
+
 void Enemy::drawEnemy(glm::mat4 view, glm::mat4 projection, glm::mat4 model, Model objModel) 
 {
     m_shader.use();

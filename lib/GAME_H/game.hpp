@@ -12,18 +12,19 @@
 class Game {
 private:
     Player          m_player;
-    Enemy          m_enemy;
+    Enemy           m_enemy;
     GameMap         m_gameMap;
     Skybox          m_skybox;
     TrackballCamera m_trackballCamera;
     eyeCamera       m_eyeCamera;
 
 public:
+    bool inGame;
     bool paused;
     bool fixedCamera;
 
     Game(SceneLight sceneLight)
-        : m_gameMap(sceneLight), m_player(&m_eyeCamera), paused(true), fixedCamera(false){};
+        : m_gameMap(sceneLight), m_player(&m_eyeCamera), inGame(false), paused(true), fixedCamera(false){};
     void renderGame(float window_width, float window_height, Model player_model, Model enemy_model, Model lightning_bolt)
     {
         glm::mat4 model      = glm::mat4(1.0f);
@@ -72,14 +73,20 @@ public:
     }
     void PauseGame() { paused = true; };
     void ResumeGame() { paused = false; };
-    void EndGame();
-    void ResetGame()
+    void EndGame() { inGame = false; };
+    void ResetGame(int nbObstacles, int nbLights)
     {
+        m_eyeCamera.resetEyeCamera();
+        m_player.resetPlayer();
+        m_player.setCamera(&m_eyeCamera);
+        m_enemy.resetEnemy();
+        m_gameMap.initObstacles(nbObstacles);
+        m_gameMap.initLights(nbLights);
+        inGame = true;
         paused = !paused;
-        m_player.ResetPlayer();
     };
-    void LoadGame(); //load from file data
-    void SaveGame();
+    void LoadGame() { inGame = true; }; //load from file data
+    void SaveGame() { inGame = false; };
 
     void AddScore()
     {

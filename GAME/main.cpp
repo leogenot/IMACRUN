@@ -194,9 +194,7 @@ int main()
                 if (ImGui::Button("New Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
                     show_main_menu_window = false;
-                    game.paused           = !game.paused;
-                    //game.InitGame();
-                    game.getPlayer()->ResetPlayer();
+                    game.ResetGame(nbObstacles, nbLights);
                     CountDown(countdown_time);
                 }
 
@@ -347,8 +345,6 @@ void processInput(GLFWwindow* window)
     }
     oldStatePause = newStatePause;
 
-    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-        game.getPlayer()->ResetPlayer();
 
     //if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     game.getPlayer()->ProcessKeyboard(FORWARD, deltaTime, game.getGameMap());

@@ -38,6 +38,7 @@ public:
 
     glm::vec3 getPos() const {return m_pos;};
     void initEnemy();
+    void resetEnemy();
     
     void drawEnemy(glm::mat4 view, glm::mat4 projection, glm::mat4 model, Model objModel);
     

@@ -133,8 +133,20 @@ void Player::updatePlayerVectors()
     Up    = glm::normalize(glm::cross(Right, Front));
 };
 
-void Player::ResetPlayer(){
-    glm::vec3 pos = glm::vec3(PLAYERSTART[0], PLAYERSTART[1], PLAYERSTART[2]);
-    m_pos = pos;
+void Player::resetPlayer(){
+
+    // Reset player info
+    m_pos = glm::vec3(PLAYERSTART[0], PLAYERSTART[1], PLAYERSTART[2]);
+    onGround = true;
+    isFalling = false;
+    m_score = 0;
+    m_life = 5;
+
+    // Reset angle and vector
+    Yaw = YAW;
+    Pitch = PITCH;
+    MovementSpeed = SPEED;
+    WorldUp = glm::vec3(0., 1., 0.);
+    Front = glm::vec3(0., 0., -1.);
     updatePlayerVectors();
 }

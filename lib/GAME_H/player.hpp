@@ -59,6 +59,7 @@ public:
     void removeLife() { m_life--; };
 
     void initPlayer();
+    void resetPlayer();
     void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, Model objModel);
     bool getCollision(Camera_Movement direction, GameMap* gamemap);
     void Jump();
@@ -68,8 +69,6 @@ public:
     void ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap* gamemap);
     // calculates the front vector from the Camera's (updated) Euler Angles
     void updatePlayerVectors();
-
-    void ResetPlayer();
 };
 
 #endif
