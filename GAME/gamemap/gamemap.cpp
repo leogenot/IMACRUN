@@ -77,6 +77,7 @@ void GameMap::initObstacles(const int nbObstacles)
     // uniform int distribution
     std::uniform_int_distribution<int> uniformIntXDistrib(0, m_sizeX - 1);
     std::uniform_int_distribution<int> uniformIntYDistrib(0, m_sizeY - 1);
+    std::uniform_int_distribution<int> uniformIntDistrib(0, 1);
 
     for (int i = 0; i < nbObstacles; i++) {
         do {
@@ -84,7 +85,7 @@ void GameMap::initObstacles(const int nbObstacles)
             posY = uniformIntYDistrib(generator);
         } while (!isEmpty(posX, posY)); // can't put obstacle (we want a floor with no obstacle)
 
-        m_obstacles.push_back(new Obstacle(glm::vec3(posX, uniformIntXDistrib(generator) % 2 * 0.5, posY), m_textures[2])); //TODO: mieux gérer la hauteur des obstacles
+        m_obstacles.push_back(new Obstacle(glm::vec3(posX, uniformIntDistrib(generator), posY), m_textures[2])); //TODO: mieux gérer la hauteur des obstacles
     }
 }
 
@@ -164,14 +165,23 @@ bool GameMap::onPoint(const glm::vec3 pos)
     return false;
 };
 
-bool GameMap::onObstacle(const glm::vec3 pos)
+bool GameMap::onObstacle(const glm::vec3 pos, bool down)
 {
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++) {
-        if ((*it)->getPos().x == round(pos.x) && (*it)->getPos().z == round(pos.z) && pos.y > (*it)->getPos().y - 0.2 && pos.y < (*it)->getPos().y + 0.2) // TODO : remplacer 0.2 par la taille de l'obstacle (hauteur)
+        if ((*it)->getPos().x == round(pos.x) && (*it)->getPos().z == round(pos.z)/*pos.y > (*it)->getPos().y - 0.2 && pos.y < (*it)->getPos().y + 0.2*/) // TODO : remplacer 0.2 par la taille de l'obstacle (hauteur)
         {
-            m_obstacles.erase(it);
-            std::cout << "Collision obstacle" << std::endl;
-            return true;
+            if((*it)->getPos().y == 1 && !down)
+            {
+                m_obstacles.erase(it);
+                std::cout << "Collision obstacle up" << std::endl;
+                return true;
+            }
+            else if((*it)->getPos().y == pos.y)
+            {
+                m_obstacles.erase(it);
+                std::cout << "Collision obstacle down" << std::endl;
+                return true;
+            }
         }
     }
     return false;

@@ -14,7 +14,9 @@ void Player::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, Model o
     m_shader.setMat4("projection", projection);
     model = glm::translate(model, m_pos);
     model = glm::rotate(model, -90-Yaw, glm::vec3(0, 1, 0));
-    model = glm::scale(model, glm::vec3(.2f, .2f, .2f));
+    model = glm::scale(model, glm::vec3(.25f, .25f, .25f));
+    if(down)
+        model = glm::scale(model, glm::vec3(1.0f, .25f, 1.0f));
     m_shader.setMat4("model", model);
     objModel.DrawModel(m_shader);
 }
@@ -45,6 +47,7 @@ void Player::Fall(float deltatime)
         m_pos.y -= (1.5f * deltatime);
     }
 }
+
 bool Player::getCollision(Camera_Movement direction, GameMap *gamemap){
     if(direction == FORWARD && gamemap->collision(m_pos) == COLLIDE || gamemap->collision(m_pos) == FALL && onGround)
         return true;
@@ -112,7 +115,7 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap
         addScore();
 
     // check obstacle collision
-    if(gamemap->onObstacle(m_pos))
+    if(gamemap->onObstacle(m_pos, down))
         removeLife();
 
     updatePlayerVectors();

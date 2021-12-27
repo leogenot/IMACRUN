@@ -30,7 +30,7 @@ void Enemy::drawEnemy(glm::mat4 view, glm::mat4 projection, glm::mat4 model, Mod
     m_shader.setMat4("projection", projection);
     model = glm::translate(model, m_pos);
     model = glm::rotate(model, -Yaw, glm::vec3(0, 1, 0));
-    model = glm::scale(model, glm::vec3(.2f, .2f, .2f));
+    model = glm::scale(model, glm::vec3(.3f, .3f, .3f));
     m_shader.setMat4("model", model);
     objModel.DrawModel(m_shader);
 }
