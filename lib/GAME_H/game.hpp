@@ -38,7 +38,7 @@ public:
         m_enemy.drawEnemy(view, projection, model, enemy_model);
 
         // draw gameMap
-        m_gameMap.drawGameMap(view, projection, model, m_player.getCamera()->getPos(), lightning_bolt);
+        m_gameMap.drawGameMap(view, projection, model, m_player.getCamera()->getPos(), lightning_bolt, m_player.getPos(), 8);
 
         // draw skybox
         m_skybox.draw(view, projection, model, m_player.getCamera()->GetViewMatrix(m_player.getPos()));

@@ -57,9 +57,6 @@ void GameMap::loadGameMap(const std::string& path)
     // close file
     myfile.close();
 
-    //int midX = (int)(m_sizeX*0.5);
-    //int midY = (int)(m_sizeY*0.5);
-
     for (int i = 0; i < m_sizeX; i++) {
         for (int j = 0; j < m_sizeY; j++) {
             // set position with i,j
@@ -71,10 +68,7 @@ void GameMap::loadGameMap(const std::string& path)
 
 void GameMap::initObstacles(const int nbObstacles)
 {
-    int posX;
-    int posY;
-    //int midX = (int)(m_sizeX*0.5);
-    //int midY = (int)(m_sizeY*0.5);
+    int posX, posY;
 
     // select seed from time
     unsigned seed = (unsigned int)std::chrono::system_clock::now().time_since_epoch().count();
@@ -102,18 +96,18 @@ void GameMap::resetObstacles(const int nbObstacles)
 
 void GameMap::initLights(const int nbLights)
 {
-    int posX;
-    int posY;
-    //int midX =(int)(m_sizeX*0.5);
-    //int midY =(int)(m_sizeY*0.5);
+    int posX, posY;
+
+    int Xmax = m_sizeX - 1;
+    int Ymax = m_sizeY - 1;
 
     // select seed from time
     unsigned seed = (unsigned int)std::chrono::system_clock::now().time_since_epoch().count();
     // select a generator
     std::mt19937 generator(seed);
     // uniform int distribution
-    std::uniform_int_distribution<int> uniformIntXDistrib(0, m_sizeX - 1);
-    std::uniform_int_distribution<int> uniformIntYDistrib(0, m_sizeY - 1);
+    std::uniform_int_distribution<int> uniformIntXDistrib(0, Xmax);
+    std::uniform_int_distribution<int> uniformIntYDistrib(0, Ymax);
     // uniform real distribution
     std::uniform_real_distribution<float> uniformRealColorDistrib(0, 1);
 
@@ -140,9 +134,6 @@ void GameMap::resetLights(const int nbLights)
 
 bool GameMap::isEmpty(const int posX, const int posZ) const
 {
-    //int midX = (int)(m_sizeX*0.5);
-    //int midY = (int)(m_sizeY*0.5);
-
     // if there is already an obstacle
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++) {
         if ((*it)->getPos().x == posX && (*it)->getPos().z == posZ)
@@ -164,7 +155,6 @@ bool GameMap::onPoint(const glm::vec3 pos)
         for (auto it = m_lights.begin(); it != m_lights.end(); it++) {
             if ((*it)->getPos().x == round(pos.x) && (*it)->getPos().z == round(pos.z)) {
 
-                //std::remove(m_lights.begin(), m_lights.end(), *it);
                 m_lights.erase(it);
                 return true;
             }
@@ -179,7 +169,6 @@ bool GameMap::onObstacle(const glm::vec3 pos)
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++) {
         if ((*it)->getPos().x == round(pos.x) && (*it)->getPos().z == round(pos.z) && pos.y > (*it)->getPos().y - 0.2 && pos.y < (*it)->getPos().y + 0.2) // TODO : remplacer 0.2 par la taille de l'obstacle (hauteur)
         {
-            //std::remove(m_obstacles.begin(), m_obstacles.end(), *it);
             m_obstacles.erase(it);
             std::cout << "Collision obstacle" << std::endl;
             return true;
@@ -240,17 +229,26 @@ void GameMap::destroyCollision(const glm::vec3 pos, glm::vec3 step)
     }
 }
 
-void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, Model lightning_bolt) 
+void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, Model lightning_bolt, glm::vec3 playerPos, int renderRadius) 
 {
     //draw path
     for (auto it = m_grid.begin(); it != m_grid.end(); it++)
-        (*it)->draw(view, projection, model, camPos, m_sceneLight, m_lights);
+    {
+        if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().y < playerPos.y + renderRadius && (*it)->getPos().y > playerPos.y - renderRadius)
+            (*it)->draw(view, projection, model, camPos, m_sceneLight, m_lights, playerPos);
+    }
 
     //draw obstacles
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++)
-        (*it)->draw(view, projection, model, camPos, m_sceneLight, m_lights);
+    {
+        if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().y < playerPos.y + renderRadius && (*it)->getPos().y > playerPos.y - renderRadius)
+            (*it)->draw(view, projection, model, camPos, m_sceneLight, m_lights);
+    }
 
     //draw lights
     for (auto it = m_lights.begin(); it != m_lights.end(); it++)
-        (*it)->draw(view, projection, model, 0.2f, lightning_bolt);
+    {
+        if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().y < playerPos.y + renderRadius && (*it)->getPos().y > playerPos.y - renderRadius)
+            (*it)->draw(view, projection, model, 0.2f, lightning_bolt);
+    }
 }
