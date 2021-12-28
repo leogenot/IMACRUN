@@ -84,7 +84,7 @@ vec3 PointLightPhong(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 
     // attenuation
     float distance = length(light.position - fragPos);
-    float attenuation = 1.0 / (distance * distance);    
+    float attenuation = 1.0 / (1.0 + 2.0*distance + 2.0*(distance * distance));    
     
     // combine results
     ambient *= attenuation;
