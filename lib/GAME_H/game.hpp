@@ -33,7 +33,7 @@ public:
     Game(SceneLight sceneLight)
     : m_gameMap(sceneLight), m_player(&m_eyeCamera), paused(true), fixedCamera(false) {};
 
-    void renderGame(float window_width, float window_height, Model player_model, Model enemy_model, Model lightning_bolt)
+    void renderGame(float window_width, float window_height)
     {
         glm::mat4 model      = glm::mat4(1.0f);
         glm::mat4 view       = m_player.getCamera()->GetViewMatrix(m_player.getPos(), m_player.down);
