@@ -69,7 +69,7 @@ void GameMap::loadGameMap(const std::string& path)
     }
 }
 
-void GameMap::resetGameMap(int nbObstacles, int nbLights)
+void GameMap::resetGameMap(int nbObstacles, int nbLights, Shader* shader, Model* model)
 {
     // reset grid (possibleAdd and point)
     for (auto it = m_grid.begin(); it != m_grid.end(); it++)
@@ -81,7 +81,7 @@ void GameMap::resetGameMap(int nbObstacles, int nbLights)
 
     // reset lights
     m_lights.clear();
-    initLights(nbLights);
+    initLights(nbLights, shader, model);
 }
 
 void GameMap::initObstacles(const int nbObstacles)
@@ -107,7 +107,7 @@ void GameMap::initObstacles(const int nbObstacles)
     }
 }
 
-void GameMap::initLights(const int nbLights)
+void GameMap::initLights(const int nbLights, Shader* shader, Model* model)
 {
     int posX, posY;
 
@@ -132,7 +132,7 @@ void GameMap::initLights(const int nbLights)
 
         glm::vec3 pos(posX, 0, posY);
         glm::vec3  color(uniformRealColorDistrib(generator), uniformRealColorDistrib(generator), uniformRealColorDistrib(generator));
-        m_lights.push_back(new Light(pos, color));
+        m_lights.push_back(new Light(pos, color, shader, model));
 
         m_grid[posX * m_sizeX + posY]->point       = true;
         m_grid[posX * m_sizeX + posY]->possibleAdd = false;
@@ -246,7 +246,7 @@ void GameMap::destroyCollision(const glm::vec3 pos, glm::vec3 step)
     }
 }
 
-void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, Model lightning_bolt, glm::vec3 playerPos, int renderRadius) 
+void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, glm::vec3 playerPos, int renderRadius) 
 {
     //draw path
     for (auto it = m_grid.begin(); it != m_grid.end(); it++)
@@ -266,6 +266,6 @@ void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model,
     for (auto it = m_lights.begin(); it != m_lights.end(); it++)
     {
         if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().y < playerPos.y + renderRadius && (*it)->getPos().y > playerPos.y - renderRadius)
-            (*it)->draw(view, projection, model, 0.2f, lightning_bolt);
+            (*it)->draw(view, projection, model, 0.2f);
     }
 }

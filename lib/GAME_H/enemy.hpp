@@ -14,7 +14,8 @@ class Enemy
 {
 private:
     glm::vec3 m_pos;
-    Shader m_shader;
+    Shader*   m_shader;
+    Model*    m_objModel;
 
 public:
     bool onGround;
@@ -37,10 +38,10 @@ public:
     };
 
     glm::vec3 getPos() const {return m_pos;};
-    void initEnemy();
+    void initEnemy(Shader* shader, Model* model);
     void resetEnemy();
     
-    void drawEnemy(glm::mat4 view, glm::mat4 projection, glm::mat4 model, Model objModel);
+    void drawEnemy(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, std::vector<Light*> lights, glm::vec3 playerPos, int renderRadius);
     
     // jump manager
     void Jump();

@@ -30,11 +30,13 @@ private:
 public:
     GameMap(SceneLight sceneLight) : m_sceneLight(sceneLight) {};
     void loadGameMap(const std::string &path);
-    void resetGameMap(int nbObstacles, int nbLights);
-    void drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, Model lightning_bolt, glm::vec3 playerPos, int renderRadius) ;
+    void resetGameMap(int nbObstacles, int nbLights, Shader* shader, Model* model);
+    void drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, glm::vec3 playerPos, int renderRadius) ;
 
     void initObstacles(const int nbObstacles);
-    void initLights(const int nbLights);
+    void initLights(const int nbLights, Shader* shader, Model* model);
+    SceneLight getSceneLight() {return m_sceneLight;};
+    std::vector<Light*> getLights() {return m_lights;};
     
     bool isEmpty(const int posX, const int posY) const;
     bool onAngle(const glm::vec3 pos) const;

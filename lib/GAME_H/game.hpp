@@ -10,22 +10,29 @@
 #include "skybox.hpp"
 #include "trackballCamera.hpp"
 using json = nlohmann::json;
+
 class Game {
-private:
-    Player          m_player;
-    Enemy           m_enemy;
-    GameMap         m_gameMap;
-    Skybox          m_skybox;
-    TrackballCamera m_trackballCamera;
-    eyeCamera       m_eyeCamera;
-    vector<Player>  m_player_list;
+
+private: 
+    Player              m_player;
+    Enemy               m_enemy;
+    GameMap             m_gameMap;
+    Skybox              m_skybox;
+    TrackballCamera     m_trackballCamera;
+    eyeCamera           m_eyeCamera;
+    vector<Player>      m_player_list;
+
+    // assets
+    std::vector<Model>  m_objModels;
+    std::vector<Shader> m_shaders;
 
 public:
     bool paused;
     bool fixedCamera;
 
     Game(SceneLight sceneLight)
-        : m_gameMap(sceneLight), m_player(&m_eyeCamera), paused(true), fixedCamera(false){};
+    : m_gameMap(sceneLight), m_player(&m_eyeCamera), paused(true), fixedCamera(false) {};
+
     void renderGame(float window_width, float window_height, Model player_model, Model enemy_model, Model lightning_bolt)
     {
         glm::mat4 model      = glm::mat4(1.0f);
@@ -34,13 +41,13 @@ public:
 
         // draw player
         if (m_player.getCamera()->getCameraType() == 0) //no drawing with eye camera
-            m_player.draw(view, projection, model, player_model);
+            m_player.draw(view, projection, model,  m_player.getCamera()->getPos(), m_gameMap.getSceneLight(), m_gameMap.getLights(), 8);
 
         //draw enemy
-        m_enemy.drawEnemy(view, projection, model, enemy_model);
+        m_enemy.drawEnemy(view, projection, model, m_player.getCamera()->getPos(), m_gameMap.getSceneLight(), m_gameMap.getLights(), m_player.getPos(), 8);
 
         // draw gameMap
-        m_gameMap.drawGameMap(view, projection, model, m_player.getCamera()->getPos(), lightning_bolt, m_player.getPos(), 8);
+        m_gameMap.drawGameMap(view, projection, model, m_player.getCamera()->getPos(), m_player.getPos(), 8);
 
         // draw skybox
         m_skybox.draw(view, projection, model, m_player.getCamera()->GetViewMatrix(m_player.getPos(), m_player.down));
@@ -65,11 +72,25 @@ public:
     // game menu manager
     void InitGame(string pgmFile, int nbObstacles, int nbLights)
     {
-        m_player.initPlayer();
-        m_enemy.initEnemy();
+        //initialize tab of shader
+        Shader lightShader("GAME/shaders/lightSource.vs", "GAME/shaders/lightSource.fs");
+        Shader objShader("GAME/shaders/model_loading.vs", "GAME/shaders/model_loading.fs");
+        m_shaders.push_back(lightShader);
+        m_shaders.push_back(objShader);
+
+        //initialize tab of 3DModel
+        Model lightModel("assets/models/lightning_bolt.obj");
+        Model playerModel("assets/models/flash.obj");
+        Model enemyModel("assets/models/franck.obj");
+        m_objModels.push_back(lightModel);
+        m_objModels.push_back(playerModel);
+        m_objModels.push_back(enemyModel);
+
+        m_enemy.initEnemy(&m_shaders[1], &m_objModels[2]);
         m_gameMap.loadGameMap(pgmFile); // generate gamemap whith file
+        m_player.initPlayer(&m_shaders[1], &m_objModels[1]);
         m_gameMap.initObstacles(nbObstacles);
-        m_gameMap.initLights(nbLights);
+        m_gameMap.initLights(nbLights, &m_shaders[0], &m_objModels[0]);
         m_skybox.initSkybox();
     }
     bool LoseGame()
@@ -86,7 +107,7 @@ public:
         m_player.resetPlayer();
         m_player.setCamera(&m_eyeCamera);
         m_enemy.resetEnemy();
-        m_gameMap.resetGameMap(nbObstacles, nbLights);
+        m_gameMap.resetGameMap(nbObstacles, nbLights, &m_shaders[0], &m_objModels[0]);
         paused = !paused;
     };
     void LoadGame(){}; //load from file data

@@ -15,8 +15,8 @@ class Player {
 private:
     glm::vec3 m_pos;
     Camera*   m_camera;
-    Shader    m_shader;
-    //Model m_objModel;
+    Shader*   m_shader;
+    Model*    m_objModel;
 
     int  m_score;
     int  m_life = 3;
@@ -62,9 +62,9 @@ public:
     void removeLife() { m_life--; };
     void ShowPlayerData(Player* m_player);
 
-    void initPlayer();
+    void initPlayer(Shader* shader, Model* model);
     void resetPlayer();
-    void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, Model objModel);
+    void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, std::vector<Light*> lights, int renderRadius);
     bool getCollision(Camera_Movement direction, GameMap* gamemap);
     void Jump();
     void Rise(float deltatime);
