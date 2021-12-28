@@ -148,14 +148,15 @@ bool GameMap::isEmpty(const int posX, const int posZ) const
 
 bool GameMap::onAngle(const glm::vec3 pos) const
 {
-    return m_grid[round(pos.x) * m_sizeX + round(pos.z)]->canTurn; //test if player is on a turn case
+    return m_grid[(int)round(pos.x) * m_sizeX + (int)round(pos.z)]->canTurn; //test if player is on a turn case
 };
 
 bool GameMap::onPoint(const glm::vec3 pos)
 {
-    if (m_grid[round(pos.x) * m_sizeX + round(pos.z)]->point) {
+    const unsigned int indice = (int)round(pos.x) * m_sizeX + (int)round(pos.z);
+    if (m_grid[indice]->point) {
         // Destruction of point
-        m_grid[round(pos.x) * m_sizeX + round(pos.z)]->point = false;
+        m_grid[indice]->point = false;
         for (auto it = m_lights.begin(); it != m_lights.end(); it++) {
             if ((*it)->getPos().x == round(pos.x) && (*it)->getPos().z == round(pos.z)) {
 
@@ -192,7 +193,7 @@ bool GameMap::onObstacle(const glm::vec3 pos, bool down)
 
 Collision_Type GameMap::collision(const glm::vec3 pos) const
 {
-    return m_grid[round(pos.x) * m_sizeX + round(pos.z)]->collision(); //test if player is on collision
+    return m_grid[(int)round(pos.x) * m_sizeX + (int)round(pos.z)]->collision(); //test if player is on collision
 };
 
 void GameMap::destroyCollision(const glm::vec3 pos, glm::vec3 step)
