@@ -14,7 +14,7 @@ private:
     glm::vec3 m_color;
 
 public:
-    Light::Light(const glm::vec3 pos, const glm::vec3 color, Shader* shader, Model* model) : m_pos(pos), m_color(color), m_shader(shader), m_objModel(model) {};
+    Light(const glm::vec3 pos, const glm::vec3 color, Shader* shader, Model* model) : m_pos(pos), m_color(color), m_shader(shader), m_objModel(model) {};
     ~Light() {};
     glm::vec3 getPos() const {return m_pos;};
     glm::vec3 getColor() const {return m_color;};
