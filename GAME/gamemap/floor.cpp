@@ -44,13 +44,13 @@ Floor::Floor(bool angle, unsigned int texture) : m_texture(texture)
     glBindVertexArray(0);
 }
 
-void Floor::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, std::vector<Light*> lights, glm::vec3 playerPos) const
+void Floor::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, std::vector<Light*> lights, glm::vec3 playerPos, int renderRadius) const
 {
     m_shader.use();
     int i = 0;
     for (auto it = lights.begin(); it != lights.end(); it++)
     {
-        if ((*it)->getPos().x < playerPos.x + 5 && (*it)->getPos().x > playerPos.x - 5 && (*it)->getPos().y < playerPos.y + 5 && (*it)->getPos().y > playerPos.y - 5)
+        if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().y < playerPos.y + renderRadius && (*it)->getPos().y > playerPos.y - renderRadius)
         {
             std::string uniformNamePosition = "pointLights[" + std::to_string(i) + "].position";
             std::string uniformNameColor = "pointLights[" + std::to_string(i) + "].color";

@@ -85,8 +85,7 @@ public:
         m_player.resetPlayer();
         m_player.setCamera(&m_eyeCamera);
         m_enemy.resetEnemy();
-        m_gameMap.resetObstacles(nbObstacles);
-        m_gameMap.resetLights(nbLights);
+        m_gameMap.resetGameMap(nbObstacles, nbLights);
         paused = !paused;
     };
     void LoadGame() {}; //load from file data

@@ -69,6 +69,21 @@ void GameMap::loadGameMap(const std::string& path)
     }
 }
 
+void GameMap::resetGameMap(int nbObstacles, int nbLights)
+{
+    // reset grid (possibleAdd and point)
+    for (auto it = m_grid.begin(); it != m_grid.end(); it++)
+        (*it)->resetElement();
+
+    // reset obstacles
+    m_obstacles.clear();
+    initObstacles(nbObstacles);
+
+    // reset lights
+    m_lights.clear();
+    initLights(nbLights);
+}
+
 void GameMap::initObstacles(const int nbObstacles)
 {
     int posX, posY;
@@ -90,12 +105,6 @@ void GameMap::initObstacles(const int nbObstacles)
 
         m_obstacles.push_back(new Obstacle(glm::vec3(posX, uniformIntDistrib(generator), posY), m_textures[2])); //TODO: mieux gérer la hauteur des obstacles
     }
-}
-
-void GameMap::resetObstacles(const int nbObstacles)
-{
-    m_obstacles.clear();
-    initObstacles(nbObstacles);
 }
 
 void GameMap::initLights(const int nbLights)
@@ -128,12 +137,6 @@ void GameMap::initLights(const int nbLights)
         m_grid[posX * m_sizeX + posY]->point       = true;
         m_grid[posX * m_sizeX + posY]->possibleAdd = false;
     }
-}
-
-void GameMap::resetLights(const int nbLights)
-{
-    m_lights.clear();
-    initLights(nbLights);
 }
 
 bool GameMap::isEmpty(const int posX, const int posZ) const
@@ -249,14 +252,14 @@ void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model,
     for (auto it = m_grid.begin(); it != m_grid.end(); it++)
     {
         if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().y < playerPos.y + renderRadius && (*it)->getPos().y > playerPos.y - renderRadius)
-            (*it)->draw(view, projection, model, camPos, m_sceneLight, m_lights, playerPos);
+            (*it)->draw(view, projection, model, camPos, m_sceneLight, m_lights, playerPos, renderRadius);
     }
 
     //draw obstacles
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++)
     {
         if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().y < playerPos.y + renderRadius && (*it)->getPos().y > playerPos.y - renderRadius)
-            (*it)->draw(view, projection, model, camPos, m_sceneLight, m_lights);
+            (*it)->draw(view, projection, model, camPos, m_sceneLight, m_lights, playerPos, renderRadius);
     }
 
     //draw lights
