@@ -91,52 +91,67 @@ public:
     void LoadGame() {}; //load from file data
     void SaveGame() {};
 
-    void AddScore()
+        void AddScore()
     {
-         using json = nlohmann::json;
-        try {
-            // read a JSON file
-            std::ifstream readingFile(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
-            if (readingFile.is_open()) {
-                nlohmann::json json;
-                readingFile >> json;
-                readingFile.close();
+        // read a JSON file
+        std::ifstream readingFile(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
+        if (readingFile.is_open()) {
+            json jscores;
+            readingFile >> jscores;
+            readingFile.close();
+            if (jscores.contains("BOB")) {
+                cout << "it is found" << endl;
+            }
+            else {
+                cout << "not found " << endl;
+            }
 
-                //add new score
-                json["scores"].push_back({{"name", m_player.getUsername()}, {"score", m_player.getScore()}});
-                // write prettified JSON to another file
-                std::ofstream writtingFile(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur
-                if (writtingFile.is_open()) {
-                    writtingFile << json << std::endl;
-                    writtingFile.close();
-                }
-                else
-                    cout << "Unable to open file WRITE";
+            //add new score
+            if (exists(jscores, m_player.getUsername())) {
+                cout << "User already exist" << endl;
+                json jscores_update = {{m_player.getUsername(), m_player.getScore()}};
+
+                // add all keys from object2 to object1
+                jscores.update(jscores_update);
+            }
+
+            else
+                jscores += {m_player.getUsername(), m_player.getScore()};
+
+            // write prettified JSON to another file
+            std::ofstream writtingFile(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur
+            if (writtingFile.is_open()) {
+                writtingFile << jscores << std::endl;
+                writtingFile.close();
             }
             else
-                cout << "Unable to open file READ";
+                cout << "Unable to open file WRITE";
         }
-        catch (json::parse_error& e) {
-            // output exception information
-            std::cout << "message: " << e.what() << '\n'
-                      << "exception id: " << e.id << '\n'
-                      << "byte position of error: " << e.byte << std::endl;
-        } 
+        else
+            cout << "Unable to open file READ";
     };
+
+    bool exists(const json& j, const std::string& key)
+    {
+        return j.find(key) != j.end();
+    }
+
     void ShowScores()
     {
-         // read a JSON file
+        // read a JSON file
         std::ifstream  i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
         nlohmann::json json;
         i >> json;
 
         std::cout << "Scores : " << std::endl;
         // iterate the array
-        for (auto it = json["scores"].begin(); it != json["scores"].end(); ++it) {
-            for (auto it2 = it->begin(); it2 != it->end(); ++it2)
+
+        for (auto it = json.begin(); it != json.end(); ++it) {
+            for (auto it2 = it->begin(); it2 != it->end(); ++it2) {
                 std::cout << it2.value() << " ";
+            }
             std::cout << std::endl;
-        } 
+        }
     }
 };
 
