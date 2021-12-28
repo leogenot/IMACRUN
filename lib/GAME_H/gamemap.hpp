@@ -40,7 +40,7 @@ public:
     
     bool isEmpty(const int posX, const int posY) const;
     bool onAngle(const glm::vec3 pos) const;
-    bool onPoint(const glm::vec3 pos);
+    int getPoint(const glm::vec3 pos); // if player on light return light value
     bool onObstacle(const glm::vec3 pos, bool down);
     Collision_Type collision(const glm::vec3 pos) const;
     void destroyCollision(const glm::vec3 pos, glm::vec3 step); //destroy light and obstacle on collision with the enemy

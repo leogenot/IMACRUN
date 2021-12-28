@@ -121,18 +121,30 @@ void GameMap::initLights(const int nbLights, Shader* shader, Model* model)
     // uniform int distribution
     std::uniform_int_distribution<int> uniformIntXDistrib(0, Xmax);
     std::uniform_int_distribution<int> uniformIntYDistrib(0, Ymax);
-    // uniform real distribution
-    std::uniform_real_distribution<float> uniformRealColorDistrib(0, 1);
+    std::uniform_int_distribution<int> uniformIntValueDistrib(1, 3);
 
     for (int i = 0; i < nbLights; i++) {
+        // pos
         do {
             posX = uniformIntXDistrib(generator);
             posY = uniformIntYDistrib(generator);
         } while (!isEmpty(posX, posY)); // can't put light (we want a floor with no obstacle)
 
         glm::vec3 pos(posX, 0, posY);
-        glm::vec3  color(uniformRealColorDistrib(generator), uniformRealColorDistrib(generator), uniformRealColorDistrib(generator));
-        m_lights.push_back(new Light(pos, color, shader, model));
+
+        // value
+        int value = uniformIntValueDistrib(generator);
+
+        // color
+        glm::vec3 color;
+        if (value == 1)
+            color = glm::vec3(0.8f, 0.8f, 0.0f);
+        else if (value == 2)
+            color = glm::vec3(1.0f, 0.5f, 0.0f);
+        else
+            color = glm::vec3(0.6f, 0.7f, 0.9f);
+
+        m_lights.push_back(new Light(pos, color, value, shader, model));
 
         m_grid[posX * m_sizeX + posY]->point       = true;
         m_grid[posX * m_sizeX + posY]->possibleAdd = false;
@@ -154,22 +166,23 @@ bool GameMap::onAngle(const glm::vec3 pos) const
     return m_grid[(int)round(pos.x) * m_sizeX + (int)round(pos.z)]->canTurn; //test if player is on a turn case
 };
 
-bool GameMap::onPoint(const glm::vec3 pos)
+int GameMap::getPoint(const glm::vec3 pos)
 {
+    int value = 0;
     const unsigned int indice = (int)round(pos.x) * m_sizeX + (int)round(pos.z);
     if (m_grid[indice]->point) {
         // Destruction of point
         m_grid[indice]->point = false;
         for (auto it = m_lights.begin(); it != m_lights.end(); it++) {
             if ((*it)->getPos().x == round(pos.x) && (*it)->getPos().z == round(pos.z)) {
-
+                value = (*it)->getValue();
                 m_lights.erase(it);
-                return true;
+                return value;
             }
         }
-        return true;
+        return value;
     }
-    return false;
+    return value;
 };
 
 bool GameMap::onObstacle(const glm::vec3 pos, bool down)

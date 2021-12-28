@@ -131,9 +131,8 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap
         positionChanged = false;
     }
 
-    // check light collision
-    if(gamemap->onPoint(m_pos))
-        addScore();
+    // check light collision to increment score
+    addScore(gamemap->getPoint(m_pos));
 
     // check obstacle collision
     if(gamemap->onObstacle(m_pos, down))
