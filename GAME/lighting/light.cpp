@@ -11,9 +11,9 @@ Light::Light(const glm::vec3 pos, const glm::vec3 color) : m_pos(pos), m_color(c
 
 void Light::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, float scale, Model lightning_bolt)
 {
-
     m_shader.use();
 
+    m_shader.setVec3("lightColor", m_color);
     m_shader.setMat4("view", view);
     m_shader.setMat4("projection", projection);
     
