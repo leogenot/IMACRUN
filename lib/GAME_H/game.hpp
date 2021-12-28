@@ -1,5 +1,6 @@
 #ifndef GAME_H
 #define GAME_H
+#include <vector>
 #include "enemy.hpp"
 #include "eyeCamera.hpp"
 #include "gamemap.hpp"
@@ -17,6 +18,7 @@ private:
     Skybox          m_skybox;
     TrackballCamera m_trackballCamera;
     eyeCamera       m_eyeCamera;
+    vector<Player>  m_player_list;
 
 public:
     bool paused;
@@ -45,9 +47,10 @@ public:
     };
 
     // getter
-    GameMap* getGameMap() { return &m_gameMap; };
-    Player*  getPlayer() { return &m_player; };
-    Enemy*   getEnemy() { return &m_enemy; };
+    GameMap*        getGameMap() { return &m_gameMap; };
+    Player*         getPlayer() { return &m_player; };
+    vector<Player>* getPlayerList() { return &m_player_list; };
+    Enemy*          getEnemy() { return &m_enemy; };
 
     void switchCamera()
     {
@@ -89,7 +92,7 @@ public:
     void LoadGame(){}; //load from file data
     void SaveGame(){};
 
-    void AddScore()
+    void SavePlayerData()
     {
         // read a JSON file
         std::ifstream readingFile(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
@@ -134,21 +137,32 @@ public:
         return j.find(key) != j.end();
     }
 
-    void ShowScores()
+    void ShowPlayersData()
     {
         // read a JSON file
-        std::ifstream  i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
-        json json;
+        std::ifstream i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
+        json          json;
         i >> json;
-
         std::cout << "Scores : " << std::endl;
         // iterate the array
 
         for (auto it = json.begin(); it != json.end(); ++it) {
-            for (auto it2 = it->begin(); it2 != it->end(); ++it2) {
-                std::cout << it2.value() << " ";
-            }
+            std::cout << it.key() << " "
+                      << ": " << it.value();
+
             std::cout << std::endl;
+        }
+    }
+
+    void LoadPlayerData()
+    {
+        // read a JSON file
+        std::ifstream i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
+        json          json;
+        i >> json;
+        for (auto it = json.begin(); it != json.end(); ++it) {
+            std::cout << it.key() << " "
+                      << ": " << it.value() << std::endl;
         }
     }
 };

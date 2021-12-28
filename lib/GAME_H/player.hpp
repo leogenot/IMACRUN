@@ -20,7 +20,7 @@ private:
 
     int  m_score;
     int  m_life = 3;
-    char player_username[128];
+    char m_username[128];
 
 public:
     bool  onGround;
@@ -52,12 +52,15 @@ public:
 
     glm::vec3 getPos() const { return m_pos; };
     int       getScore() const { return m_score; };
-    char*     getUsername() { return &player_username[0]; };
-    void      setUsername(char* s) { strcpy(player_username, s); }
+    char*     getUsername() { return &m_username[0]; };
+    void      setUsername(char* s) { strcpy(m_username, s); }
+    void setScore(int score){m_score = score;}
+    void setLife(int life){m_life = life;}
     void      addScore() { m_score++; };
 
     int  getLife() const { return m_life; };
     void removeLife() { m_life--; };
+    void ShowPlayerData(Player* m_player);
 
     void initPlayer();
     void resetPlayer();

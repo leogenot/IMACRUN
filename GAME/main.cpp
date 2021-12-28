@@ -29,6 +29,7 @@ bool show_quit_window      = false;
 bool show_options_window   = false;
 bool show_looser_window    = false;
 bool show_demo_window      = false;
+bool show_load_window      = false;
 
 unsigned int countdown_time = 3;
 
@@ -173,7 +174,7 @@ int main()
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            static ImGuiWindowFlags flags         = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings;
+            static ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings;
 
             // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
             /*  if (show_demo_window)
@@ -181,8 +182,7 @@ int main()
 
             // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
             if (show_main_menu_window) {
-                
-                static bool             use_work_area = true;
+                static bool use_work_area = true;
 
                 // We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
                 // Based on your use case you may want one of the other.
@@ -200,18 +200,20 @@ int main()
                 if (ImGui::Button("Resume Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
                     show_main_menu_window = false;
-                    game.paused = false;
+                    game.paused           = false;
                     CountDown(countdown_time);
                 }
 
                 if (ImGui::Button("Save Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
-                    game.AddScore();
-                    game.ShowScores();
+                    game.SavePlayerData();
+                    game.ShowPlayersData();
                 }
 
                 if (ImGui::Button("Load Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
-                    std::cout << "hello" << std::endl;
+                {
+                    show_load_window = true;
+                }
 
                 if (ImGui::Button("Options")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
@@ -227,8 +229,7 @@ int main()
 
             // Options confirmation window
             if (show_options_window) {
-                static bool             use_work_area = true;
-                
+                static bool use_work_area = true;
 
                 // We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
                 // Based on your use case you may want one of the other.
@@ -237,23 +238,51 @@ int main()
                 ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
 
                 ImGui::Begin("Game options", &show_options_window, flags);
-                ImGui::Text("Enter your username : ");
-
-                ImGui::InputText("", player_username, IM_ARRAYSIZE(player_username));
+                ImGui::Text("Select your username : ");
                 if (ImGui::Button("Delete last letter")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
                     player_username[strlen(player_username) - 1] = '\0';
                 }
                 game.getPlayer()->setUsername(player_username);
-                if (ImGui::Button("Back to main menu"))
+                if (ImGui::Button("Back to main menu")) {
                     show_options_window = false;
+                }
                 ImGui::End();
             }
+            // load confirmation window
+            if (show_load_window) {
+                static bool use_work_area = true;
 
+                // We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
+                // Based on your use case you may want one of the other.
+                const ImGuiViewport* viewport = ImGui::GetMainViewport();
+                ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
+                ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
+
+                ImGui::Begin("Game load", &show_load_window, flags);
+                ImGui::Text("Enter your username to retrieve your savegame: ");
+
+                std::ifstream i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
+                json          json;
+                i >> json;
+                for (auto it = json.begin(); it != json.end(); ++it) {
+                    std::string str  = it.key();
+                    char* cstr = const_cast<char*>(str.c_str());
+                    if (ImGui::Button(cstr)) // Buttons return true when clicked (most widgets return true when edited/activated)
+                    {
+                        game.getPlayer()->setUsername(cstr);
+                        game.getPlayer()->setScore(it.value());
+                        game.getPlayer()->ShowPlayerData(game.getPlayer());
+                    }
+                }
+
+                if (ImGui::Button("Back to main menu"))
+                    show_load_window = false;
+                ImGui::End();
+            }
             // Exit confirmation window
             if (show_quit_window) {
-                static bool             use_work_area = true;
-                
+                static bool use_work_area = true;
 
                 // We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
                 // Based on your use case you may want one of the other.
@@ -272,8 +301,7 @@ int main()
 
             // Looser window
             if (show_looser_window) {
-                static bool             use_work_area = true;
-                
+                static bool use_work_area = true;
 
                 // We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
                 // Based on your use case you may want one of the other.
@@ -292,8 +320,8 @@ int main()
                 }
                 game.getPlayer()->setUsername(player_username);
                 if (ImGui::Button("Save your score")) {
-                    game.AddScore();
-                    game.ShowScores();
+                    game.SavePlayerData();
+                    game.ShowPlayersData();
                 }
                 if (ImGui::Button("Back to main menu")) {
                     show_looser_window    = false;

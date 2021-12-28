@@ -152,3 +152,7 @@ void Player::resetPlayer(){
     Front = glm::vec3(0., 0., -1.);
     updatePlayerVectors();
 }
+
+void Player::ShowPlayerData(Player* m_player){
+    cout << m_player->m_username << " : Score : " << m_player->m_score << " Life : " << m_player->m_life << endl;
+}

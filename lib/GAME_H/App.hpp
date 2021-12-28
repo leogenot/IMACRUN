@@ -23,6 +23,7 @@
     #include "imgui/imgui.h"
     #include "imgui/imgui_impl_glfw.h"
     #include "imgui/imgui_impl_opengl3.h"
+    #include "json.hpp"
     #include "light.hpp"
     #include "model.hpp"
     #include "player.hpp"
@@ -30,14 +31,11 @@
     #include "skybox.hpp"
     #include "textrendering.hpp"
     #include "trackballCamera.hpp"
-
-
+using json = nlohmann::json;
 
 using namespace std;
 class App {
 public:
-    
-
     App(int window_width, int window_height);
     //void render(Camera camera);
     void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
