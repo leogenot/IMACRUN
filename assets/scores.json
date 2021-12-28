@@ -1,12 +1,4 @@
 {
-    "scores":[
-         { 
-             "name":"Anna",  
-             "score": 18
-         },
-         {
-             "name":"Ben",
-             "score" : 24
-         } 
-    ]
+    "BOB": 42,
+    "Anna": 2
 }
