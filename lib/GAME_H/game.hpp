@@ -1,5 +1,6 @@
 #ifndef GAME_H
 #define GAME_H
+#include "enemy.hpp"
 #include "eyeCamera.hpp"
 #include "gamemap.hpp"
 #include "json.hpp"
@@ -7,8 +8,7 @@
 #include "sceneLight.hpp"
 #include "skybox.hpp"
 #include "trackballCamera.hpp"
-#include "enemy.hpp"
-
+using json = nlohmann::json;
 class Game {
 private:
     Player          m_player;
@@ -47,8 +47,7 @@ public:
     // getter
     GameMap* getGameMap() { return &m_gameMap; };
     Player*  getPlayer() { return &m_player; };
-    Enemy*  getEnemy() { return &m_enemy; };
-    
+    Enemy*   getEnemy() { return &m_enemy; };
 
     void switchCamera()
     {
@@ -70,10 +69,9 @@ public:
         m_gameMap.initLights(nbLights);
         m_skybox.initSkybox();
     }
-    bool LoseGame() 
+    bool LoseGame()
     {
-        if (getPlayer()->getLife() == 0 || getPlayer()->getCollision(FORWARD, getGameMap()) == true) 
-        {
+        if (getPlayer()->getLife() == 0 || getPlayer()->getCollision(FORWARD, getGameMap()) == true) {
             paused = !paused;
             return true;
         }
@@ -88,10 +86,10 @@ public:
         m_gameMap.resetGameMap(nbObstacles, nbLights);
         paused = !paused;
     };
-    void LoadGame() {}; //load from file data
-    void SaveGame() {};
+    void LoadGame(){}; //load from file data
+    void SaveGame(){};
 
-        void AddScore()
+    void AddScore()
     {
         // read a JSON file
         std::ifstream readingFile(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
@@ -140,7 +138,7 @@ public:
     {
         // read a JSON file
         std::ifstream  i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
-        nlohmann::json json;
+        json json;
         i >> json;
 
         std::cout << "Scores : " << std::endl;
