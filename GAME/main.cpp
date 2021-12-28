@@ -370,6 +370,12 @@ void processInput(GLFWwindow* window)
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
             game.getPlayer()->Jump();
 
+        // BendDown
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            game.getPlayer()->BendDown();
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE)
+            game.getPlayer()->GetUp();
+
         // Switch camera
         static int oldState = GLFW_RELEASE;
         int        newState = glfwGetKey(window, GLFW_KEY_T);

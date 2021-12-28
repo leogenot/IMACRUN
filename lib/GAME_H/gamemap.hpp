@@ -30,17 +30,16 @@ private:
 public:
     GameMap(SceneLight sceneLight) : m_sceneLight(sceneLight) {};
     void loadGameMap(const std::string &path);
-    void drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, Model lightning_bolt) ;
+    void resetGameMap(int nbObstacles, int nbLights);
+    void drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, Model lightning_bolt, glm::vec3 playerPos, int renderRadius) ;
 
     void initObstacles(const int nbObstacles);
-    void resetObstacles(const int nbObstacles);
     void initLights(const int nbLights);
-    void resetLights(const int nbLights);
     
     bool isEmpty(const int posX, const int posY) const;
     bool onAngle(const glm::vec3 pos) const;
     bool onPoint(const glm::vec3 pos);
-    bool onObstacle(const glm::vec3 pos);
+    bool onObstacle(const glm::vec3 pos, bool down);
     Collision_Type collision(const glm::vec3 pos) const;
     void destroyCollision(const glm::vec3 pos, glm::vec3 step); //destroy light and obstacle on collision with the enemy
 };

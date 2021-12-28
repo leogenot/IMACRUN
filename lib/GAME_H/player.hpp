@@ -25,6 +25,7 @@ private:
 public:
     bool  onGround;
     bool  isFalling;
+    bool  down;
     float MovementSpeed;
 
     // vectors
@@ -65,6 +66,8 @@ public:
     void Jump();
     void Rise(float deltatime);
     void Fall(float deltatime);
+    void BendDown() {down = true;};
+    void GetUp() {down = false;};
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
     void ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap* gamemap);
     // calculates the front vector from the Camera's (updated) Euler Angles

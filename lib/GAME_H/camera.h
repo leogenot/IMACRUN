@@ -40,7 +40,7 @@ public:
     glm::vec3 getPos() const {return m_position;};
     
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
-    virtual glm::mat4 GetViewMatrix(glm::vec3 player_pos) = 0;
+    virtual glm::mat4 GetViewMatrix(glm::vec3 player_pos, bool down) = 0;
 
     virtual void setDirection(float degrees) = 0;
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.

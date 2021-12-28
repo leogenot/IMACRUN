@@ -78,18 +78,21 @@ Wall::Wall(unsigned int texture) : m_texture(texture)
     glBindVertexArray(0);
 }
 
-void Wall::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, std::vector<Light*> lights) const
+void Wall::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, std::vector<Light*> lights, glm::vec3 playerPos, int renderRadius) const
 {
     m_shader.use();
     int i = 0;
     for (auto it = lights.begin(); it != lights.end(); it++)
     {
-        std::string uniformNamePosition = "pointLights[" + std::to_string(i) + "].position";
-        std::string uniformNameColor = "pointLights[" + std::to_string(i) + "].color";
-        
-        m_shader.setVec3(uniformNamePosition,  glm::vec3((*it)->getPos()));
-        m_shader.setVec3(uniformNameColor, (*it)->getColor());
-        i++;
+        if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().y < playerPos.y + renderRadius && (*it)->getPos().y > playerPos.y - renderRadius)
+        {
+            std::string uniformNamePosition = "pointLights[" + std::to_string(i) + "].position";
+            std::string uniformNameColor = "pointLights[" + std::to_string(i) + "].color";
+            
+            m_shader.setVec3(uniformNamePosition,  glm::vec3((*it)->getPos()));
+            m_shader.setVec3(uniformNameColor, (*it)->getColor());
+            i++;
+        }
     }
 
     //light

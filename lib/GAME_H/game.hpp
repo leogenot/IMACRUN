@@ -27,7 +27,7 @@ public:
     void renderGame(float window_width, float window_height, Model player_model, Model enemy_model, Model lightning_bolt)
     {
         glm::mat4 model      = glm::mat4(1.0f);
-        glm::mat4 view       = m_player.getCamera()->GetViewMatrix(m_player.getPos());
+        glm::mat4 view       = m_player.getCamera()->GetViewMatrix(m_player.getPos(), m_player.down);
         glm::mat4 projection = glm::perspective(m_eyeCamera.Zoom, window_width / window_height, 0.1f, 100.0f);
 
         // draw player
@@ -38,10 +38,10 @@ public:
         m_enemy.drawEnemy(view, projection, model, enemy_model);
 
         // draw gameMap
-        m_gameMap.drawGameMap(view, projection, model, m_player.getCamera()->getPos(), lightning_bolt);
+        m_gameMap.drawGameMap(view, projection, model, m_player.getCamera()->getPos(), lightning_bolt, m_player.getPos(), 8);
 
         // draw skybox
-        m_skybox.draw(view, projection, model, m_player.getCamera()->GetViewMatrix(m_player.getPos()));
+        m_skybox.draw(view, projection, model, m_player.getCamera()->GetViewMatrix(m_player.getPos(), m_player.down));
     };
 
     // getter
@@ -85,8 +85,7 @@ public:
         m_player.resetPlayer();
         m_player.setCamera(&m_eyeCamera);
         m_enemy.resetEnemy();
-        m_gameMap.resetObstacles(nbObstacles);
-        m_gameMap.resetLights(nbLights);
+        m_gameMap.resetGameMap(nbObstacles, nbLights);
         paused = !paused;
     };
     void LoadGame() {}; //load from file data

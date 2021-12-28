@@ -48,10 +48,13 @@ public:
     };
 
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
-    glm::mat4 GetViewMatrix(glm::vec3 player_pos)
+    glm::mat4 GetViewMatrix(glm::vec3 player_pos, bool down)
     {
         m_position = player_pos;
-        m_position.y += 0.2;
+        m_position.y += 0.1f;
+        if(!down)
+            m_position.y += 0.1f;
+
         return glm::lookAt(m_position, m_position + Front, Up);
     }
 

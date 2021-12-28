@@ -54,11 +54,11 @@ void GameMap::loadGameMap(const std::string& path)
         }
     }
 
+    // free unused memory
+    m_grid.shrink_to_fit();
+
     // close file
     myfile.close();
-
-    //int midX = (int)(m_sizeX*0.5);
-    //int midY = (int)(m_sizeY*0.5);
 
     for (int i = 0; i < m_sizeX; i++) {
         for (int j = 0; j < m_sizeY; j++) {
@@ -69,12 +69,24 @@ void GameMap::loadGameMap(const std::string& path)
     }
 }
 
+void GameMap::resetGameMap(int nbObstacles, int nbLights)
+{
+    // reset grid (possibleAdd and point)
+    for (auto it = m_grid.begin(); it != m_grid.end(); it++)
+        (*it)->resetElement();
+
+    // reset obstacles
+    m_obstacles.clear();
+    initObstacles(nbObstacles);
+
+    // reset lights
+    m_lights.clear();
+    initLights(nbLights);
+}
+
 void GameMap::initObstacles(const int nbObstacles)
 {
-    int posX;
-    int posY;
-    //int midX = (int)(m_sizeX*0.5);
-    //int midY = (int)(m_sizeY*0.5);
+    int posX, posY;
 
     // select seed from time
     unsigned seed = (unsigned int)std::chrono::system_clock::now().time_since_epoch().count();
@@ -83,6 +95,7 @@ void GameMap::initObstacles(const int nbObstacles)
     // uniform int distribution
     std::uniform_int_distribution<int> uniformIntXDistrib(0, m_sizeX - 1);
     std::uniform_int_distribution<int> uniformIntYDistrib(0, m_sizeY - 1);
+    std::uniform_int_distribution<int> uniformIntDistrib(0, 1);
 
     for (int i = 0; i < nbObstacles; i++) {
         do {
@@ -90,30 +103,24 @@ void GameMap::initObstacles(const int nbObstacles)
             posY = uniformIntYDistrib(generator);
         } while (!isEmpty(posX, posY)); // can't put obstacle (we want a floor with no obstacle)
 
-        m_obstacles.push_back(new Obstacle(glm::vec3(posX, uniformIntXDistrib(generator) % 2 * 0.5, posY), m_textures[2])); //TODO: mieux gérer la hauteur des obstacles
+        m_obstacles.push_back(new Obstacle(glm::vec3(posX, uniformIntDistrib(generator), posY), m_textures[2])); //TODO: mieux gérer la hauteur des obstacles
     }
-}
-
-void GameMap::resetObstacles(const int nbObstacles)
-{
-    m_obstacles.clear();
-    initObstacles(nbObstacles);
 }
 
 void GameMap::initLights(const int nbLights)
 {
-    int posX;
-    int posY;
-    //int midX =(int)(m_sizeX*0.5);
-    //int midY =(int)(m_sizeY*0.5);
+    int posX, posY;
+
+    int Xmax = m_sizeX - 1;
+    int Ymax = m_sizeY - 1;
 
     // select seed from time
     unsigned seed = (unsigned int)std::chrono::system_clock::now().time_since_epoch().count();
     // select a generator
     std::mt19937 generator(seed);
     // uniform int distribution
-    std::uniform_int_distribution<int> uniformIntXDistrib(0, m_sizeX - 1);
-    std::uniform_int_distribution<int> uniformIntYDistrib(0, m_sizeY - 1);
+    std::uniform_int_distribution<int> uniformIntXDistrib(0, Xmax);
+    std::uniform_int_distribution<int> uniformIntYDistrib(0, Ymax);
     // uniform real distribution
     std::uniform_real_distribution<float> uniformRealColorDistrib(0, 1);
 
@@ -132,17 +139,8 @@ void GameMap::initLights(const int nbLights)
     }
 }
 
-void GameMap::resetLights(const int nbLights)
-{
-    m_lights.clear();
-    initLights(nbLights);
-}
-
 bool GameMap::isEmpty(const int posX, const int posZ) const
 {
-    //int midX = (int)(m_sizeX*0.5);
-    //int midY = (int)(m_sizeY*0.5);
-
     // if there is already an obstacle
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++) {
         if ((*it)->getPos().x == posX && (*it)->getPos().z == posZ)
@@ -153,18 +151,18 @@ bool GameMap::isEmpty(const int posX, const int posZ) const
 
 bool GameMap::onAngle(const glm::vec3 pos) const
 {
-    return m_grid[round(pos.x) * m_sizeX + round(pos.z)]->canTurn; //test if player is on a turn case
+    return m_grid[(int)round(pos.x) * m_sizeX + (int)round(pos.z)]->canTurn; //test if player is on a turn case
 };
 
 bool GameMap::onPoint(const glm::vec3 pos)
 {
-    if (m_grid[round(pos.x) * m_sizeX + round(pos.z)]->point) {
+    const unsigned int indice = (int)round(pos.x) * m_sizeX + (int)round(pos.z);
+    if (m_grid[indice]->point) {
         // Destruction of point
-        m_grid[round(pos.x) * m_sizeX + round(pos.z)]->point = false;
+        m_grid[indice]->point = false;
         for (auto it = m_lights.begin(); it != m_lights.end(); it++) {
             if ((*it)->getPos().x == round(pos.x) && (*it)->getPos().z == round(pos.z)) {
 
-                //std::remove(m_lights.begin(), m_lights.end(), *it);
                 m_lights.erase(it);
                 return true;
             }
@@ -174,15 +172,23 @@ bool GameMap::onPoint(const glm::vec3 pos)
     return false;
 };
 
-bool GameMap::onObstacle(const glm::vec3 pos)
+bool GameMap::onObstacle(const glm::vec3 pos, bool down)
 {
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++) {
-        if ((*it)->getPos().x == round(pos.x) && (*it)->getPos().z == round(pos.z) && pos.y > (*it)->getPos().y - 0.2 && pos.y < (*it)->getPos().y + 0.2) // TODO : remplacer 0.2 par la taille de l'obstacle (hauteur)
+        if ((*it)->getPos().x == round(pos.x) && (*it)->getPos().z == round(pos.z)/*pos.y > (*it)->getPos().y - 0.2 && pos.y < (*it)->getPos().y + 0.2*/) // TODO : remplacer 0.2 par la taille de l'obstacle (hauteur)
         {
-            //std::remove(m_obstacles.begin(), m_obstacles.end(), *it);
-            m_obstacles.erase(it);
-            std::cout << "Collision obstacle" << std::endl;
-            return true;
+            if((*it)->getPos().y == 1 && !down)
+            {
+                m_obstacles.erase(it);
+                std::cout << "Collision obstacle up" << std::endl;
+                return true;
+            }
+            else if((*it)->getPos().y == pos.y)
+            {
+                m_obstacles.erase(it);
+                std::cout << "Collision obstacle down" << std::endl;
+                return true;
+            }
         }
     }
     return false;
@@ -190,7 +196,7 @@ bool GameMap::onObstacle(const glm::vec3 pos)
 
 Collision_Type GameMap::collision(const glm::vec3 pos) const
 {
-    return m_grid[round(pos.x) * m_sizeX + round(pos.z)]->collision(); //test if player is on collision
+    return m_grid[(int)round(pos.x) * m_sizeX + (int)round(pos.z)]->collision(); //test if player is on collision
 };
 
 void GameMap::destroyCollision(const glm::vec3 pos, glm::vec3 step)
@@ -240,17 +246,26 @@ void GameMap::destroyCollision(const glm::vec3 pos, glm::vec3 step)
     }
 }
 
-void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, Model lightning_bolt) 
+void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, Model lightning_bolt, glm::vec3 playerPos, int renderRadius) 
 {
     //draw path
     for (auto it = m_grid.begin(); it != m_grid.end(); it++)
-        (*it)->draw(view, projection, model, camPos, m_sceneLight, m_lights);
+    {
+        if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().y < playerPos.y + renderRadius && (*it)->getPos().y > playerPos.y - renderRadius)
+            (*it)->draw(view, projection, model, camPos, m_sceneLight, m_lights, playerPos, renderRadius);
+    }
 
     //draw obstacles
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++)
-        (*it)->draw(view, projection, model, camPos, m_sceneLight, m_lights);
+    {
+        if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().y < playerPos.y + renderRadius && (*it)->getPos().y > playerPos.y - renderRadius)
+            (*it)->draw(view, projection, model, camPos, m_sceneLight, m_lights, playerPos, renderRadius);
+    }
 
     //draw lights
     for (auto it = m_lights.begin(); it != m_lights.end(); it++)
-        (*it)->draw(view, projection, model, 0.2f, lightning_bolt);
+    {
+        if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().y < playerPos.y + renderRadius && (*it)->getPos().y > playerPos.y - renderRadius)
+            (*it)->draw(view, projection, model, 0.2f, lightning_bolt);
+    }
 }
