@@ -54,6 +54,9 @@ void GameMap::loadGameMap(const std::string& path)
         }
     }
 
+    // free unused memory
+    m_grid.shrink_to_fit();
+
     // close file
     myfile.close();
 
