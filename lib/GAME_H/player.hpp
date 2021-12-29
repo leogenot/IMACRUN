@@ -8,8 +8,8 @@
 #include "model.hpp"
 
 constexpr float SPEED            = 3.f;
-constexpr float PLAYERSTART[3]   = {2.0f, 0.0f, 2.0f};
-//constexpr float PLAYERSTART[3]   = {124.0f, 0.0f, 2.0f};
+//constexpr float PLAYERSTART[3]   = {2.0f, 0.0f, 2.0f};
+constexpr float PLAYERSTART[3]   = {60.0f, 0.0f, 2.0f};
 constexpr float PLAYERJUMPHEIGHT = PLAYERSTART[1] + 0.4f;
 
 class Player {

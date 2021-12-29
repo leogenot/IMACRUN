@@ -89,24 +89,6 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap
     else if (!onGround) //then falling
         Fall(deltaTime);
 
-    // check collision
-    if (m_pos.x > 16.f || m_pos.z > 16.f ||
-        m_pos.x < 1 || m_pos.z < -1) {
-        if (direction == FORWARD) {
-            m_pos -= Front * velocity;
-        }
-        if (direction == BACKWARD) {
-            m_pos += Front * velocity;
-        }
-        if (direction == LEFT) {
-            m_pos += Right;
-        }
-        if (direction == RIGHT) {
-            m_pos -= Right;
-        }
-        positionChanged = false;
-    }
-
     // check light collision to increment score
     addScore(gamemap->getPoint(m_pos));
 
