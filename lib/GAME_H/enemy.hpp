@@ -8,6 +8,7 @@
 
 constexpr float ENEMYSPEED      = 2.5f;
 constexpr float ENEMYSTART[3]   = {2.0f, 0.0f, 0.0f};
+//constexpr float ENEMYSTART[3]   = {124.0f, 0.0f, 0.0f};
 constexpr float ENEMYJUMPHEIGHT = ENEMYSTART[1] + 0.6f;
 
 class Enemy
@@ -37,11 +38,12 @@ public:
         updateEnemyVectors();
     };
 
-    glm::vec3 getPos() const {return m_pos;};
+    glm::vec3 getPos() const { return m_pos; };
+    Shader getShader() const { return *m_shader; };
+    Model getObjModel() const { return *m_objModel; };
+    glm::mat4 getModel() const;
     void initEnemy(Shader* shader, Model* model);
     void resetEnemy();
-    
-    void drawEnemy(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, std::vector<Light*> lights, glm::vec3 playerPos, int renderRadius);
     
     // jump manager
     void Jump();

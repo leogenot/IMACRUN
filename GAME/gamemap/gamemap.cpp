@@ -279,6 +279,6 @@ void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model,
     for (auto it = m_lights.begin(); it != m_lights.end(); it++)
     {
         if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().y < playerPos.y + renderRadius && (*it)->getPos().y > playerPos.y - renderRadius)
-            (*it)->draw(view, projection, model, 0.2f);
+            (*it)->draw(view, projection, model);
     }
 }

@@ -1,7 +1,7 @@
 #include "GAME_H/light.hpp"
 #include "GAME_H/utilityFunction.hpp"
 
-void Light::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, float scale)
+void Light::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model)
 {
     m_shader->use();
 
@@ -15,4 +15,13 @@ void Light::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, float sc
     model = glm::scale(model, glm::vec3(.04f, .04f, .04f));
     m_shader->setMat4("model", model);
     m_objModel->DrawModel(*m_shader);
+}
+
+glm::mat4 Light::getModel() const
+{
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), m_pos);
+    model = glm::translate(model, glm::vec3(0.0f, .1f, 0.0f));
+    model = glm::rotate(model, 90.0f, glm::vec3(1,0,0));
+    model = glm::scale(model, glm::vec3(.04f, .04f, .04f));
+    return model;
 }

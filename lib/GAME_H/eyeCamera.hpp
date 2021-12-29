@@ -8,11 +8,8 @@
 
 constexpr float SENSITIVITY = 0.1f;
 constexpr float MAXPITCHANGLE = 45.0f;
-constexpr float MINYAWANGLE = 45.0f;
-constexpr float MAXYAWANGLE = 135.0f;
 
-
-// An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
+// An abstract camera class that processes mouse movement
 class eyeCamera : public Camera {
 
 public:
@@ -31,7 +28,7 @@ public:
 
     // constructor with vectors
     eyeCamera(glm::vec3 position = glm::vec3(CAMSTART[0], CAMSTART[1], CAMSTART[2]))
-    : Front(glm::vec3(0.0f, 0.0f, -1.0f)), Zoom(ZOOM), Yaw(YAW), Pitch(PITCH), MinYawAngle(MINYAWANGLE), MaxYawAngle(MAXYAWANGLE), WorldUp(glm::vec3(0.0f, 1.0f, 0.0f))
+    : Front(glm::vec3(0.0f, 0.0f, -1.0f)), Zoom(ZOOM), Yaw(YAW), Pitch(PITCH), MinYawAngle(YAW - 45.0f), MaxYawAngle(YAW + 45.0f), WorldUp(glm::vec3(0.0f, 1.0f, 0.0f))
     {
         m_cameraType = 1;
         m_position     = position;
@@ -99,6 +96,8 @@ public:
         m_position       = glm::vec3(CAMSTART[0], CAMSTART[1], CAMSTART[2]);
         WorldUp          = glm::vec3(0.0f, 1.0f, 0.0f);
         Yaw              = YAW;
+        MinYawAngle      = YAW - 45.0f;
+        MaxYawAngle      = YAW + 45.0f;
         Pitch            = PITCH;
         Front            = glm::vec3(0.0f, 0.0f, -1.0f);
         MouseSensitivity = SENSITIVITY;

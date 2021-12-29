@@ -35,16 +35,21 @@ public:
 
     void renderGame(float window_width, float window_height)
     {
+        int renderRadius = 8;
         glm::mat4 model      = glm::mat4(1.0f);
         glm::mat4 view       = m_player.getCamera()->GetViewMatrix(m_player.getPos(), m_player.down);
         glm::mat4 projection = glm::perspective(m_eyeCamera.Zoom, window_width / window_height, 0.1f, 100.0f);
 
         // draw player
         if (m_player.getCamera()->getCameraType() == 0) //no drawing with eye camera
-            m_player.draw(view, projection, model,  m_player.getCamera()->getPos(), m_gameMap.getSceneLight(), m_gameMap.getLights(), 8);
+        {
+            setShader(m_player.getShader(), m_player.getModel(), view, projection, renderRadius);
+            m_player.getObjModel().DrawModel(m_player.getShader());
+        }
 
         //draw enemy
-        m_enemy.drawEnemy(view, projection, model, m_player.getCamera()->getPos(), m_gameMap.getSceneLight(), m_gameMap.getLights(), m_player.getPos(), 8);
+        setShader(m_enemy.getShader(), m_enemy.getModel(), view, projection, renderRadius);
+        m_enemy.getObjModel().DrawModel(m_enemy.getShader());
 
         // draw gameMap
         m_gameMap.drawGameMap(view, projection, model, m_player.getCamera()->getPos(), m_player.getPos(), 8);
@@ -58,6 +63,40 @@ public:
     Player*         getPlayer() { return &m_player; };
     vector<Player>* getPlayerList() { return &m_player_list; };
     Enemy*          getEnemy() { return &m_enemy; };
+
+    void setShader(Shader &shader, glm::mat4 model, glm::mat4 view, glm::mat4 projection, int renderRadius)
+    {
+        shader.use();
+
+        // point lights
+        int i = 0;
+        std::vector<Light*> lights = m_gameMap.getLights();
+        for (auto it = lights.begin(); it != lights.end(); it++)
+        {
+            if ((*it)->getPos().x < m_player.getPos().x + renderRadius && (*it)->getPos().x > m_player.getPos().x - renderRadius && (*it)->getPos().y < m_player.getPos().y + renderRadius && (*it)->getPos().y > m_player.getPos().y - renderRadius)
+            {
+                std::string uniformNamePosition = "pointLights[" + std::to_string(i) + "].position";
+                std::string uniformNameColor = "pointLights[" + std::to_string(i) + "].color";
+                
+                shader.setVec3(uniformNamePosition, glm::vec3((*it)->getPos()));
+                shader.setVec3(uniformNameColor, (*it)->getColor());
+                i++;
+            }
+        }
+
+        // light
+        shader.setVec3("dirLight", m_gameMap.getSceneLight().getDirection());
+        shader.setVec3("lightColor", m_gameMap.getSceneLight().getColor());
+        shader.setVec3("viewPos", m_player.getCamera()->getPos());
+
+        // material
+        shader.setFloat("material.shininess", 32.0f);
+
+        // matrix
+        shader.setMat4("model", model);
+        shader.setMat4("view", view);
+        shader.setMat4("projection", projection);
+    };
 
     void switchCamera()
     {
@@ -92,7 +131,7 @@ public:
         m_gameMap.initObstacles(nbObstacles);
         m_gameMap.initLights(nbLights, &m_shaders[0], &m_objModels[0]);
         m_skybox.initSkybox();
-    }
+    };
     bool LoseGame()
     {
         if (getPlayer()->getLife() == 0 || getPlayer()->getCollision(FORWARD, getGameMap()) == true) {
@@ -156,7 +195,7 @@ public:
     bool exists(const json& j, const std::string& key)
     {
         return j.find(key) != j.end();
-    }
+    };
 
     void ShowPlayersData()
     {
@@ -173,7 +212,7 @@ public:
 
             std::cout << std::endl;
         }
-    }
+    };
 
     void LoadPlayerData()
     {
@@ -185,7 +224,7 @@ public:
             std::cout << it.key() << " "
                       << ": " << it.value() << std::endl;
         }
-    }
+    };
 };
 
 #endif

@@ -9,6 +9,7 @@
 
 constexpr float SPEED            = 3.f;
 constexpr float PLAYERSTART[3]   = {2.0f, 0.0f, 2.0f};
+//constexpr float PLAYERSTART[3]   = {124.0f, 0.0f, 2.0f};
 constexpr float PLAYERJUMPHEIGHT = PLAYERSTART[1] + 0.4f;
 
 class Player {
@@ -51,6 +52,9 @@ public:
     };
 
     glm::vec3 getPos() const { return m_pos; };
+    Shader getShader() const { return *m_shader; };
+    Model getObjModel() const { return *m_objModel; };
+    glm::mat4 getModel() const;
     int       getScore() const { return m_score; };
     char*     getUsername() { return &m_username[0]; };
     void      setUsername(char* s) { strcpy(m_username, s); }
@@ -64,7 +68,6 @@ public:
 
     void initPlayer(Shader* shader, Model* model);
     void resetPlayer();
-    void draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, std::vector<Light*> lights, int renderRadius);
     bool getCollision(Camera_Movement direction, GameMap* gamemap);
     void Jump();
     void Rise(float deltatime);
