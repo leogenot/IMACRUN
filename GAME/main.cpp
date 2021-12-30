@@ -99,7 +99,7 @@ int main()
 
     int nbObstacles = 100;
     int nbLights    = 10;
-    game.InitGame("assets/petite_map.pgm", nbObstacles, nbLights);
+    game.InitGame("assets/maps/petite_map.pgm", nbObstacles, nbLights);
 
     textrendering.initTextRendering(window_width, window_height);
 
