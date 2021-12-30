@@ -264,11 +264,27 @@ int main()
                 i >> json;
                 for (auto it = json.begin(); it != json.end(); ++it) {
                     std::string str  = it.key();
-                    char* cstr = const_cast<char*>(str.c_str());
+                    char*       cstr = const_cast<char*>(str.c_str());
+
                     if (ImGui::Button(cstr)) // Buttons return true when clicked (most widgets return true when edited/activated)
                     {
+                        int player_score = json[cstr].at("score");
+                        int player_life = json[cstr].at("life");
+                        float player_pos_x = json[cstr].at("position_x");
+                        float player_pos_y = json[cstr].at("position_y");
+                        float player_pos_z = json[cstr].at("position_z");
+                        float enemy_pos_x = json[cstr].at("position_enemy_x");
+                        float enemy_pos_y = json[cstr].at("position_enemy_y");
+                        float enemy_pos_z = json[cstr].at("position_enemy_z");
+
+                        glm::vec3 player_pos(player_pos_x,player_pos_y,player_pos_z);
+                        glm::vec3 enemy_pos(enemy_pos_x,enemy_pos_y,enemy_pos_z);
+                        
                         game.getPlayer()->setUsername(cstr);
-                        game.getPlayer()->setScore(it.value());
+                        game.getPlayer()->setScore(player_score);
+                        game.getPlayer()->setLife(player_life);
+                        game.getPlayer()->setPos(player_pos);
+                        game.getEnemy()->setPos(enemy_pos);
                         game.getPlayer()->ShowPlayerData(game.getPlayer());
                     }
                 }
