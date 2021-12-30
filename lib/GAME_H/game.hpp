@@ -12,15 +12,14 @@
 using json = nlohmann::json;
 
 class Game {
-
-private: 
-    Player              m_player;
-    Enemy               m_enemy;
-    GameMap             m_gameMap;
-    Skybox              m_skybox;
-    TrackballCamera     m_trackballCamera;
-    eyeCamera           m_eyeCamera;
-    vector<Player>      m_player_list;
+private:
+    Player          m_player;
+    Enemy           m_enemy;
+    GameMap         m_gameMap;
+    Skybox          m_skybox;
+    TrackballCamera m_trackballCamera;
+    eyeCamera       m_eyeCamera;
+    vector<Player>  m_player_list;
 
     // assets
     std::vector<Model>  m_objModels;
@@ -31,14 +30,14 @@ public:
     bool fixedCamera;
 
     Game(SceneLight sceneLight)
-    : m_gameMap(sceneLight), m_player(&m_eyeCamera), paused(true), fixedCamera(false) {};
+        : m_gameMap(sceneLight), m_player(&m_eyeCamera), paused(true), fixedCamera(false){};
 
     void renderGame(float window_width, float window_height)
     {
-        int renderRadius = 8;
-        glm::mat4 model      = glm::mat4(1.0f);
-        glm::mat4 view       = m_player.getCamera()->GetViewMatrix(m_player.getPos(), m_player.down);
-        glm::mat4 projection = glm::perspective(m_eyeCamera.Zoom, window_width / window_height, 0.1f, 100.0f);
+        int       renderRadius = 8;
+        glm::mat4 model        = glm::mat4(1.0f);
+        glm::mat4 view         = m_player.getCamera()->GetViewMatrix(m_player.getPos(), m_player.down);
+        glm::mat4 projection   = glm::perspective(m_eyeCamera.Zoom, window_width / window_height, 0.1f, 100.0f);
 
         // draw player
         if (m_player.getCamera()->getCameraType() == 0) //no drawing with eye camera
@@ -69,15 +68,13 @@ public:
         shader.use();
 
         // point lights
-        int i = 0;
+        int                 i      = 0;
         std::vector<Light*> lights = m_gameMap.getLights();
-        for (auto it = lights.begin(); it != lights.end(); it++)
-        {
-            if ((*it)->getPos().x < m_player.getPos().x + renderRadius && (*it)->getPos().x > m_player.getPos().x - renderRadius && (*it)->getPos().y < m_player.getPos().y + renderRadius && (*it)->getPos().y > m_player.getPos().y - renderRadius)
-            {
+        for (auto it = lights.begin(); it != lights.end(); it++) {
+            if ((*it)->getPos().x < m_player.getPos().x + renderRadius && (*it)->getPos().x > m_player.getPos().x - renderRadius && (*it)->getPos().y < m_player.getPos().y + renderRadius && (*it)->getPos().y > m_player.getPos().y - renderRadius) {
                 std::string uniformNamePosition = "pointLights[" + std::to_string(i) + "].position";
-                std::string uniformNameColor = "pointLights[" + std::to_string(i) + "].color";
-                
+                std::string uniformNameColor    = "pointLights[" + std::to_string(i) + "].color";
+
                 shader.setVec3(uniformNamePosition, glm::vec3((*it)->getPos()));
                 shader.setVec3(uniformNameColor, (*it)->getColor());
                 i++;
@@ -157,27 +154,21 @@ public:
         // read a JSON file
         std::ifstream readingFile(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
         if (readingFile.is_open()) {
-            json jscores;
+            json jscores = json::array();
             readingFile >> jscores;
             readingFile.close();
-            if (jscores.contains("BOB")) {
-                cout << "it is found" << endl;
-            }
-            else {
-                cout << "not found " << endl;
-            }
+
+            json jscores_update = {{m_player.getUsername(), {{"score", m_player.getScore()}, {"life", m_player.getLife()}}}};
 
             //add new score
             if (exists(jscores, m_player.getUsername())) {
                 cout << "User already exist" << endl;
-                json jscores_update = {{m_player.getUsername(), m_player.getScore()}};
 
-                // add all keys from object2 to object1
                 jscores.update(jscores_update);
             }
 
             else
-                jscores += {m_player.getUsername(), m_player.getScore()};
+                jscores += {m_player.getUsername(), {{"score", m_player.getScore()}, {"life", m_player.getLife()}}};
 
             // write prettified JSON to another file
             std::ofstream writtingFile(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur

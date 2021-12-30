@@ -1,4 +1,12 @@
 {
-    "BOB": 42,
-    "Anna": 2
+    "Bob": {
+        "score": 0,
+        "life": 3,
+        "position": "(0.0,0.0,0.0)"
+    },
+    "Anna": {
+        "score": 1,
+        "life": 1,
+        "position": "(0.0,0.0,0.0)"
+    }
 }
