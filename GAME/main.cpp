@@ -97,8 +97,8 @@ int main()
 
     Shader boxShader("GAME/shaders/floor.vs", "GAME/shaders/floor.fs");
 
-    int nbObstacles = 10;
-    int nbLights    = 5;
+    int nbObstacles = 100;
+    int nbLights    = 10;
     game.InitGame("assets/petite_map.pgm", nbObstacles, nbLights);
 
     textrendering.initTextRendering(window_width, window_height);
