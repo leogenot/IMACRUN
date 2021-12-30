@@ -7,7 +7,8 @@
         "position_z" : 0,
         "position_enemy_x": 0,
         "position_enemy_y" : 0,
-        "position_enemy_z" : 0
+        "position_enemy_z" : 0,
+        "Yaw" : 0
     },
     "Anna": {
         "score": 1,
@@ -17,6 +18,7 @@
         "position_z" : 0,
         "position_enemy_x": 0,
         "position_enemy_y" : 0,
-        "position_enemy_z" : 0
+        "position_enemy_z" : 0,
+        "Yaw" : 0
     }
 }

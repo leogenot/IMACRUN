@@ -276,6 +276,7 @@ int main()
                         float enemy_pos_x = json[cstr].at("position_enemy_x");
                         float enemy_pos_y = json[cstr].at("position_enemy_y");
                         float enemy_pos_z = json[cstr].at("position_enemy_z");
+                        float yaw = json[cstr].at("yaw");
 
                         glm::vec3 player_pos(player_pos_x,player_pos_y,player_pos_z);
                         glm::vec3 enemy_pos(enemy_pos_x,enemy_pos_y,enemy_pos_z);
@@ -285,6 +286,8 @@ int main()
                         game.getPlayer()->setLife(player_life);
                         game.getPlayer()->setPos(player_pos);
                         game.getEnemy()->setPos(enemy_pos);
+                        game.getPlayer()->Yaw = yaw;
+                        game.getPlayer()->getCamera()->setDirection(yaw);
                         game.getPlayer()->ShowPlayerData(game.getPlayer());
                     }
                 }
