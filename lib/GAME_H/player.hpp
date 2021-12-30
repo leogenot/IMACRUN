@@ -60,6 +60,7 @@ public:
     void      setUsername(char* s) { strcpy(m_username, s); }
     void setScore(int score){m_score = score;}
     void setLife(int life){m_life = life;}
+    void setPos(glm::vec3 pos){m_pos = pos;};
     void      addScore(int value) { m_score += value; };
 
     int  getLife() const { return m_life; };

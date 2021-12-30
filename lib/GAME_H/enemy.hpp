@@ -39,6 +39,7 @@ public:
     };
 
     glm::vec3 getPos() const { return m_pos; };
+    void setPos(glm::vec3 pos){m_pos = pos;};
     Shader getShader() const { return *m_shader; };
     Model getObjModel() const { return *m_objModel; };
     glm::mat4 getModel() const;

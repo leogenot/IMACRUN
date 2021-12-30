@@ -158,7 +158,7 @@ public:
             readingFile >> jscores;
             readingFile.close();
 
-            json jscores_update = {{m_player.getUsername(), {{"score", m_player.getScore()}, {"life", m_player.getLife()}}}};
+            json jscores_update = {{m_player.getUsername(), {{"score", m_player.getScore()}, {"life", m_player.getLife()}, {"position_x", m_player.getPos().x}, {"position_y", m_player.getPos().y}, {"position_z", m_player.getPos().z}, {"position_enemy_x", m_enemy.getPos().x}, {"position_enemy_y", m_enemy.getPos().y}, {"position_enemy_z", m_enemy.getPos().z}}}};
 
             //add new score
             if (exists(jscores, m_player.getUsername())) {
@@ -168,7 +168,7 @@ public:
             }
 
             else
-                jscores += {m_player.getUsername(), {{"score", m_player.getScore()}, {"life", m_player.getLife()}}};
+                jscores += {m_player.getUsername(), {{"score", m_player.getScore()}, {"life", m_player.getLife()}, {"position_x", m_player.getPos().x}, {"position_y", m_player.getPos().y}, {"position_z", m_player.getPos().z}, {"position_enemy_x", m_enemy.getPos().x}, {"position_enemy_y", m_enemy.getPos().y}, {"position_enemy_z", m_enemy.getPos().z}}};
 
             // write prettified JSON to another file
             std::ofstream writtingFile(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur
