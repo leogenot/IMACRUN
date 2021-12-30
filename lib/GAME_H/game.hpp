@@ -64,7 +64,7 @@ public:
     vector<Player>* getPlayerList() { return &m_player_list; };
     Enemy*          getEnemy() { return &m_enemy; };
 
-    void setShader(Shader &shader, glm::mat4 model, glm::mat4 view, glm::mat4 projection, int renderRadius)
+    void setShader(Shader shader, glm::mat4 model, glm::mat4 view, glm::mat4 projection, int renderRadius)
     {
         shader.use();
 
