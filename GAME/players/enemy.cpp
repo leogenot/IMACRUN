@@ -22,6 +22,19 @@ void Enemy::resetEnemy()
     updateEnemyVectors();
 }
 
+bool Enemy::collidePlayer(glm::vec3 playerPos) const
+{
+    if (round(playerPos.x) == round(getPos().x) && round(playerPos.z) == round(getPos().z))
+        return true;
+    else if (round(playerPos.x) == round(getPos().x + Right.x) && round(playerPos.z) == round(getPos().z + Right.z))
+        return true;
+    else if (round(playerPos.x) == round(getPos().x - Right.x) && round(playerPos.z) == round(getPos().z - Right.z))
+        return true;
+
+    return false;
+}
+
+
 glm::mat4 Enemy::getModel() const
 {
     glm::mat4 model = glm::translate(glm::mat4(1.0f), m_pos);

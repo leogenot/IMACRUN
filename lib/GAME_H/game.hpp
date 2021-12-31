@@ -131,7 +131,7 @@ public:
     };
     bool LoseGame()
     {
-        if (getPlayer()->getLife() == 0 || getPlayer()->getCollision(FORWARD, getGameMap()) == true) {
+        if (getPlayer()->getLife() == 0 || getPlayer()->getCollision(FORWARD, getGameMap()) == true || getEnemy()->collidePlayer(getPlayer()->getPos())) {
             paused = !paused;
             return true;
         }

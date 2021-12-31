@@ -45,6 +45,7 @@ public:
     glm::mat4 getModel() const;
     void initEnemy(Shader* shader, Model* model);
     void resetEnemy();
+    bool collidePlayer(glm::vec3 playerPos) const;
     
     // jump manager
     void Jump();
