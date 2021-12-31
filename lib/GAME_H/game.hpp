@@ -51,7 +51,7 @@ public:
         m_enemy.getObjModel().DrawModel(m_enemy.getShader());
 
         // draw gameMap
-        m_gameMap.drawGameMap(view, projection, model, m_player.getCamera()->getPos(), m_player.getPos(), 8);
+        m_gameMap.drawGameMap(view, projection, model, m_player.getCamera()->getPos(), m_player.getPos(), renderRadius);
 
         // draw skybox
         m_skybox.draw(view, projection, model, m_player.getCamera()->GetViewMatrix(m_player.getPos(), m_player.down));
@@ -71,7 +71,7 @@ public:
         int                 i      = 0;
         std::vector<Light*> lights = m_gameMap.getLights();
         for (auto it = lights.begin(); it != lights.end(); it++) {
-            if ((*it)->getPos().x < m_player.getPos().x + renderRadius && (*it)->getPos().x > m_player.getPos().x - renderRadius && (*it)->getPos().y < m_player.getPos().y + renderRadius && (*it)->getPos().y > m_player.getPos().y - renderRadius) {
+            if ((*it)->getPos().x < m_player.getPos().x + renderRadius && (*it)->getPos().x > m_player.getPos().x - renderRadius && (*it)->getPos().z < m_player.getPos().z + renderRadius && (*it)->getPos().z > m_player.getPos().z - renderRadius) {
                 std::string uniformNamePosition = "pointLights[" + std::to_string(i) + "].position";
                 std::string uniformNameColor    = "pointLights[" + std::to_string(i) + "].color";
 

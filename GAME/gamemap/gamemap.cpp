@@ -264,21 +264,21 @@ void GameMap::drawGameMap(glm::mat4 view, glm::mat4 projection, glm::mat4 model,
     //draw path
     for (auto it = m_grid.begin(); it != m_grid.end(); it++)
     {
-        if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().y < playerPos.y + renderRadius && (*it)->getPos().y > playerPos.y - renderRadius)
+        if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().z < playerPos.z + renderRadius && (*it)->getPos().z > playerPos.z - renderRadius)
             (*it)->draw(view, projection, model, camPos, m_sceneLight, m_lights, playerPos, renderRadius);
     }
 
     //draw obstacles
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++)
     {
-        if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().y < playerPos.y + renderRadius && (*it)->getPos().y > playerPos.y - renderRadius)
+        if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().z < playerPos.z + renderRadius && (*it)->getPos().z > playerPos.z - renderRadius)
             (*it)->draw(view, projection, model, camPos, m_sceneLight, m_lights, playerPos, renderRadius);
     }
 
     //draw lights
     for (auto it = m_lights.begin(); it != m_lights.end(); it++)
     {
-        if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().y < playerPos.y + renderRadius && (*it)->getPos().y > playerPos.y - renderRadius)
+        if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().z < playerPos.z + renderRadius && (*it)->getPos().z > playerPos.z - renderRadius)
             (*it)->draw(view, projection, model);
     }
 }

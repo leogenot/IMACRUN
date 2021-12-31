@@ -82,7 +82,7 @@ void Obstacle::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::
     int i = 0;
     for (auto it = lights.begin(); it != lights.end(); it++)
     {
-        if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().y < playerPos.y + renderRadius && (*it)->getPos().y > playerPos.y - renderRadius)
+        if ((*it)->getPos().x < playerPos.x + renderRadius && (*it)->getPos().x > playerPos.x - renderRadius && (*it)->getPos().z < playerPos.z + renderRadius && (*it)->getPos().z > playerPos.z - renderRadius)
         {
             std::string uniformNamePosition = "pointLights[" + std::to_string(i) + "].position";
             std::string uniformNameColor = "pointLights[" + std::to_string(i) + "].color";
