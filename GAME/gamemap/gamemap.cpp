@@ -6,7 +6,7 @@
 void GameMap::loadGameMap(const std::string& path)
 {
     //initialize tab of id
-    m_textures.push_back(loadTexture<const char>("assets/textures/floor/rocks.jpg"));
+    m_textures.push_back(loadTexture<const char>("assets/textures/floor/sand.jpg"));
     m_textures.push_back(loadTexture<const char>("assets/textures/cube/cube.jpg"));
     m_textures.push_back(loadTexture<const char>("assets/textures/cube/cube.jpg"));
 

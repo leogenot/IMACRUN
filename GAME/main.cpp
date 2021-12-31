@@ -42,7 +42,7 @@ SceneLight sceneLight(lightDir, lightColor);
 TextRendering textrendering;
 Game          game(sceneLight);
 
-static char player_username[128];
+static char player_username[128] = "player";
 
 // timing
 float deltaTime = 0.0f;
