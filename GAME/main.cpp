@@ -235,7 +235,8 @@ int main()
                 ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
 
                 ImGui::Begin("Game options", &show_options_window, flags);
-                ImGui::Text("Select your username : ");
+                ImGui::Text("Enter your username : ");
+                ImGui::InputText("", player_username, IM_ARRAYSIZE(player_username));
                 if (ImGui::Button("Delete last letter")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
                     player_username[strlen(player_username) - 1] = '\0';
@@ -257,7 +258,7 @@ int main()
                 ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
 
                 ImGui::Begin("Game load", &show_load_window, flags);
-                ImGui::Text("Enter your username to retrieve your savegame: ");
+                ImGui::Text("Select your savegame: ");
 
                 std::ifstream i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
                 json          json;
