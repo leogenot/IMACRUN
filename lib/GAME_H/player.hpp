@@ -2,12 +2,13 @@
 #define PLAYER_H
 #include <glm/glm.hpp>
 #include <vector>
+#include "../miniaudio.h"
 #include "camera.h"
 #include "element.hpp"
 #include "gamemap.hpp"
 #include "model.hpp"
 
-constexpr float SPEED            = 3.f;
+constexpr float SPEED = 3.f;
 //constexpr float PLAYERSTART[3]   = {2.0f, 0.0f, 2.0f};
 constexpr float PLAYERSTART[3]   = {60.0f, 0.0f, 2.0f};
 constexpr float PLAYERJUMPHEIGHT = PLAYERSTART[1] + 0.4f;
@@ -22,6 +23,14 @@ private:
     int  m_score;
     int  m_life = 3;
     char m_username[128];
+
+    ma_result   result;
+    ma_engine   engine;
+    std::string str            = "assets/sounds/ka_chow.mp3";
+    const char* c_soundKa_chow = str.c_str();
+
+    std::string str2             = "assets/sounds/ka_chigga.mp3";
+    const char* c_soundKa_chigga = str2.c_str();
 
 public:
     bool  onGround;
@@ -52,19 +61,30 @@ public:
     };
 
     glm::vec3 getPos() const { return m_pos; };
-    Shader getShader() const { return *m_shader; };
-    Model getObjModel() const { return *m_objModel; };
+    Shader    getShader() const { return *m_shader; };
+    Model     getObjModel() const { return *m_objModel; };
     glm::mat4 getModel() const;
     int       getScore() const { return m_score; };
     char*     getUsername() { return &m_username[0]; };
     void      setUsername(char* s) { strcpy(m_username, s); }
-    void setScore(int score){m_score = score;}
-    void setLife(int life){m_life = life;}
-    void setPos(glm::vec3 pos){m_pos = pos;};
-    void      addScore(int value) { m_score += value; };
+    void      setScore(int score) { m_score = score; }
+    void      setLife(int life) { m_life = life; }
+    void      setPos(glm::vec3 pos) { m_pos = pos; };
+    void      addScore(int value)
+    {
+        m_score += value;
+    };
 
     int  getLife() const { return m_life; };
-    void removeLife() { m_life--; };
+    void removeLife()
+    {
+        m_life--;
+        result = ma_engine_init(NULL, &engine);
+        if (result != MA_SUCCESS) {
+            printf("Failed to initialize audio engine.");
+        }
+        ma_engine_play_sound(&engine, c_soundKa_chigga, NULL);
+    };
     void ShowPlayerData(Player* m_player);
 
     void initPlayer(Shader* shader, Model* model);
@@ -73,8 +93,8 @@ public:
     void Jump();
     void Rise(float deltatime);
     void Fall(float deltatime);
-    void BendDown() {down = true;};
-    void GetUp() {down = false;};
+    void BendDown() { down = true; };
+    void GetUp() { down = false; };
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
     void ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap* gamemap);
     // calculates the front vector from the Camera's (updated) Euler Angles

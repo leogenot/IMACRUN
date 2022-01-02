@@ -47,6 +47,8 @@ ma_result     result;
 ma_engine     engine;
 std::string   str                  = "assets/sounds/soundtrack.mp3";
 const char*   c_sound              = str.c_str();
+std::string   str2                  = "assets/sounds/ka_chow.mp3";
+const char*   c_soundKa_chow              = str.c_str();
 
 static char   player_username[128] = "player";
 
@@ -170,6 +172,7 @@ int main()
             textrendering.RenderText("Life : " + std::to_string(game.getPlayer()->getLife()), 1000.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
             textrendering.RenderText(game.getPlayer()->getUsername(), 900.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
             textrendering.RenderText("KATCHAAAAW", 540.0f, 570.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f));
+            
 
             if (game.LoseGame()) {
                 show_looser_window = true;
