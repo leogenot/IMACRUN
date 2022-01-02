@@ -1,12 +1,14 @@
 #include "GAME_H/App.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
-
+#define MINIAUDIO_IMPLEMENTATION
+#include "miniaudio.h"
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 void CountDown(unsigned int time_in_sec);
+void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount);
 
 static App& get_app(GLFWwindow* window)
 {
@@ -41,8 +43,12 @@ SceneLight sceneLight(lightDir, lightColor);
 // game
 TextRendering textrendering;
 Game          game(sceneLight);
+ma_result     result;
+ma_engine     engine;
+std::string   str                  = "assets/sounds/soundtrack.mp3";
+const char*   c_sound              = str.c_str();
 
-static char player_username[128] = "player";
+static char   player_username[128] = "player";
 
 // timing
 float deltaTime = 0.0f;
@@ -50,6 +56,7 @@ float lastFrame = 0.0f;
 
 int main()
 {
+    
     /* Initialize the library */
     if (!glfwInit()) {
         return -1;
@@ -85,7 +92,11 @@ int main()
         cout << "Failed to initialize GLAD" << endl;
         return -1;
     }
-
+    result = ma_engine_init(NULL, &engine);
+    if (result != MA_SUCCESS) {
+        printf("Failed to initialize audio engine.");
+        return -1;
+    }
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
@@ -131,6 +142,7 @@ int main()
     glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
         get_app(window).key_callback(window, key, scancode, action, mods);
     });
+    ma_engine_play_sound(&engine, c_sound, NULL);
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
@@ -166,6 +178,7 @@ int main()
         else {
             deltaTime = 0;
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
             // Start the Dear ImGui frame
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
@@ -269,19 +282,19 @@ int main()
 
                     if (ImGui::Button(cstr)) // Buttons return true when clicked (most widgets return true when edited/activated)
                     {
-                        int player_score = json[cstr].at("score");
-                        int player_life = json[cstr].at("life");
+                        int   player_score = json[cstr].at("score");
+                        int   player_life  = json[cstr].at("life");
                         float player_pos_x = json[cstr].at("position_x");
                         float player_pos_y = json[cstr].at("position_y");
                         float player_pos_z = json[cstr].at("position_z");
-                        float enemy_pos_x = json[cstr].at("position_enemy_x");
-                        float enemy_pos_y = json[cstr].at("position_enemy_y");
-                        float enemy_pos_z = json[cstr].at("position_enemy_z");
-                        float yaw = json[cstr].at("yaw");
+                        float enemy_pos_x  = json[cstr].at("position_enemy_x");
+                        float enemy_pos_y  = json[cstr].at("position_enemy_y");
+                        float enemy_pos_z  = json[cstr].at("position_enemy_z");
+                        float yaw          = json[cstr].at("yaw");
 
-                        glm::vec3 player_pos(player_pos_x,player_pos_y,player_pos_z);
-                        glm::vec3 enemy_pos(enemy_pos_x,enemy_pos_y,enemy_pos_z);
-                        
+                        glm::vec3 player_pos(player_pos_x, player_pos_y, player_pos_z);
+                        glm::vec3 enemy_pos(enemy_pos_x, enemy_pos_y, enemy_pos_z);
+
                         game.getPlayer()->setUsername(cstr);
                         game.getPlayer()->setScore(player_score);
                         game.getPlayer()->setLife(player_life);
@@ -355,6 +368,7 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+    ma_engine_uninit(&engine);
 
     app.destroy();
     return 0;
@@ -490,4 +504,16 @@ void CountDown(unsigned int time_in_sec)
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
     lastFrame = (float)glfwGetTime();
+}
+
+void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
+{
+    ma_decoder* pDecoder = (ma_decoder*)pDevice->pUserData;
+    if (pDecoder == NULL) {
+        return;
+    }
+
+    ma_decoder_read_pcm_frames(pDecoder, pOutput, frameCount, NULL);
+
+    (void)pInput;
 }
