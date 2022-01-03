@@ -142,9 +142,6 @@ int main()
 
     /* Hook user inputs to the App */
     glfwSetWindowUserPointer(window, reinterpret_cast<void*>(&app));
-    glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-        get_app(window).key_callback(window, key, scancode, action, mods);
-    });
     ma_engine_play_sound(&engine, c_sound, NULL);
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
