@@ -50,6 +50,8 @@ string        str            = "assets/sounds/soundtrack.mp3";
 const char*   c_sound        = str.c_str();
 string        str2           = "assets/sounds/ka_chow.mp3";
 const char*   c_soundKa_chow = str.c_str();
+string        str3          = "assets/sounds/vroum.mp3";
+const char*   c_soundOh_ye = str3.c_str();
 
 static char player_username[128] = "player";
 
@@ -207,6 +209,7 @@ int main()
                     show_main_menu_window = false;
                     game->ResetGame(nbObstacles, nbLights);
                     CountDown(countdown_time);
+                    
                 }
 
                 if (ImGui::Button("Resume Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
@@ -484,11 +487,14 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 
 void CountDown(unsigned int time_in_sec)
 {
+    
     for (time_in_sec; time_in_sec > 0; --time_in_sec) {
         cout << time_in_sec << endl;
         this_thread::sleep_for(chrono::seconds(1));
     }
     lastFrame = (float)glfwGetTime();
+
+    
 }
 
 void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
