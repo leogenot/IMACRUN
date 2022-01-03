@@ -42,15 +42,15 @@ SceneLight sceneLight(lightDir, lightColor);
 
 // game
 TextRendering textrendering;
-Game* game = Game::instance(sceneLight);
+Game*         game = Game::instance(sceneLight);
 ma_result     result;
 ma_engine     engine;
-string   str                  = "assets/sounds/soundtrack.mp3";
-const char*   c_sound              = str.c_str();
-string   str2                  = "assets/sounds/ka_chow.mp3";
-const char*   c_soundKa_chow              = str.c_str();
+string        str            = "assets/sounds/soundtrack.mp3";
+const char*   c_sound        = str.c_str();
+string        str2           = "assets/sounds/ka_chow.mp3";
+const char*   c_soundKa_chow = str.c_str();
 
-static char   player_username[128] = "player";
+static char player_username[128] = "player";
 
 // timing
 float deltaTime = 0.0f;
@@ -58,7 +58,6 @@ float lastFrame = 0.0f;
 
 int main()
 {
-    
     /* Initialize the library */
     if (!glfwInit()) {
         return -1;
@@ -172,7 +171,6 @@ int main()
             textrendering.RenderText("Life : " + to_string(game->getPlayer()->getLife()), 1000.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
             textrendering.RenderText(game->getPlayer()->getUsername(), 900.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
             textrendering.RenderText("KATCHAAAAW", 540.0f, 570.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f));
-            
 
             if (game->LoseGame()) {
                 show_looser_window = true;
@@ -213,14 +211,13 @@ int main()
                 if (ImGui::Button("Resume Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
                     show_main_menu_window = false;
-                    game->paused           = false;
+                    game->paused          = false;
                     CountDown(countdown_time);
                 }
 
                 if (ImGui::Button("Save Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
                     game->SavePlayerData();
-                    game->ShowPlayersData();
                 }
 
                 if (ImGui::Button("Load Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
@@ -277,15 +274,20 @@ int main()
                 ImGui::Text("Select your savegame: ");
 
                 ifstream i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
-                json          json;
+                json     json;
                 i >> json;
                 for (auto it = json.begin(); it != json.end(); ++it) {
                     string str  = it.key();
-                    char*       cstr = const_cast<char*>(str.c_str());
-
-                    if (ImGui::Button(cstr)) // Buttons return true when clicked (most widgets return true when edited/activated)
+                    char*  player_name_char = const_cast<char*>(str.c_str());
+                    string player_score_life_str = ", Score : " + to_string(game->getPlayer()->getScore()) + ", Life : " + to_string(game->getPlayer()->getLife());
+                    char* player_score_life_char = const_cast<char*>(player_score_life_str.c_str());
+                    if (ImGui::Button(strcat(player_name_char, player_score_life_char))) // Buttons return true when clicked (most widgets return true when edited/activated)
                     {
-                        game->LoadGame(cstr);
+                        game->LoadGame(player_name_char);
+                        show_load_window = false;
+                        show_main_menu_window = false;
+                        game->paused          = false;
+                        CountDown(countdown_time);
                     }
                 }
 
@@ -334,7 +336,6 @@ int main()
                 game->getPlayer()->setUsername(player_username);
                 if (ImGui::Button("Save your score")) {
                     game->SavePlayerData();
-                    game->ShowPlayersData();
                 }
                 if (ImGui::Button("Back to main menu")) {
                     show_looser_window    = false;
@@ -379,7 +380,7 @@ void processInput(GLFWwindow* window)
         }
         else {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            game->paused           = true;
+            game->paused          = true;
             show_main_menu_window = !show_main_menu_window;
             cout << "paused" << endl;
         }
@@ -432,7 +433,7 @@ void processInput(GLFWwindow* window)
         if (newStateFixedCam == GLFW_RELEASE && oldStateFixedCam == GLFW_PRESS) {
             if (game->fixedCamera) {
                 game->fixedCamera = false;
-                firstMouse       = true;
+                firstMouse        = true;
             }
             else
                 game->fixedCamera = true;
