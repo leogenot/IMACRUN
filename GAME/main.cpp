@@ -366,9 +366,6 @@ int main()
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow* window)
 {
-    //Quit
-    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
 
     //Mouse capture
     static int oldStatePause = GLFW_RELEASE;
