@@ -45,9 +45,9 @@ TextRendering textrendering;
 Game          game(sceneLight);
 ma_result     result;
 ma_engine     engine;
-std::string   str                  = "assets/sounds/soundtrack.mp3";
+string   str                  = "assets/sounds/soundtrack.mp3";
 const char*   c_sound              = str.c_str();
-std::string   str2                  = "assets/sounds/ka_chow.mp3";
+string   str2                  = "assets/sounds/ka_chow.mp3";
 const char*   c_soundKa_chow              = str.c_str();
 
 static char   player_username[128] = "player";
@@ -154,7 +154,7 @@ int main()
             // per-frame time logic
             // --------------------
 
-            deltaTime = std::min(currentFrame - lastFrame, 1.f / 60.f);
+            deltaTime = min(currentFrame - lastFrame, 1.f / 60.f);
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             // render
             // ------
@@ -168,8 +168,8 @@ int main()
             // -------------------------------------------------------------------------------
             // render 2D
             textrendering.RenderText("Flash McQueen", 25.0f, 25.0f, 1.0f, glm::vec3(0.5f, 0.8f, 0.2f));
-            textrendering.RenderText("Score : " + std::to_string(game.getPlayer()->getScore()), 1100.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
-            textrendering.RenderText("Life : " + std::to_string(game.getPlayer()->getLife()), 1000.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
+            textrendering.RenderText("Score : " + to_string(game.getPlayer()->getScore()), 1100.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
+            textrendering.RenderText("Life : " + to_string(game.getPlayer()->getLife()), 1000.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
             textrendering.RenderText(game.getPlayer()->getUsername(), 900.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
             textrendering.RenderText("KATCHAAAAW", 540.0f, 570.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f));
             
@@ -276,11 +276,11 @@ int main()
                 ImGui::Begin("Game load", &show_load_window, flags);
                 ImGui::Text("Select your savegame: ");
 
-                std::ifstream i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
+                ifstream i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
                 json          json;
                 i >> json;
                 for (auto it = json.begin(); it != json.end(); ++it) {
-                    std::string str  = it.key();
+                    string str  = it.key();
                     char*       cstr = const_cast<char*>(str.c_str());
 
                     if (ImGui::Button(cstr)) // Buttons return true when clicked (most widgets return true when edited/activated)
@@ -395,13 +395,13 @@ void processInput(GLFWwindow* window)
 
             game.paused = false;
             CountDown(countdown_time);
-            std::cout << "not paused" << std::endl;
+            cout << "not paused" << endl;
         }
         else {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             game.paused           = true;
             show_main_menu_window = !show_main_menu_window;
-            std::cout << "paused" << std::endl;
+            cout << "paused" << endl;
         }
     }
     oldStatePause = newStatePause;
@@ -503,8 +503,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 void CountDown(unsigned int time_in_sec)
 {
     for (time_in_sec; time_in_sec > 0; --time_in_sec) {
-        std::cout << time_in_sec << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        cout << time_in_sec << endl;
+        this_thread::sleep_for(chrono::seconds(1));
     }
     lastFrame = (float)glfwGetTime();
 }
