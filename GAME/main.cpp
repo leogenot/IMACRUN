@@ -113,8 +113,8 @@ int main()
     Shader boxShader("GAME/shaders/floor.vs", "GAME/shaders/floor.fs");
 
     int nbObstacles = 100;
-    int nbLights    = 10;
-    game->InitGame("assets/maps/petite_map.pgm", nbObstacles, nbLights);
+    int nbLights    = 100;
+    game->InitGame("assets/maps/celle_la_cest_la_bonne.pgm", nbObstacles, nbLights);
 
     textrendering.initTextRendering(window_width, window_height);
 
