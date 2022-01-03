@@ -2,9 +2,9 @@
 #define ENEMY_H
 #include <glm/glm.hpp>
 #include <vector>
-#include "model.hpp"
-#include "gamemap.hpp"
-#include "camera.hpp"
+#include "../3dmodels/model.hpp"
+#include "../gamemap/gamemap.hpp"
+#include "../player/camera.hpp"
 
 constexpr float ENEMYSPEED      = 2.5f;
 //constexpr float ENEMYSTART[3]   = {2.0f, 0.0f, 0.0f};

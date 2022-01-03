@@ -1,8 +1,8 @@
 #ifndef OBSTACLE_H
 #define OBSTACLE_H
-#include "shader_m.hpp"
-#include "light.hpp"
-#include "sceneLight.hpp"
+#include "../utilities/shader_m.hpp"
+#include "../lighting/light.hpp"
+#include "../lighting/sceneLight.hpp"
 #include <vector>
 
 class Obstacle

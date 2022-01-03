@@ -2,11 +2,11 @@
 #define PLAYER_H
 #include <glm/glm.hpp>
 #include <vector>
-#include "../miniaudio.h"
-#include "camera.hpp"
-#include "element.hpp"
-#include "gamemap.hpp"
-#include "model.hpp"
+#include "../../miniaudio.h"
+#include "../player/camera.hpp"
+#include "../gamemap/element.hpp"
+#include "../gamemap/gamemap.hpp"
+#include "../3dmodels/model.hpp"
 
 constexpr float SPEED = 3.f;
 //constexpr float PLAYERSTART[3]   = {2.0f, 0.0f, 2.0f};

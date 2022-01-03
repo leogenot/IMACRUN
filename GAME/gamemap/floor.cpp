@@ -1,5 +1,5 @@
-#include "GAME_H/floor.hpp"
-#include "GAME_H/utilityFunction.hpp"
+#include "GAME_H/gamemap/floor.hpp"
+#include "GAME_H/utilities/utilityFunction.hpp"
 
 Floor::Floor(bool angle, unsigned int texture) : m_texture(texture)
 {

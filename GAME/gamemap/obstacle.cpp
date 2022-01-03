@@ -1,5 +1,5 @@
-#include "GAME_H/obstacle.hpp"
-#include "GAME_H/utilityFunction.hpp"
+#include "GAME_H/gamemap/obstacle.hpp"
+#include "GAME_H/utilities/utilityFunction.hpp"
 
 Obstacle::Obstacle(glm::vec3 pos, unsigned int texture) : m_pos(pos), m_texture(texture)
 {

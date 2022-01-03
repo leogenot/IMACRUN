@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
-#include "camera.hpp"
+#include "../player/camera.hpp"
 
 constexpr float SENSITIVITY = 0.1f;
 constexpr float MAXPITCHANGLE = 45.0f;

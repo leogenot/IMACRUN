@@ -4,14 +4,14 @@
 #include <iostream>
 #include <string>
 #include <glm/gtx/transform.hpp>
-#include "../stb_image.h"
+#include "../../stb_image.h"
 #include <glm/gtc/type_ptr.hpp>
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
 #include "vector"
-#include "light.hpp"
-#include "sceneLight.hpp"
+#include "../lighting/light.hpp"
+#include "../lighting/sceneLight.hpp"
 
 enum Collision_Type {
     NONE,

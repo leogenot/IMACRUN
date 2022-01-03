@@ -1,9 +1,9 @@
 #ifndef LIGHT_H
 #define LIGHT_H
-#include "shader_m.hpp"
+#include "../utilities/shader_m.hpp"
 #include <glm/glm.hpp>
 #include <vector>
-#include "model.hpp"
+#include "../3dmodels/model.hpp"
 
 class Light
 {

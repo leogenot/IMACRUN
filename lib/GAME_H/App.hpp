@@ -13,23 +13,23 @@
     #include <thread>
     #include <vector>
     #include "GLFW/glfw3.h"
-    #include "camera.hpp"
+    #include "player/camera.hpp"
     
-    #include "eyeCamera.hpp"
+    #include "player/eyeCamera.hpp"
     #include "game.hpp"
-    #include "gamemap.hpp"
+    #include "gamemap/gamemap.hpp"
     #include "glad/glad.h"
     #include "imgui/imgui.h"
     #include "imgui/imgui_impl_glfw.h"
     #include "imgui/imgui_impl_opengl3.h"
-    #include "json.hpp"
-    #include "light.hpp"
-    #include "model.hpp"
-    #include "player.hpp"
-    #include "shader_m.hpp"
-    #include "skybox.hpp"
-    #include "textrendering.hpp"
-    #include "trackballCamera.hpp"
+    #include "utilities/json.hpp"
+    #include "lighting/light.hpp"
+    #include "3dmodels/model.hpp"
+    #include "player/player.hpp"
+    #include "utilities/shader_m.hpp"
+    #include "gamemap/skybox.hpp"
+    #include "utilities/textrendering.hpp"
+    #include "player/trackballCamera.hpp"
     
 using json = nlohmann::json;
 

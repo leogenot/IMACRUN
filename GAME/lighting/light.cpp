@@ -1,5 +1,5 @@
-#include "GAME_H/light.hpp"
-#include "GAME_H/utilityFunction.hpp"
+#include "GAME_H/lighting/light.hpp"
+#include "GAME_H/utilities/utilityFunction.hpp"
 
 void Light::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model)
 {

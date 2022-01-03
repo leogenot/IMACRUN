@@ -1,4 +1,4 @@
-#include "GAME_H/player.hpp"
+#include "GAME_H/player/player.hpp"
 
 void Player::initPlayer(Shader* shader, Model* model)
 {

@@ -1,7 +1,7 @@
-#include "GAME_H/gamemap.hpp"
+#include "GAME_H/gamemap/gamemap.hpp"
 #include <chrono>
 #include <random>
-#include "GAME_H/utilityFunction.hpp"
+#include "GAME_H/utilities/utilityFunction.hpp"
 
 void GameMap::loadGameMap(const std::string& path)
 {

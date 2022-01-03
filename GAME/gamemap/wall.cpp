@@ -1,5 +1,5 @@
-#include "GAME_H/wall.hpp"
-#include "GAME_H/utilityFunction.hpp"
+#include "GAME_H/gamemap/wall.hpp"
+#include "GAME_H/utilities/utilityFunction.hpp"
 
 Wall::Wall(unsigned int texture) : m_texture(texture)
 {

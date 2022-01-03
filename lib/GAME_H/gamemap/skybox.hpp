@@ -2,8 +2,8 @@
 #ifndef SKYBOX_H
 #define SKYBOX_H
 #include "element.hpp"
-#include "shader_m.hpp"
-#include "../stb_image.h"
+#include "../utilities/shader_m.hpp"
+#include "../../stb_image.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -11,12 +11,12 @@
 #include <string>
 #include <vector>
 #include "GLFW/glfw3.h"
-#include "camera.hpp"
+#include "../player/camera.hpp"
 #include "glad/glad.h"
 
 
 #include "gamemap.hpp"
-#include "trackballCamera.hpp"
+#include "../player/trackballCamera.hpp"
 
 class Skybox
 {

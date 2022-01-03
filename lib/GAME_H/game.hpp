@@ -1,14 +1,14 @@
 #ifndef GAME_H
 #define GAME_H
 #include <vector>
-#include "enemy.hpp"
-#include "eyeCamera.hpp"
-#include "gamemap.hpp"
-#include "json.hpp"
-#include "player.hpp"
-#include "sceneLight.hpp"
-#include "skybox.hpp"
-#include "trackballCamera.hpp"
+#include "player/enemy.hpp"
+#include "player/eyeCamera.hpp"
+#include "gamemap/gamemap.hpp"
+#include "utilities/json.hpp"
+#include "player/player.hpp"
+#include "lighting/sceneLight.hpp"
+#include "gamemap/skybox.hpp"
+#include "player/trackballCamera.hpp"
 using json = nlohmann::json;
 
 class Game {

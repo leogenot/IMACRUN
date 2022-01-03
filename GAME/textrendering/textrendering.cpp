@@ -1,4 +1,4 @@
-#include "GAME_H/textrendering.hpp"
+#include "GAME_H/utilities/textrendering.hpp"
 
 void TextRendering::initTextRendering(float window_width, float window_height)
 {

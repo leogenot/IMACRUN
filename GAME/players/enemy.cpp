@@ -1,4 +1,4 @@
-#include "GAME_H/enemy.hpp"
+#include "GAME_H/player/enemy.hpp"
 
 void Enemy::initEnemy(Shader* shader, Model* model)
 {

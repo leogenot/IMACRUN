@@ -1,4 +1,4 @@
-#include "GAME_H/skybox.hpp"
+#include "GAME_H/gamemap/skybox.hpp"
 
 void Skybox::initSkybox()
 {

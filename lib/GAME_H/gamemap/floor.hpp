@@ -1,8 +1,8 @@
 #ifndef FLOOR_H
 #define FLOOR_H
-#include "element.hpp"
-#include "light.hpp"
-#include "shader_m.hpp"
+#include "../gamemap/element.hpp"
+#include "../lighting/light.hpp"
+#include "../utilities/shader_m.hpp"
 
 class Floor : public Element
 {
