@@ -58,13 +58,10 @@ public:
     bool LoseGame();
     void ResetGame(int nbObstacles, int nbLights);
 
-    void LoadGame(){}; //load from file data à supprimer ?
-    void SaveGame(){}; // à supprimer ?
+    void LoadGame(string name); //load from file data
 
     void SavePlayerData();
     bool exists(const json& j, const std::string& key);
-    void ShowPlayersData();
-    void LoadPlayerData();
 };
 
 #endif

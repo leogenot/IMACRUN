@@ -123,6 +123,40 @@ void Game::ResetGame(int nbObstacles, int nbLights)
     paused = !paused;
 };
 
+void Game::LoadGame(string name)
+{
+    char* cname;
+    ifstream i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
+    json json;
+    i >> json;
+    for (auto it = json.begin(); it != json.end(); ++it) {
+        if (name == it.key())
+            cname = const_cast<char*>(name.c_str());
+    }
+
+    int   player_score = json[cname].at("score");
+    int   player_life  = json[cname].at("life");
+    float player_pos_x = json[cname].at("position_x");
+    float player_pos_y = json[cname].at("position_y");
+    float player_pos_z = json[cname].at("position_z");
+    float enemy_pos_x  = json[cname].at("position_enemy_x");
+    float enemy_pos_y  = json[cname].at("position_enemy_y");
+    float enemy_pos_z  = json[cname].at("position_enemy_z");
+    float yaw          = json[cname].at("yaw");
+
+    glm::vec3 player_pos(player_pos_x, player_pos_y, player_pos_z);
+    glm::vec3 enemy_pos(enemy_pos_x, enemy_pos_y, enemy_pos_z);
+
+    getPlayer()->setUsername(cname);
+    getPlayer()->setScore(player_score);
+    getPlayer()->setLife(player_life);
+    getPlayer()->setPos(player_pos);
+    getEnemy()->setPos(enemy_pos);
+    getPlayer()->Yaw = yaw;
+    getPlayer()->getCamera()->setDirection(yaw);
+    getPlayer()->ShowPlayerData(getPlayer());
+};
+
 void Game::SavePlayerData()
 {
     // read a JSON file
@@ -160,33 +194,4 @@ void Game::SavePlayerData()
 bool Game::exists(const json& j, const std::string& key)
 {
     return j.find(key) != j.end();
-};
-
-void Game::ShowPlayersData()
-{
-    // read a JSON file
-    std::ifstream i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
-    json          json;
-    i >> json;
-    std::cout << "Scores : " << std::endl;
-    // iterate the array
-
-    for (auto it = json.begin(); it != json.end(); ++it) {
-        std::cout << it.key() << " "
-                    << ": " << it.value();
-
-        std::cout << std::endl;
-    }
-};
-
-void Game::LoadPlayerData()
-{
-    // read a JSON file
-    std::ifstream i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
-    json          json;
-    i >> json;
-    for (auto it = json.begin(); it != json.end(); ++it) {
-        std::cout << it.key() << " "
-                    << ": " << it.value() << std::endl;
-    }
 };

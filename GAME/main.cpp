@@ -285,27 +285,7 @@ int main()
 
                     if (ImGui::Button(cstr)) // Buttons return true when clicked (most widgets return true when edited/activated)
                     {
-                        int   player_score = json[cstr].at("score");
-                        int   player_life  = json[cstr].at("life");
-                        float player_pos_x = json[cstr].at("position_x");
-                        float player_pos_y = json[cstr].at("position_y");
-                        float player_pos_z = json[cstr].at("position_z");
-                        float enemy_pos_x  = json[cstr].at("position_enemy_x");
-                        float enemy_pos_y  = json[cstr].at("position_enemy_y");
-                        float enemy_pos_z  = json[cstr].at("position_enemy_z");
-                        float yaw          = json[cstr].at("yaw");
-
-                        glm::vec3 player_pos(player_pos_x, player_pos_y, player_pos_z);
-                        glm::vec3 enemy_pos(enemy_pos_x, enemy_pos_y, enemy_pos_z);
-
-                        game->getPlayer()->setUsername(cstr);
-                        game->getPlayer()->setScore(player_score);
-                        game->getPlayer()->setLife(player_life);
-                        game->getPlayer()->setPos(player_pos);
-                        game->getEnemy()->setPos(enemy_pos);
-                        game->getPlayer()->Yaw = yaw;
-                        game->getPlayer()->getCamera()->setDirection(yaw);
-                        game->getPlayer()->ShowPlayerData(game->getPlayer());
+                        game->LoadGame(cstr);
                     }
                 }
 
@@ -342,8 +322,8 @@ int main()
                 ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
                 ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
 
-                ImGui::Begin("You lost the game->..", &show_looser_window, flags);
-                ImGui::Text("You lost the game->..");
+                ImGui::Begin("You lost the game...", &show_looser_window, flags);
+                ImGui::Text("You lost the game...");
                 ImGui::Text("Enter your username : ");
 
                 ImGui::InputText("", player_username, IM_ARRAYSIZE(player_username));
