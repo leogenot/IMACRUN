@@ -51,7 +51,7 @@ public:
     Player(Camera* camera, glm::vec3 pos = glm::vec3(PLAYERSTART[0], PLAYERSTART[1], PLAYERSTART[2]))
         : m_camera(camera), m_pos(pos), onGround(true), isFalling(false), Front(glm::vec3(0., 0., -1.)), MovementSpeed(SPEED), Yaw(YAW), Pitch(PITCH), WorldUp(0., 1., 0.), m_score(0), m_life(5)
     {
-        assert (camera == NULL && "error: Player constructor : 'camera should not be NULL");
+        assert (camera != NULL && "error: Player constructor : 'camera should not be NULL");
         updatePlayerVectors();
     };
 
