@@ -51,7 +51,7 @@ const char*   c_sound        = str.c_str();
 string        str2           = "assets/sounds/ka_chow.mp3";
 const char*   c_soundKa_chow = str.c_str();
 string        str3          = "assets/sounds/vroum.mp3";
-const char*   c_soundOh_ye = str3.c_str();
+const char*   c_soundVroum = str3.c_str();
 
 static char player_username[128] = "player";
 
@@ -487,7 +487,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 
 void CountDown(unsigned int time_in_sec)
 {
-    
+    ma_engine_play_sound(&engine, c_soundVroum, NULL);
     for (time_in_sec; time_in_sec > 0; --time_in_sec) {
         cout << time_in_sec << endl;
         this_thread::sleep_for(chrono::seconds(1));
