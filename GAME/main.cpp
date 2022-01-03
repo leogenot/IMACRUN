@@ -1,4 +1,28 @@
-#include "GAME_H/App.hpp"
+#include <chrono>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <iostream>
+#include <map>
+#include <string>
+#include <thread>
+#include <vector>
+#include "glad/glad.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include "GAME_H/player/player.hpp"
+#include "GAME_H/player/camera.hpp"
+#include "GAME_H/player/eyeCamera.hpp"
+#include "GAME_H/player/trackballCamera.hpp"
+#include "GAME_H/game.hpp"
+#include "GAME_H/gamemap/gamemap.hpp"
+#include "GAME_H/gamemap/skybox.hpp"
+#include "GAME_H/lighting/light.hpp"
+#include "GAME_H/3dmodels/model.hpp"
+#include "GAME_H/utilities/json.hpp"
+#include "GAME_H/utilities/shader_m.hpp"
+#include "GAME_H/utilities/textrendering.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION 
 #include <stb_image.h>
@@ -10,11 +34,6 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 void CountDown(unsigned int time_in_sec);
 void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount);
-
-static App& get_app(GLFWwindow* window)
-{
-    return *reinterpret_cast<App*>(glfwGetWindowUserPointer(window));
-}
 
 // settings
 const unsigned int window_width  = 1280;
@@ -135,13 +154,6 @@ int main()
     // Our state
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-    /* Create the App */
-    int w, h;
-    glfwGetWindowSize(window, &w, &h);
-    App app{w, h};
-
-    /* Hook user inputs to the App */
-    glfwSetWindowUserPointer(window, reinterpret_cast<void*>(&app));
     ma_engine_play_sound(&engine, c_sound, NULL);
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
@@ -187,12 +199,10 @@ int main()
 
             static ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings;
 
-            // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+            // Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
             if (show_main_menu_window) {
                 static bool use_work_area = true;
 
-                // We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
-                // Based on your use case you may want one of the other.
                 const ImGuiViewport* viewport = ImGui::GetMainViewport();
                 ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
                 ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
@@ -202,7 +212,6 @@ int main()
                     show_main_menu_window = false;
                     game->ResetGame(nbObstacles, nbLights);
                     CountDown(countdown_time);
-                    
                 }
 
                 if (ImGui::Button("Resume Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
@@ -238,8 +247,6 @@ int main()
             if (show_options_window) {
                 static bool use_work_area = true;
 
-                // We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
-                // Based on your use case you may want one of the other.
                 const ImGuiViewport* viewport = ImGui::GetMainViewport();
                 ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
                 ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
@@ -257,6 +264,7 @@ int main()
                 }
                 ImGui::End();
             }
+
             // load savegame window
             if (show_load_window) {
                 static bool use_work_area = true;
@@ -345,7 +353,15 @@ int main()
     }
     ma_engine_uninit(&engine);
 
-    app.destroy();
+    // destroy App
+    // Deletes all ImGUI instances
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+    // optional: de-allocate all resources once they've outlived their purpose:
+    // ------------------------------------------------------------------------
+    glfwTerminate();
+
     return 0;
 }
 
