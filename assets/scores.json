@@ -1,24 +1,24 @@
 {
     "Bob": {
-        "score": 0,
-        "life": 3,
-        "position_x": 0,
-        "position_y" : 0,
-        "position_z" : 0,
-        "position_enemy_x": 0,
-        "position_enemy_y" : 0,
-        "position_enemy_z" : 0,
-        "yaw" : 90
+        "life": 2,
+        "position_enemy_x": 60.0,
+        "position_enemy_y": 0.0,
+        "position_enemy_z": 0.6009407043457031,
+        "position_x": 60.0,
+        "position_y": 0.0,
+        "position_z": 2.7211287021636963,
+        "score": 5,
+        "yaw": 90.0
     },
     "Anna": {
-        "score": 1,
-        "life": 1,
-        "position_x": 0,
-        "position_y" : 0,
-        "position_z" : 0,
-        "position_enemy_x": 0,
-        "position_enemy_y" : 0,
-        "position_enemy_z" : 0,
-        "yaw" : 90
+        "life": 4,
+        "position_enemy_x": 60.0,
+        "position_enemy_y": 0.0,
+        "position_enemy_z": 0.6009407043457031,
+        "position_x": 60.0,
+        "position_y": 0.0,
+        "position_z": 2.7211287021636963,
+        "score": 0,
+        "yaw": 90.0
     }
 }
