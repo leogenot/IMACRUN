@@ -3,7 +3,6 @@
 #ifndef APP_H
     #define APP_H
 
-    #include <stb_image.h>
     #include <chrono>
     #include <glm/glm.hpp>
     #include <glm/gtc/matrix_transform.hpp>
@@ -15,7 +14,7 @@
     #include <vector>
     #include "GLFW/glfw3.h"
     #include "camera.hpp"
-    #include "cube.hpp"
+    
     #include "eyeCamera.hpp"
     #include "game.hpp"
     #include "gamemap.hpp"

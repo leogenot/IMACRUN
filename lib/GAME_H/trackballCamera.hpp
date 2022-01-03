@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include "camera.hpp"
-#include "cube.hpp"
+
 
 // Default camera values
 const float TRACKSENSITIVITY =  0.8f;

@@ -35,7 +35,6 @@ function(setup_game GAME)
     # Grab all the source files
     file(GLOB_RECURSE MY_SOURCES
         ${GAME}/*
-        lib/glimac/*
     )
     # Create target executable
     add_executable(${TARGET_NAME}
@@ -54,7 +53,6 @@ function(setup_game GAME)
     include_directories(
         ${GAME}
         lib
-        lib/glimac
     )
 
     # OpenGL

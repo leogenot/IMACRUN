@@ -3,7 +3,7 @@
 #define SKYBOX_H
 #include "element.hpp"
 #include "shader_m.hpp"
-#include <stb_image.h>
+#include "../stb_image.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -13,8 +13,8 @@
 #include "GLFW/glfw3.h"
 #include "camera.hpp"
 #include "glad/glad.h"
-#include "glimac/FilePath.hpp"
-#include "glimac/Program.hpp"
+
+
 #include "gamemap.hpp"
 #include "trackballCamera.hpp"
 

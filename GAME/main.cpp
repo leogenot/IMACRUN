@@ -1,6 +1,7 @@
 #include "GAME_H/App.hpp"
 
-#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION 
+#include <stb_image.h>
 #define MINIAUDIO_IMPLEMENTATION
 #include "miniaudio.h"
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
