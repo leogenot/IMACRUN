@@ -30,7 +30,6 @@ void GameMap::loadGameMap(const std::string& path)
         // read size
         myfile >> m_sizeX;
         myfile >> m_sizeY;
-        std::cout << m_sizeX << m_sizeY << std::endl;
 
         // read the data
         int data;
@@ -50,7 +49,6 @@ void GameMap::loadGameMap(const std::string& path)
                 m_grid.push_back(new Space);
                 break;
             default:
-                std::cout << "default" << std::endl;
                 break;
             }
         }
@@ -108,7 +106,7 @@ void GameMap::initObstacles(const int nbObstacles)
             posY = uniformIntYDistrib(generator);
         } while (!isEmpty(posX, posY)); // can't put obstacle (we want a floor with no obstacle)
 
-        m_obstacles.push_back(new Obstacle(glm::vec3(posX, uniformIntDistrib(generator), posY), m_textures[2])); //TODO: mieux gérer la hauteur des obstacles
+        m_obstacles.push_back(new Obstacle(glm::vec3(posX, uniformIntDistrib(generator), posY), m_textures[2]));
     }
 }
 
@@ -180,7 +178,7 @@ int GameMap::getPoint(const glm::vec3 pos)
         m_grid[indice]->point = false;
         for (auto it = m_lights.begin(); it != m_lights.end(); it++) {
             if ((*it)->getPos().x == round(pos.x) && (*it)->getPos().z == round(pos.z)) {
-                value = (*it)->getValue();
+                value = (*it)->getValue(); // get point value to return it
                 m_lights.erase(it);
                 return value;
             }
@@ -193,16 +191,14 @@ int GameMap::getPoint(const glm::vec3 pos)
 bool GameMap::onObstacle(const glm::vec3 pos, bool down)
 {
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++) {
-        if ((*it)->getPos().x == round(pos.x) && (*it)->getPos().z == round(pos.z) /*pos.y > (*it)->getPos().y - 0.2 && pos.y < (*it)->getPos().y + 0.2*/) // TODO : remplacer 0.2 par la taille de l'obstacle (hauteur)
+        if ((*it)->getPos().x == round(pos.x) && (*it)->getPos().z == round(pos.z))
         {
             if ((*it)->getPos().y == 1 && !down) {
                 m_obstacles.erase(it);
-                std::cout << "Collision obstacle up" << std::endl;
                 return true;
             }
             else if ((*it)->getPos().y == pos.y) {
                 m_obstacles.erase(it);
-                std::cout << "Collision obstacle down" << std::endl;
                 return true;
             }
         }
@@ -221,17 +217,14 @@ void GameMap::destroyCollision(const glm::vec3 pos, glm::vec3 step)
     for (auto it = m_obstacles.begin(); it != m_obstacles.end(); it++) {
         if ((*it)->getPos().x == round(pos.x) && (*it)->getPos().z == round(pos.z)) {
             m_obstacles.erase(it);
-            std::cout << "destroy" << std::endl;
             break;
         }
         else if ((*it)->getPos().x == round(pos.x + step.x) && (*it)->getPos().z == round(pos.z + step.z)) {
             m_obstacles.erase(it);
-            std::cout << "destroy" << std::endl;
             break;
         }
         else if ((*it)->getPos().x == round(pos.x - step.x) && (*it)->getPos().z == round(pos.z - step.z)) {
             m_obstacles.erase(it);
-            std::cout << "destroy" << std::endl;
             break;
         }
     }
@@ -240,17 +233,14 @@ void GameMap::destroyCollision(const glm::vec3 pos, glm::vec3 step)
     for (auto it = m_lights.begin(); it != m_lights.end(); it++) {
         if ((*it)->getPos().x == round(pos.x) && (*it)->getPos().z == round(pos.z)) {
             m_lights.erase(it);
-            std::cout << "destroy" << std::endl;
             break;
         }
         else if ((*it)->getPos().x == round(pos.x + step.x) && (*it)->getPos().z == round(pos.z + step.z)) {
             m_lights.erase(it);
-            std::cout << "destroy" << std::endl;
             break;
         }
         else if ((*it)->getPos().x == round(pos.x - step.x) && (*it)->getPos().z == round(pos.z - step.z)) {
             m_lights.erase(it);
-            std::cout << "destroy" << std::endl;
             break;
         }
     }
