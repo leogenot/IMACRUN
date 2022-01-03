@@ -410,7 +410,7 @@ void processInput(GLFWwindow* window)
         oldStateRight = newStateRight;
 
         // Jump
-        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
             game->getPlayer()->Jump();
 
         // BendDown
@@ -421,7 +421,7 @@ void processInput(GLFWwindow* window)
 
         // Switch camera
         static int oldState = GLFW_RELEASE;
-        int        newState = glfwGetKey(window, GLFW_KEY_T);
+        int        newState = glfwGetKey(window, GLFW_KEY_C);
         if (newState == GLFW_RELEASE && oldState == GLFW_PRESS) {
             game->switchCamera();
         }
