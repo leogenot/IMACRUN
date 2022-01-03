@@ -2,7 +2,7 @@
 #define FLOOR_H
 #include "element.hpp"
 #include "light.hpp"
-#include "shader_m.h"
+#include "shader_m.hpp"
 
 class Floor : public Element
 {

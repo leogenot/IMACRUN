@@ -28,6 +28,7 @@ private:
     std::vector<unsigned int> m_textures;
 
 public:
+    GameMap() {};
     GameMap(SceneLight sceneLight) : m_sceneLight(sceneLight) {};
     void loadGameMap(const std::string &path);
     void resetGameMap(int nbObstacles, int nbLights, Shader* shader, Model* model);

@@ -2,7 +2,7 @@
 #ifndef TEXTRENDERING_H
 #define TEXTRENDERING_H
 
-#include "shader_m.h"
+#include "shader_m.hpp"
 #include <iostream>
 #include <map>
 #include <string>

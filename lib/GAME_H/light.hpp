@@ -1,6 +1,6 @@
 #ifndef LIGHT_H
 #define LIGHT_H
-#include "shader_m.h"
+#include "shader_m.hpp"
 #include <glm/glm.hpp>
 #include <vector>
 #include "model.hpp"

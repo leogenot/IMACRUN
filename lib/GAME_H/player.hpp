@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include "../miniaudio.h"
-#include "camera.h"
+#include "camera.hpp"
 #include "element.hpp"
 #include "gamemap.hpp"
 #include "model.hpp"
@@ -46,6 +46,8 @@ public:
     // euler Angles
     float Yaw;
     float Pitch;
+
+    Player() {};
 
     Player(Camera* camera, glm::vec3 pos = glm::vec3(PLAYERSTART[0], PLAYERSTART[1], PLAYERSTART[2]))
         : m_camera(camera), m_pos(pos), onGround(true), isFalling(false), Front(glm::vec3(0., 0., -1.)), MovementSpeed(SPEED), Yaw(YAW), Pitch(PITCH), WorldUp(0., 1., 0.), m_score(0), m_life(5)

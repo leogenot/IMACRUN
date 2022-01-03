@@ -14,7 +14,7 @@
     #include <thread>
     #include <vector>
     #include "GLFW/glfw3.h"
-    #include "camera.h"
+    #include "camera.hpp"
     #include "cube.hpp"
     #include "eyeCamera.hpp"
     #include "game.hpp"
@@ -27,7 +27,7 @@
     #include "light.hpp"
     #include "model.hpp"
     #include "player.hpp"
-    #include "shader_m.h"
+    #include "shader_m.hpp"
     #include "skybox.hpp"
     #include "textrendering.hpp"
     #include "trackballCamera.hpp"

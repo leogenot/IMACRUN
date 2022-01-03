@@ -1,7 +1,7 @@
 #ifndef WALL_H
 #define WALL_H
 #include "element.hpp"
-#include "shader_m.h"
+#include "shader_m.hpp"
 
 class Wall : public Element
 {

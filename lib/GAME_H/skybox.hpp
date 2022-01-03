@@ -2,7 +2,7 @@
 #ifndef SKYBOX_H
 #define SKYBOX_H
 #include "element.hpp"
-#include "shader_m.h"
+#include "shader_m.hpp"
 #include <stb_image.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -11,12 +11,11 @@
 #include <string>
 #include <vector>
 #include "GLFW/glfw3.h"
-#include "camera.h"
+#include "camera.hpp"
 #include "glad/glad.h"
 #include "glimac/FilePath.hpp"
 #include "glimac/Program.hpp"
 #include "gamemap.hpp"
-#include "shader_m.h"
 #include "trackballCamera.hpp"
 
 class Skybox

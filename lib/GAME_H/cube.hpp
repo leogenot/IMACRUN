@@ -1,7 +1,7 @@
 #ifndef CUBE_H
 #define CUBE_H
 #include "element.hpp"
-#include "shader_m.h"
+#include "shader_m.hpp"
 
 
 class Cube

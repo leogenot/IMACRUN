@@ -2,7 +2,7 @@
 #define TRACKBALLCAMERA_H
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
-#include "camera.h"
+#include "camera.hpp"
 #include "cube.hpp"
 
 // Default camera values

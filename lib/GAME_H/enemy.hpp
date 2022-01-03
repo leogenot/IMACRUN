@@ -4,7 +4,7 @@
 #include <vector>
 #include "model.hpp"
 #include "gamemap.hpp"
-#include "camera.h"
+#include "camera.hpp"
 
 constexpr float ENEMYSPEED      = 2.5f;
 //constexpr float ENEMYSTART[3]   = {2.0f, 0.0f, 0.0f};
