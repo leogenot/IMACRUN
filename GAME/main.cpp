@@ -42,7 +42,7 @@ SceneLight sceneLight(lightDir, lightColor);
 
 // game
 TextRendering textrendering;
-Game          game(sceneLight);
+Game* game = Game::instance(sceneLight);
 ma_result     result;
 ma_engine     engine;
 string   str                  = "assets/sounds/soundtrack.mp3";
@@ -112,7 +112,7 @@ int main()
 
     int nbObstacles = 100;
     int nbLights    = 10;
-    game.InitGame("assets/maps/petite_map.pgm", nbObstacles, nbLights);
+    game->InitGame("assets/maps/petite_map.pgm", nbObstacles, nbLights);
 
     textrendering.initTextRendering(window_width, window_height);
 
@@ -149,8 +149,8 @@ int main()
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
         float currentFrame = (float)glfwGetTime();
-        int   player_life  = game.getPlayer()->getLife();
-        if (!game.paused) {
+        int   player_life  = game->getPlayer()->getLife();
+        if (!game->paused) {
             // per-frame time logic
             // --------------------
 
@@ -162,19 +162,19 @@ int main()
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             // render 3D
-            game.renderGame((float)window_width, (float)window_height); // display map
+            game->renderGame((float)window_width, (float)window_height); // display map
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
             // render 2D
             textrendering.RenderText("Flash McQueen", 25.0f, 25.0f, 1.0f, glm::vec3(0.5f, 0.8f, 0.2f));
-            textrendering.RenderText("Score : " + to_string(game.getPlayer()->getScore()), 1100.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
-            textrendering.RenderText("Life : " + to_string(game.getPlayer()->getLife()), 1000.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
-            textrendering.RenderText(game.getPlayer()->getUsername(), 900.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
+            textrendering.RenderText("Score : " + to_string(game->getPlayer()->getScore()), 1100.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
+            textrendering.RenderText("Life : " + to_string(game->getPlayer()->getLife()), 1000.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
+            textrendering.RenderText(game->getPlayer()->getUsername(), 900.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
             textrendering.RenderText("KATCHAAAAW", 540.0f, 570.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f));
             
 
-            if (game.LoseGame()) {
+            if (game->LoseGame()) {
                 show_looser_window = true;
             }
         }
@@ -206,21 +206,21 @@ int main()
                 if (ImGui::Button("New Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
                     show_main_menu_window = false;
-                    game.ResetGame(nbObstacles, nbLights);
+                    game->ResetGame(nbObstacles, nbLights);
                     CountDown(countdown_time);
                 }
 
                 if (ImGui::Button("Resume Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
                     show_main_menu_window = false;
-                    game.paused           = false;
+                    game->paused           = false;
                     CountDown(countdown_time);
                 }
 
                 if (ImGui::Button("Save Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
                 {
-                    game.SavePlayerData();
-                    game.ShowPlayersData();
+                    game->SavePlayerData();
+                    game->ShowPlayersData();
                 }
 
                 if (ImGui::Button("Load Game")) // Buttons return true when clicked (most widgets return true when edited/activated)
@@ -257,7 +257,7 @@ int main()
                 {
                     player_username[strlen(player_username) - 1] = '\0';
                 }
-                game.getPlayer()->setUsername(player_username);
+                game->getPlayer()->setUsername(player_username);
                 if (ImGui::Button("Back to main menu")) {
                     show_options_window = false;
                 }
@@ -298,14 +298,14 @@ int main()
                         glm::vec3 player_pos(player_pos_x, player_pos_y, player_pos_z);
                         glm::vec3 enemy_pos(enemy_pos_x, enemy_pos_y, enemy_pos_z);
 
-                        game.getPlayer()->setUsername(cstr);
-                        game.getPlayer()->setScore(player_score);
-                        game.getPlayer()->setLife(player_life);
-                        game.getPlayer()->setPos(player_pos);
-                        game.getEnemy()->setPos(enemy_pos);
-                        game.getPlayer()->Yaw = yaw;
-                        game.getPlayer()->getCamera()->setDirection(yaw);
-                        game.getPlayer()->ShowPlayerData(game.getPlayer());
+                        game->getPlayer()->setUsername(cstr);
+                        game->getPlayer()->setScore(player_score);
+                        game->getPlayer()->setLife(player_life);
+                        game->getPlayer()->setPos(player_pos);
+                        game->getEnemy()->setPos(enemy_pos);
+                        game->getPlayer()->Yaw = yaw;
+                        game->getPlayer()->getCamera()->setDirection(yaw);
+                        game->getPlayer()->ShowPlayerData(game->getPlayer());
                     }
                 }
 
@@ -342,8 +342,8 @@ int main()
                 ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
                 ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
 
-                ImGui::Begin("You lost the game...", &show_looser_window, flags);
-                ImGui::Text("You lost the game...");
+                ImGui::Begin("You lost the game->..", &show_looser_window, flags);
+                ImGui::Text("You lost the game->..");
                 ImGui::Text("Enter your username : ");
 
                 ImGui::InputText("", player_username, IM_ARRAYSIZE(player_username));
@@ -351,10 +351,10 @@ int main()
                 {
                     player_username[strlen(player_username) - 1] = '\0';
                 }
-                game.getPlayer()->setUsername(player_username);
+                game->getPlayer()->setUsername(player_username);
                 if (ImGui::Button("Save your score")) {
-                    game.SavePlayerData();
-                    game.ShowPlayersData();
+                    game->SavePlayerData();
+                    game->ShowPlayersData();
                 }
                 if (ImGui::Button("Back to main menu")) {
                     show_looser_window    = false;
@@ -389,34 +389,34 @@ void processInput(GLFWwindow* window)
     static int oldStatePause = GLFW_RELEASE;
     int        newStatePause = glfwGetKey(window, GLFW_KEY_ESCAPE);
     if (newStatePause == GLFW_RELEASE && oldStatePause == GLFW_PRESS) {
-        if (game.paused) {
+        if (game->paused) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             show_main_menu_window = !show_main_menu_window;
 
-            game.paused = false;
+            game->paused = false;
             CountDown(countdown_time);
             cout << "not paused" << endl;
         }
         else {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            game.paused           = true;
+            game->paused           = true;
             show_main_menu_window = !show_main_menu_window;
             cout << "paused" << endl;
         }
     }
     oldStatePause = newStatePause;
 
-    if (!game.paused) // if playing
+    if (!game->paused) // if playing
     {
         // moving players
-        game.getPlayer()->ProcessKeyboard(FORWARD, deltaTime, game.getGameMap());
-        game.getEnemy()->Follow(game.getGameMap(), deltaTime);
+        game->getPlayer()->ProcessKeyboard(FORWARD, deltaTime, game->getGameMap());
+        game->getEnemy()->Follow(game->getGameMap(), deltaTime);
 
         // Left
         static int oldStateLeft = GLFW_RELEASE;
         int        newStateLeft = glfwGetKey(window, GLFW_KEY_A);
         if (newStateLeft == GLFW_RELEASE && oldStateLeft == GLFW_PRESS) {
-            game.getPlayer()->ProcessKeyboard(LEFT, deltaTime, game.getGameMap());
+            game->getPlayer()->ProcessKeyboard(LEFT, deltaTime, game->getGameMap());
         }
         oldStateLeft = newStateLeft;
 
@@ -424,25 +424,25 @@ void processInput(GLFWwindow* window)
         static int oldStateRight = GLFW_RELEASE;
         int        newStateRight = glfwGetKey(window, GLFW_KEY_D);
         if (newStateRight == GLFW_RELEASE && oldStateRight == GLFW_PRESS) {
-            game.getPlayer()->ProcessKeyboard(RIGHT, deltaTime, game.getGameMap());
+            game->getPlayer()->ProcessKeyboard(RIGHT, deltaTime, game->getGameMap());
         }
         oldStateRight = newStateRight;
 
         // Jump
         if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-            game.getPlayer()->Jump();
+            game->getPlayer()->Jump();
 
         // BendDown
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            game.getPlayer()->BendDown();
+            game->getPlayer()->BendDown();
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE)
-            game.getPlayer()->GetUp();
+            game->getPlayer()->GetUp();
 
         // Switch camera
         static int oldState = GLFW_RELEASE;
         int        newState = glfwGetKey(window, GLFW_KEY_T);
         if (newState == GLFW_RELEASE && oldState == GLFW_PRESS) {
-            game.switchCamera();
+            game->switchCamera();
         }
         oldState = newState;
 
@@ -450,12 +450,12 @@ void processInput(GLFWwindow* window)
         static int oldStateFixedCam = GLFW_RELEASE;
         int        newStateFixedCam = glfwGetKey(window, GLFW_KEY_L);
         if (newStateFixedCam == GLFW_RELEASE && oldStateFixedCam == GLFW_PRESS) {
-            if (game.fixedCamera) {
-                game.fixedCamera = false;
+            if (game->fixedCamera) {
+                game->fixedCamera = false;
                 firstMouse       = true;
             }
             else
-                game.fixedCamera = true;
+                game->fixedCamera = true;
         }
         oldStateFixedCam = newStateFixedCam;
     }
@@ -474,7 +474,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    if (!game.fixedCamera) {
+    if (!game->fixedCamera) {
         if (firstMouse) {
             lastX      = xpos;
             lastY      = ypos;
@@ -487,7 +487,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
         lastX = xpos;
         lastY = ypos;
 
-        game.getPlayer()->getCamera()->ProcessMouseMovement((float)xoffset, (float)yoffset);
+        game->getPlayer()->getCamera()->ProcessMouseMovement((float)xoffset, (float)yoffset);
     }
 }
 
@@ -495,8 +495,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    if (!game.fixedCamera) {
-        game.getPlayer()->getCamera()->ProcessMouseScroll((float)yoffset);
+    if (!game->fixedCamera) {
+        game->getPlayer()->getCamera()->ProcessMouseScroll((float)yoffset);
     }
 }
 
