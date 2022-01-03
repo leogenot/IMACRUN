@@ -37,7 +37,7 @@ T loadTexture(char const* path)
         stbi_image_free(data);
     }
     else {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
+        throw std::invalid_argument << "Texture failed to load at path: " << path << std::endl;
         stbi_image_free(data);
     }
 
