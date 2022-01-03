@@ -14,8 +14,6 @@
 #include <algorithm>
 #include <functional>
 
-
-
 class GameMap
 {
 private: 
@@ -39,11 +37,11 @@ public:
     SceneLight getSceneLight() {return m_sceneLight;};
     std::vector<Light*> getLights() {return m_lights;};
     
-    bool isEmpty(const int posX, const int posY) const;
-    bool onAngle(const glm::vec3 pos) const;
+    bool isEmpty(const int posX, const int posY) const; // we want a floor with no obstacle
+    bool onAngle(const glm::vec3 pos) const; // if player on a turning point
     int getPoint(const glm::vec3 pos); // if player on light return light value
-    bool onObstacle(const glm::vec3 pos, bool down);
-    Collision_Type collision(const glm::vec3 pos) const;
+    bool onObstacle(const glm::vec3 pos, bool down); // if player collide an obstacle
+    Collision_Type collision(const glm::vec3 pos) const; // return type of collision (fall, collide or none)
     void destroyCollision(const glm::vec3 pos, glm::vec3 step); //destroy light and obstacle on collision with the enemy
 };
 

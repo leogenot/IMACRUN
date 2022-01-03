@@ -106,7 +106,7 @@ void Game::InitGame(string pgmFile, int nbObstacles, int nbLights)
 
 bool Game::LoseGame()
 {
-    if (getPlayer()->getLife() == 0 || getPlayer()->getCollision(FORWARD, getGameMap()) == true || getEnemy()->collidePlayer(getPlayer()->getPos())) {
+    if (getPlayer()->getLife() == 0 || getPlayer()->getLosingCollision(FORWARD, getGameMap()) == true || getEnemy()->collidePlayer(getPlayer()->getPos())) {
         paused = !paused;
         return true;
     }
@@ -154,7 +154,6 @@ void Game::LoadGame(string name)
     getEnemy()->setPos(enemy_pos);
     getPlayer()->Yaw = yaw;
     getPlayer()->getCamera()->setDirection(yaw);
-    getPlayer()->ShowPlayerData(getPlayer());
 };
 
 void Game::SavePlayerData()
@@ -185,10 +184,10 @@ void Game::SavePlayerData()
             writtingFile.close();
         }
         else
-            cout << "Unable to open file WRITE";
+            cerr << "Unable to open file WRITE";
     }
     else
-        cout << "Unable to open file READ";
+        cerr << "Unable to open file READ";
 };
 
 bool Game::exists(const json& j, const std::string& key)

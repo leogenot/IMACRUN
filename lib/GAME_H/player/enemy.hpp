@@ -7,7 +7,6 @@
 #include "../player/camera.hpp"
 
 constexpr float ENEMYSPEED      = 2.5f;
-//constexpr float ENEMYSTART[3]   = {2.0f, 0.0f, 0.0f};
 constexpr float ENEMYSTART[3]   = {60.0f, 0.0f, 0.0f};
 constexpr float ENEMYJUMPHEIGHT = ENEMYSTART[1] + 0.6f;
 

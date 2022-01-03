@@ -22,7 +22,7 @@ constexpr float YAW         = 90.0f;
 constexpr float PITCH       = 0.0f;
 
 
-// An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices for use in OpenGL
+// An abstract camera class that processes input and calculates the corresponding Euler Angles, Vectors and Matrices
 class Camera {
 protected:
     // Attributs
@@ -42,7 +42,7 @@ public:
     // returns the view matrix calculated using Euler Angles and the LookAt Matrix
     virtual glm::mat4 GetViewMatrix(glm::vec3 player_pos, bool down) = 0;
 
-    virtual void setDirection(float degrees) = 0;
+    virtual void setDirection(float degrees) = 0; // rotation camera with player
     // processes input received from a mouse input system. Expects the offset value in both the x and y direction.
     virtual void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true) = 0;
     virtual void ProcessMouseScroll(float yoffset) = 0;

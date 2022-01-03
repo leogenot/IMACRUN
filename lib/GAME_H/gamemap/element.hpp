@@ -34,9 +34,6 @@ public:
 
     //getter & setter pos
     glm::ivec3 getPos() const {return m_pos;};
-    int getPosX() const {return m_pos.x;};
-    int getPosY() const {return m_pos.y;};
-    int getPosZ() const {return m_pos.z;};
     void setPosX(const int posX) {m_pos.x = posX;};
     void setPosY(const int posY) {m_pos.y = posY;};
     void setPosZ(const int posZ) {m_pos.z = posZ;};

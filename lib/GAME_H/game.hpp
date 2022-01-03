@@ -27,7 +27,7 @@ private:
 
     Game() {};
     Game(SceneLight sceneLight)
-        : m_gameMap(sceneLight), m_player(&m_eyeCamera), paused(true), fixedCamera(false){};
+        : m_gameMap(sceneLight), m_player(NULL), paused(true), fixedCamera(false){};
 
 
 protected : static Game* m_instance;

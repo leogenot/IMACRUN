@@ -25,7 +25,7 @@ public:
         MouseSensitivity = TRACKSENSITIVITY;
     }
 
-    void setDirection(float degrees) {m_fAngleY += degrees*2*m_fDistance*m_fDistance;}; //TODO comprendre le rotate pour avoir la bonne valeur lors d'une rotation 90
+    void setDirection(float degrees) {m_fAngleY += degrees*2*m_fDistance*m_fDistance;}; //rotation camera with player
     void rotateLeft(float degrees) {m_fAngleY += degrees;}
     void rotateUp(float degrees) {m_fAngleX -= degrees;}
 
@@ -65,8 +65,6 @@ public:
         if (m_fDistance > 10.0f)
             m_fDistance = 10.0f; 
     }
-
-
 };
 
 #endif

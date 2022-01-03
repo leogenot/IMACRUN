@@ -11,7 +11,7 @@ glm::mat4 Player::getModel() const
     glm::mat4 model = glm::translate(glm::mat4(1.0f), m_pos);
     model           = glm::rotate(model, -90 - Yaw, glm::vec3(0, 1, 0));
     model           = glm::scale(model, glm::vec3(.25f, .25f, .25f));
-    if (down)
+    if (down) // if player down
         model = glm::scale(model, glm::vec3(1.0f, .25f, 1.0f));
 
     return model;
@@ -44,15 +44,14 @@ void Player::Fall(float deltatime)
     }
 }
 
-bool Player::getCollision(Camera_Movement direction, GameMap* gamemap)
+bool Player::getLosingCollision(Camera_Movement direction, GameMap* gamemap)
 {
-    if (direction == FORWARD && gamemap->collision(m_pos) == COLLIDE || gamemap->collision(m_pos) == FALL && onGround) {
-        cout << "COllision" << endl;
+    if (direction == FORWARD && gamemap->collision(m_pos) == COLLIDE || gamemap->collision(m_pos) == FALL && onGround)
         return true;
-    }
     else
         return false;
 }
+
 // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
 void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap* gamemap)
 {
@@ -70,7 +69,7 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap
             m_pos = glm::ivec3(round(m_pos.x), round(m_pos.y), round(m_pos.z)); // to make the player stay in a case and not in between
         }
         else if (!gamemap->collision(m_pos - Right)) // translate
-            m_pos -= Right;                          // * velocity; //TODO : transition
+            m_pos -= Right;
     }
     else if (direction == RIGHT) {
         if (gamemap->onAngle(m_pos)) // rotate
@@ -80,7 +79,7 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap
             m_pos = glm::ivec3(round(m_pos.x), round(m_pos.y), round(m_pos.z)); // to make the player stay in a case and not in between
         }
         else if (!gamemap->collision(m_pos + Right)) //translate
-            m_pos += Right;                          // * velocity; //TODO : transition
+            m_pos += Right;
     }
 
     // jump
@@ -92,8 +91,7 @@ void Player::ProcessKeyboard(Camera_Movement direction, float deltaTime, GameMap
     // check light collision to increment score
     addScore(gamemap->getPoint(m_pos));
 
-
-    // check obstacle collision
+    // check obstacle collision to remove life
     if (gamemap->onObstacle(m_pos, down))
         removeLife();
 
@@ -130,9 +128,4 @@ void Player::resetPlayer()
     WorldUp       = glm::vec3(0., 1., 0.);
     Front         = glm::vec3(0., 0., -1.);
     updatePlayerVectors();
-}
-
-void Player::ShowPlayerData(Player* m_player)
-{
-    cout << m_player->m_username << " : Score : " << m_player->m_score << " Life : " << m_player->m_life << endl;
 }

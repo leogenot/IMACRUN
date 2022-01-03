@@ -34,7 +34,6 @@ bool Enemy::collidePlayer(glm::vec3 playerPos) const
     return false;
 }
 
-
 glm::mat4 Enemy::getModel() const
 {
     glm::mat4 model = glm::translate(glm::mat4(1.0f), m_pos);
@@ -50,6 +49,7 @@ void Enemy::Jump()
         onGround  = false;
     }
 }
+
 void Enemy::Rise(float deltatime)
 {
     if (m_pos.y <= ENEMYJUMPHEIGHT) {
@@ -59,6 +59,7 @@ void Enemy::Rise(float deltatime)
         isFalling = true;
     }
 }
+
 void Enemy::Fall(float deltatime)
 {
     if (m_pos.y <= ENEMYSTART[1] + 0.05f) {

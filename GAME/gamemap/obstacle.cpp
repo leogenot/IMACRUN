@@ -100,7 +100,6 @@ void Obstacle::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::
 
     //material
     m_shader.setInt("material.diffuse", 0);
-    //m_shader.setInt("material.specular", 0);
     m_shader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
     m_shader.setFloat("material.shininess", 32.0f);
 
@@ -110,7 +109,7 @@ void Obstacle::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::
     model = glm::translate(model, m_pos);
     if(m_pos.y == 1)
         model = glm::translate(model, glm::vec3(0, -0.75, 0));
-    model = glm::scale(model, glm::vec3(0.4, 0.3, 0.4)); //TODO: gérer si l'obsacle est bien perpendiculaire au chemin
+    model = glm::scale(model, glm::vec3(0.4, 0.3, 0.4));
     m_shader.setMat4("model", model);
 
     glBindVertexArray(m_VAO);

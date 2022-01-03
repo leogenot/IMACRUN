@@ -31,7 +31,6 @@ bool show_main_menu_window = true;
 bool show_quit_window      = false;
 bool show_options_window   = false;
 bool show_looser_window    = false;
-bool show_demo_window      = false;
 bool show_load_window      = false;
 
 unsigned int countdown_time = 3;
@@ -78,7 +77,7 @@ int main()
     // --------------------
     GLFWwindow* window = glfwCreateWindow(window_width, window_height, "IMACRUN", NULL, NULL);
     if (window == NULL) {
-        cout << "Failed to create GLFW window" << endl;
+        cerr << "Failed to create GLFW window" << endl;
         glfwTerminate();
         return -1;
     }
@@ -93,7 +92,7 @@ int main()
     // glad: load all OpenGL function pointers
     // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        cout << "Failed to initialize GLAD" << endl;
+        cerr << "Failed to initialize GLAD" << endl;
         return -1;
     }
     result = ma_engine_init(NULL, &engine);
@@ -112,6 +111,7 @@ int main()
 
     Shader boxShader("GAME/shaders/floor.vs", "GAME/shaders/floor.fs");
 
+    // Init game
     int nbObstacles = 100;
     int nbLights    = 100;
     game->InitGame("assets/maps/celle_la_cest_la_bonne.pgm", nbObstacles, nbLights);
@@ -133,14 +133,13 @@ int main()
     ImGui_ImplOpenGL3_Init("#version 330");
 
     // Our state
-
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     /* Create the App */
     int w, h;
     glfwGetWindowSize(window, &w, &h);
-
     App app{w, h};
+
     /* Hook user inputs to the App */
     glfwSetWindowUserPointer(window, reinterpret_cast<void*>(&app));
     glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -175,6 +174,7 @@ int main()
             textrendering.RenderText(game->getPlayer()->getUsername(), 900.0f, 640.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
             textrendering.RenderText("KATCHAAAAW", 540.0f, 570.0f, 0.5f, glm::vec3(0.3f, 0.7f, 0.9f));
 
+            // Lose game
             if (game->LoseGame()) {
                 show_looser_window = true;
             }
@@ -189,10 +189,6 @@ int main()
             ImGui::NewFrame();
 
             static ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings;
-
-            // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-            /*  if (show_demo_window)
-                ImGui::ShowDemoWindow(&show_demo_window); */
 
             // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
             if (show_main_menu_window) {
@@ -264,12 +260,9 @@ int main()
                 }
                 ImGui::End();
             }
-            // load confirmation window
+            // load savegame window
             if (show_load_window) {
                 static bool use_work_area = true;
-
-                // We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
-                // Based on your use case you may want one of the other.
                 const ImGuiViewport* viewport = ImGui::GetMainViewport();
                 ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
                 ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
@@ -277,7 +270,7 @@ int main()
                 ImGui::Begin("Game load", &show_load_window, flags);
                 ImGui::Text("Select your savegame: ");
 
-                ifstream i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
+                ifstream i(BIN_PATH + "/assets/scores.json");
                 json     json;
                 i >> json;
                 for (auto it = json.begin(); it != json.end(); ++it) {
@@ -288,6 +281,7 @@ int main()
                     if (ImGui::Button(strcat(player_name_char, player_score_life_char))) // Buttons return true when clicked (most widgets return true when edited/activated)
                     {
                         game->LoadGame(player_name_char);
+                        // Resume Game
                         show_load_window = false;
                         show_main_menu_window = false;
                         game->paused          = false;
@@ -303,8 +297,6 @@ int main()
             if (show_quit_window) {
                 static bool use_work_area = true;
 
-                // We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
-                // Based on your use case you may want one of the other.
                 const ImGuiViewport* viewport = ImGui::GetMainViewport();
                 ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
                 ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
@@ -322,8 +314,6 @@ int main()
             if (show_looser_window) {
                 static bool use_work_area = true;
 
-                // We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
-                // Based on your use case you may want one of the other.
                 const ImGuiViewport* viewport = ImGui::GetMainViewport();
                 ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
                 ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
@@ -377,13 +367,11 @@ void processInput(GLFWwindow* window)
 
             game->paused = false;
             CountDown(countdown_time);
-            cout << "not paused" << endl;
         }
         else {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             game->paused          = true;
             show_main_menu_window = !show_main_menu_window;
-            cout << "paused" << endl;
         }
     }
     oldStatePause = newStatePause;
@@ -482,11 +470,11 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     }
 }
 
+// coundDown before launching game
 void CountDown(unsigned int time_in_sec)
 {
     ma_engine_play_sound(&engine, c_soundVroum, NULL);
     for (time_in_sec; time_in_sec > 0; --time_in_sec) {
-        cout << time_in_sec << endl;
         this_thread::sleep_for(chrono::seconds(1));
     }
     lastFrame = (float)glfwGetTime();

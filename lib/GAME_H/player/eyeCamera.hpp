@@ -36,6 +36,7 @@ public:
         updateCameraVectors();
     }
 
+    // rotation camera with player
     void setDirection(float degrees) 
     {
         Yaw = degrees;
