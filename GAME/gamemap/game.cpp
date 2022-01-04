@@ -156,6 +156,8 @@ void Game::LoadGame(string name)
     getPlayer()->getCamera()->setDirection(yaw);
 };
 
+
+
 void Game::SavePlayerData()
 {
     // read a JSON file

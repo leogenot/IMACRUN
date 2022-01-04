@@ -281,7 +281,7 @@ int main()
                 for (auto it = json.begin(); it != json.end(); ++it) {
                     string str  = it.key();
                     char*  player_name_char = const_cast<char*>(str.c_str());
-                    string player_score_life_str = ", Score : " + to_string(game->getPlayer()->getScore()) + ", Life : " + to_string(game->getPlayer()->getLife());
+                    string player_score_life_str = ", Score : " + to_string(json[player_name_char].at("score")) + ", Life : " + to_string(json[player_name_char].at("life"));
                     char* player_score_life_char = const_cast<char*>(player_score_life_str.c_str());
                     if (ImGui::Button(strcat(player_name_char, player_score_life_char))) // Buttons return true when clicked (most widgets return true when edited/activated)
                     {
