@@ -7,24 +7,24 @@
 #include <string>
 #include <thread>
 #include <vector>
-#include "glad/glad.h"
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
-#include "GAME_H/player/player.hpp"
-#include "GAME_H/player/camera.hpp"
-#include "GAME_H/player/eyeCamera.hpp"
-#include "GAME_H/player/trackballCamera.hpp"
+#include "GAME_H/3dmodels/model.hpp"
 #include "GAME_H/game.hpp"
 #include "GAME_H/gamemap/gamemap.hpp"
 #include "GAME_H/gamemap/skybox.hpp"
 #include "GAME_H/lighting/light.hpp"
-#include "GAME_H/3dmodels/model.hpp"
+#include "GAME_H/player/camera.hpp"
+#include "GAME_H/player/eyeCamera.hpp"
+#include "GAME_H/player/player.hpp"
+#include "GAME_H/player/trackballCamera.hpp"
 #include "GAME_H/utilities/json.hpp"
 #include "GAME_H/utilities/shader_m.hpp"
 #include "GAME_H/utilities/textrendering.hpp"
+#include "glad/glad.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
-#define STB_IMAGE_IMPLEMENTATION 
+#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #define MINIAUDIO_IMPLEMENTATION
 #include "miniaudio.h"
@@ -68,8 +68,8 @@ string        str            = "assets/sounds/soundtrack.mp3";
 const char*   c_sound        = str.c_str();
 string        str2           = "assets/sounds/ka_chow.mp3";
 const char*   c_soundKa_chow = str.c_str();
-string        str3          = "assets/sounds/vroum.mp3";
-const char*   c_soundVroum = str3.c_str();
+string        str3           = "assets/sounds/vroum.mp3";
+const char*   c_soundVroum   = str3.c_str();
 
 static char player_username[128] = "player";
 
@@ -267,27 +267,66 @@ int main()
 
             // load savegame window
             if (show_load_window) {
-                static bool use_work_area = true;
-                const ImGuiViewport* viewport = ImGui::GetMainViewport();
+                static bool          use_work_area = true;
+                const ImGuiViewport* viewport      = ImGui::GetMainViewport();
                 ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
                 ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
 
                 ImGui::Begin("Game load", &show_load_window, flags);
                 ImGui::Text("Select your savegame: ");
 
-                ifstream i(BIN_PATH + "/assets/scores.json");
+                /* std::ifstream i(BIN_PATH + "/assets/scores.json");
                 json     json;
                 i >> json;
                 for (auto it = json.begin(); it != json.end(); ++it) {
-                    string str  = it.key();
-                    char*  player_name_char = const_cast<char*>(str.c_str());
-                    string player_score_life_str = ", Score : " + to_string(json[player_name_char].at("score")) + ", Life : " + to_string(json[player_name_char].at("life"));
-                    char* player_score_life_char = const_cast<char*>(player_score_life_str.c_str());
+                    std::string str                    = it.key();
+                    char*  player_name_char       = const_cast<char*>(str.c_str());
+                    std::string player_score_life_str  = ", Score : " + to_string(json[player_name_char].at("score")) + ", Life : " + to_string(json[player_name_char].at("life"));
+                    char*  player_score_life_char = const_cast<char*>(player_score_life_str.c_str());
                     if (ImGui::Button(strcat(player_name_char, player_score_life_char))) // Buttons return true when clicked (most widgets return true when edited/activated)
                     {
-                        game->LoadGame(player_name_char);
+                        //game->LoadGame(player_name_char);
+                        int       player_score = json[player_name_char].at("score");
+                        int       player_life  = json[player_name_char].at("life");
+                        float     player_pos_x = json[player_name_char].at("position_x");
+                        float     player_pos_y = json[player_name_char].at("position_y");
+                        float     player_pos_z = json[player_name_char].at("position_z");
+                        float     enemy_pos_x  = json[player_name_char].at("position_enemy_x");
+                        float     enemy_pos_y  = json[player_name_char].at("position_enemy_y");
+                        float     enemy_pos_z  = json[player_name_char].at("position_enemy_z");
+                        float     yaw          = json[player_name_char].at("yaw");
+                        glm::vec3 player_pos(player_pos_x, player_pos_y, player_pos_z);
+                        glm::vec3 enemy_pos(enemy_pos_x, enemy_pos_y, enemy_pos_z);
+
+                        game->getPlayer()->setUsername(player_name_char);
+                        game->getPlayer()->setScore(it.value());
+                        game->getPlayer()->setScore(player_score);
+                        game->getPlayer()->setLife(player_life);
+                        game->getPlayer()->setPos(player_pos);
+                        game->getEnemy()->setPos(enemy_pos);
+                        game->getPlayer()->Yaw = yaw;
                         // Resume Game
-                        show_load_window = false;
+                        show_load_window      = false;
+                        show_main_menu_window = false;
+                        game->paused          = false;
+                        CountDown(countdown_time);
+                    }
+                } */
+
+                std::ifstream i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
+                json          json;
+                i >> json;
+                for (auto it = json.begin(); it != json.end(); ++it) {
+                    std::string str                    = it.key();
+                    char*       cstr                   = const_cast<char*>(str.c_str());
+                    std::string player_score_life_str  = (std::string)cstr + ", Score : " + to_string(json[cstr].at("score")) + ", Life : " + to_string(json[cstr].at("life"));
+                    char*       player_score_life_char = const_cast<char*>(player_score_life_str.c_str());
+
+                    if (ImGui::Button(player_score_life_char)) // Buttons return true when clicked (most widgets return true when edited/activated)
+                    {
+                        game->LoadGame(cstr);
+                        // Resume Game
+                        show_load_window      = false;
                         show_main_menu_window = false;
                         game->paused          = false;
                         CountDown(countdown_time);
@@ -355,9 +394,9 @@ int main()
 
     // destroy App
     // Deletes all ImGUI instances
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
     glfwTerminate();
@@ -369,7 +408,6 @@ int main()
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow* window)
 {
-
     //Mouse capture
     static int oldStatePause = GLFW_RELEASE;
     int        newStatePause = glfwGetKey(window, GLFW_KEY_ESCAPE);
@@ -491,8 +529,6 @@ void CountDown(unsigned int time_in_sec)
         this_thread::sleep_for(chrono::seconds(1));
     }
     lastFrame = (float)glfwGetTime();
-
-    
 }
 
 void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)

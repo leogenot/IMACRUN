@@ -8,7 +8,7 @@ into the static field. On subsequent runs, it returns the client existing
 object stored in the static field.*/
 Game* Game::instance(SceneLight scenelight)
 {
-    if (m_instance == NULL) 
+    if (m_instance == NULL)
         m_instance = new Game(scenelight);
     return m_instance;
 };
@@ -29,7 +29,6 @@ void Game::renderGame(float window_width, float window_height)
         setShader(m_enemy.getShader(), m_enemy.getModel(), view, projection, renderRadius);
         m_enemy.getObjModel().DrawModel(m_enemy.getShader());
     }
-
 
     // draw gameMap
     m_gameMap.drawGameMap(view, projection, model, m_player.getCamera()->getPos(), m_player.getPos(), renderRadius);
@@ -123,40 +122,39 @@ void Game::ResetGame(int nbObstacles, int nbLights)
     paused = !paused;
 };
 
-void Game::LoadGame(string name)
+void Game::LoadGame(char* cname)
 {
-    char* cname;
-    ifstream i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
-    json json;
+    std::ifstream i(BIN_PATH + "/assets/scores.json"); // TODO : gestion erreur lecture fichier
+    json          json;
     i >> json;
     for (auto it = json.begin(); it != json.end(); ++it) {
-        if (name == it.key())
-            cname = const_cast<char*>(name.c_str());
+        std::string str                    = it.key();
+        char*       cstr                   = const_cast<char*>(str.c_str());
+        std::string player_score_life_str  = (std::string)cname + ", Score : " + to_string(json[cname].at("score")) + ", Life : " + to_string(json[cname].at("life"));
+        char*       player_score_life_char = const_cast<char*>(player_score_life_str.c_str());
+
+        int   player_score = json[cname].at("score");
+        int   player_life  = json[cname].at("life");
+        float player_pos_x = json[cname].at("position_x");
+        float player_pos_y = json[cname].at("position_y");
+        float player_pos_z = json[cname].at("position_z");
+        float enemy_pos_x  = json[cname].at("position_enemy_x");
+        float enemy_pos_y  = json[cname].at("position_enemy_y");
+        float enemy_pos_z  = json[cname].at("position_enemy_z");
+        float yaw          = json[cname].at("yaw");
+
+        glm::vec3 player_pos(player_pos_x, player_pos_y, player_pos_z);
+        glm::vec3 enemy_pos(enemy_pos_x, enemy_pos_y, enemy_pos_z);
+
+        getPlayer()->setUsername(cname);
+        getPlayer()->setScore(player_score);
+        getPlayer()->setLife(player_life);
+        getPlayer()->setPos(player_pos);
+        getEnemy()->setPos(enemy_pos);
+        getPlayer()->Yaw = yaw;
+        getPlayer()->getCamera()->setDirection(yaw);
     }
-
-    int   player_score = json[cname].at("score");
-    int   player_life  = json[cname].at("life");
-    float player_pos_x = json[cname].at("position_x");
-    float player_pos_y = json[cname].at("position_y");
-    float player_pos_z = json[cname].at("position_z");
-    float enemy_pos_x  = json[cname].at("position_enemy_x");
-    float enemy_pos_y  = json[cname].at("position_enemy_y");
-    float enemy_pos_z  = json[cname].at("position_enemy_z");
-    float yaw          = json[cname].at("yaw");
-
-    glm::vec3 player_pos(player_pos_x, player_pos_y, player_pos_z);
-    glm::vec3 enemy_pos(enemy_pos_x, enemy_pos_y, enemy_pos_z);
-
-    getPlayer()->setUsername(cname);
-    getPlayer()->setScore(player_score);
-    getPlayer()->setLife(player_life);
-    getPlayer()->setPos(player_pos);
-    getEnemy()->setPos(enemy_pos);
-    getPlayer()->Yaw = yaw;
-    getPlayer()->getCamera()->setDirection(yaw);
 };
-
-
 
 void Game::SavePlayerData()
 {

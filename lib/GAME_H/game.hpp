@@ -58,7 +58,7 @@ public:
     bool LoseGame();
     void ResetGame(int nbObstacles, int nbLights);
 
-    void LoadGame(string name); //load from file data
+    void LoadGame(char* cname); //load from file data
 
     void SavePlayerData();
     bool exists(const json& j, const std::string& key);
