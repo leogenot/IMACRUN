@@ -78,7 +78,7 @@ Wall::Wall(unsigned int texture) : m_texture(texture)
     glBindVertexArray(0);
 }
 
-void Wall::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, std::vector<Light*> lights, glm::vec3 playerPos, int renderRadius) const
+void Wall::draw(glm::mat4 view, glm::mat4 projection, glm::mat4 model, glm::vec3 camPos, SceneLight sceneLight, const std::vector<Light*> lights, glm::vec3 playerPos, int renderRadius) const
 {
     m_shader.use();
     int i = 0;

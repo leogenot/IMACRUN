@@ -46,7 +46,7 @@ public:
     unsigned int VAO;
 
     // constructor
-    Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
+    Mesh(const vector<Vertex> vertices, const vector<unsigned int> indices, const vector<Texture> textures)
     {
         this->vertices = vertices;
         this->indices = indices;
